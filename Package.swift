@@ -16,10 +16,14 @@ let package = Package(
           name: "SpotifyAPI",
           targets: ["SpotifyAPI"]
       ),
-    ],
+			.library(
+				name: "SpotifyLogin",
+				targets: ["SpotifyLogin"]
+			),
+		],
     dependencies: [
       .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.1"),
-      .package(url: "https://github.com/dankinsoid/swift-http", from: "1.0.2"),
+      .package(url: "https://github.com/dankinsoid/swift-http", from: "1.0.5"),
       .package(url: "https://github.com/dankinsoid/VDCodable", from: "2.10.0")
     ],
     targets: [
@@ -34,6 +38,10 @@ let package = Package(
       .target(
           name: "SpotifyAPI",
           dependencies: [.target(name: "SwiftMusicServicesApi")]
+      ),
+      .target(
+          name: "SpotifyLogin",
+          dependencies: []
       ),
       .testTarget(
           name: "SwiftMusicServicesApiTests",

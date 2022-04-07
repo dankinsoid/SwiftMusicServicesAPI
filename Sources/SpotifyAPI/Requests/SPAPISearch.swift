@@ -84,7 +84,7 @@ extension Spotify.API {
 	}
 }
 
-#warning("Добавить: NOT, OR")
+//Добавить: NOT, OR
 public struct SPQuery: Encodable {
 	private var filters: [FieldFilters: String] = [:]
 	private var text: String?

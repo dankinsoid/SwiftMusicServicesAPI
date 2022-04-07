@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dankinsoid/swift-http",
       "state" : {
-        "revision" : "b9c48e82068db4e0bc7744d9c36f81e63083aa16",
-        "version" : "1.0.2"
+        "revision" : "ad603fa1c4707b834344d1f641426df9d757b8f9",
+        "version" : "1.0.5"
       }
     },
     {
