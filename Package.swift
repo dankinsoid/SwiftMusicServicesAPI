@@ -24,6 +24,10 @@ let package = Package(
           name: "YandexMusicAPI",
           targets: ["YandexMusicAPI"]
       ),
+			.library(
+				name: "YandexMusicLogin",
+				targets: ["YandexMusicLogin"]
+			),
 		],
     dependencies: [
       .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.1"),
@@ -51,6 +55,10 @@ let package = Package(
           name: "YandexMusicAPI",
           dependencies: [.target(name: "SwiftMusicServicesApi")]
       ),
+			.target(
+				name: "YandexMusicLogin",
+				dependencies: [.target(name: "YandexMusicAPI")]
+			),
       .testTarget(
           name: "SwiftMusicServicesApiTests",
           dependencies: ["SwiftMusicServicesApi"]

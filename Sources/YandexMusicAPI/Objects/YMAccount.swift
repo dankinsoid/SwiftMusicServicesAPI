@@ -135,8 +135,8 @@ extension YMO {
             if hex.hasPrefix("#") { hex.removeFirst() }
             if hex.count == 6 { hex.append("FF") }
             let scanner = Scanner(string: hex)
-            var int: UInt32 = 0
-            guard scanner.scanHexInt32(&int) else { throw ScanError.cannotScanColor }
+            var int: UInt64 = 0
+            guard scanner.scanHexInt64(&int) else { throw ScanError.cannotScanColor }
             red = UInt8(int >> 24)
             green = UInt8((int & 0x00FF0000) >> 16)
             blue = UInt8((int & 0x0000FF00) >> 8)

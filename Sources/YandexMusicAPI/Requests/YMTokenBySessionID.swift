@@ -44,9 +44,9 @@ extension Yandex.Music.API {
 		public var am_version_name =	"6.6.1"
 //			public var deviceidhash	= "4692844376287701807"
 		public var manufacturer	= "Apple"
-		public var deviceid: String
+		public var deviceid: UUID
 		public var device_name: String
-		public var device_id: String
+		public var device_id: UUID
 		public var app_platform = "ios"
 		public var model = "iPhone14,5"
 
@@ -58,9 +58,9 @@ extension Yandex.Music.API {
 				am_version_name: String =	"6.6.1",
 //			public var deviceidhash	= "4692844376287701807"
 				manufacturer: String = "Apple",
-				deviceid: String,// "FBF6FE07-938F-43D6-8EC1-301A1FFD2D94"
+				deviceid: UUID,// "FBF6FE07-938F-43D6-8EC1-301A1FFD2D94"
 				device_name: String,
-				device_id: String,// "FBF6FE07-938F-43D6-8EC1-301A1FFD2D94"
+				device_id: UUID,// "FBF6FE07-938F-43D6-8EC1-301A1FFD2D94"
 				app_platform: String = "ios",
 				model: String = "iPhone14,5"
 		) {
