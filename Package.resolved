@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "multipartformdatakit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kuniwak/MultipartFormDataKit.git",
+      "state" : {
+        "revision" : "27bf281a9adfd742fa2fb3318c176dcc7a111599",
+        "version" : "1.0.1"
+      }
+    },
+    {
       "identity" : "simplecoders",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dankinsoid/SimpleCoders.git",
@@ -19,12 +28,30 @@
       }
     },
     {
+      "identity" : "swift-html-entities",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kitura/swift-html-entities.git",
+      "state" : {
+        "revision" : "2b14531d0c36dbb7c1c45a4d38db9c2e7898a307",
+        "version" : "3.0.200"
+      }
+    },
+    {
       "identity" : "swift-http",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/dankinsoid/swift-http",
       "state" : {
         "revision" : "ad603fa1c4707b834344d1f641426df9d757b8f9",
         "version" : "1.0.5"
+      }
+    },
+    {
+      "identity" : "swiftsoup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scinfu/SwiftSoup.git",
+      "state" : {
+        "revision" : "41e7c263fb8c277e980ebcb9b0b5f6031d3d4886",
+        "version" : "2.4.2"
       }
     },
     {
