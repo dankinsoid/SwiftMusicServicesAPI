@@ -52,7 +52,7 @@ public struct VKAudio: Codable, Hashable, Identifiable {
 			}
 			let str = try container.decode(String.self)
 			addHash = str.components(separatedBy: "//").first
-			let id3 = try str
+			let id3 = str
 				.components(separatedBy: "//")
 				.dropFirst()
 				.joined(separator: "_")

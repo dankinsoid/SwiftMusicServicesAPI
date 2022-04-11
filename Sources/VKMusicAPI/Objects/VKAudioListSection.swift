@@ -18,12 +18,12 @@ public struct VKAudioListSection: Codable, HTMLStringInitable {
 		let html = html.replacingOccurrences(of: "<!--", with: "")
 		let jsc = html.components(separatedBy: "<!json>")
 		if jsc.count > 1 {
-			let json = try jsc[1].components(separatedBy: "<!>").first ?? ""
-			let _data = try json.data(using: .utf8) ?? Data()
+			let json = jsc[1].components(separatedBy: "<!>").first ?? ""
+			let _data = json.data(using: .utf8) ?? Data()
 			let decoder = JSONDecoder()
 			self = try decoder.decode(VKAudioListSection.self, from: _data)
 		} else {
-			let _data = try html.data(using: .utf8) ?? Data()
+			let _data = html.data(using: .utf8) ?? Data()
 			let json = try JSON(from: _data).recursiveFind(containsKey: CodingKeys.list.stringValue) ?? .null
 			let decoder = VDJSONDecoder()
 			self = try decoder.decode(VKAudioListSection.self, json: json)

@@ -32,6 +32,10 @@ let package = Package(
 					name: "VKMusicAPI",
 					targets: ["VKMusicAPI"]
 			),
+			.library(
+					name: "VKLogin",
+					targets: ["VKLogin"]
+			),
 		],
     dependencies: [
       .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.1"),
@@ -74,6 +78,10 @@ let package = Package(
 						"SwiftSoup",
 						"MultipartFormDataKit"
 					]
+			),
+			.target(
+					name: "VKLogin",
+					dependencies: [.target(name: "VKMusicAPI")]
 			),
       .testTarget(
           name: "SwiftMusicServicesApiTests",
