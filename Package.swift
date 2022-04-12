@@ -36,6 +36,14 @@ let package = Package(
 					name: "VKLogin",
 					targets: ["VKLogin"]
 			),
+			.library(
+					name: "AppleMusicAPI",
+					targets: ["AppleMusicAPI"]
+			),
+			.library(
+					name: "AppleMusicLogin",
+					targets: ["AppleMusicLogin"]
+			),
 		],
     dependencies: [
       .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.1"),
@@ -43,7 +51,8 @@ let package = Package(
       .package(url: "https://github.com/dankinsoid/VDCodable", from: "2.10.0"),
 			.package(url: "https://github.com/Kitura/swift-html-entities.git", from: "3.0.0"),
 			.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
-			.package(url: "https://github.com/Kuniwak/MultipartFormDataKit.git", from: "1.0.1")
+			.package(url: "https://github.com/Kuniwak/MultipartFormDataKit.git", from: "1.0.1"),
+			.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0")
     ],
     targets: [
       .target(
@@ -87,5 +96,18 @@ let package = Package(
           name: "SwiftMusicServicesApiTests",
           dependencies: ["SwiftMusicServicesApi"]
       ),
+			.target(
+					name: "AppleMusicAPI",
+					dependencies: [
+						"SwiftMusicServicesApi"
+					]
+			),
+			.target(
+					name: "AppleMusicLogin",
+					dependencies: [
+						.target(name: "AppleMusicAPI"),
+						.product(name: "JWTKit", package: "jwt-kit")
+					]
+			),
     ]
 )

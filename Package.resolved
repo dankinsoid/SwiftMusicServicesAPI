@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "jwt-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/jwt-kit.git",
+      "state" : {
+        "revision" : "5f9c44d4c196cc06c3fc601f279169f121d6f62d",
+        "version" : "4.4.0"
+      }
+    },
+    {
       "identity" : "multipartformdatakit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kuniwak/MultipartFormDataKit.git",
@@ -25,6 +34,15 @@
       "state" : {
         "revision" : "98d42293179ddd7f8c516eae8bec7b4e014d911a",
         "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-crypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-crypto.git",
+      "state" : {
+        "revision" : "067254c79435de759aeef4a6a03e43d087d61312",
+        "version" : "2.0.5"
       }
     },
     {
