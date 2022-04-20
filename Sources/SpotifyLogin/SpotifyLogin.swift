@@ -62,7 +62,22 @@ public class SpotifyLogin {
 	/// Asynchronous call to retrieve the session's auth token. Automatically refreshes if auth token expired.
 	///
 	/// - Parameter completion: Returns the auth token as a string if available and an optional error.
-	public func getAccessToken(completion:@escaping (String?, Error?) -> Void) {
+	public func getAccessToken() async throws -> String {
+		try await withCheckedThrowingContinuation { cont in
+			getAccessToken {
+				if let str = $0 {
+					cont.resume(returning: str)
+				} else {
+					cont.resume(throwing: $1 ?? LoginError.general)
+				}
+			}
+		}
+	}
+	
+	/// Asynchronous call to retrieve the session's auth token. Automatically refreshes if auth token expired.
+	///
+	/// - Parameter completion: Returns the auth token as a string if available and an optional error.
+	public func getAccessToken(completion: @escaping (String?, Error?) -> Void) {
 		// If the login object is not fully configured, return an error
 		guard redirectURL != nil, let clientID = clientID, let clientSecret = clientSecret else {
 			completion(nil, LoginError.configurationMissing)
@@ -78,17 +93,18 @@ public class SpotifyLogin {
 			completion(session.accessToken, nil)
 			return
 		} else {
-			Networking.renewSession(session: session,
-															clientID: clientID,
-															clientSecret: clientSecret,
-															completion: { [weak self] session, error in
+			Networking.renewSession(
+				session: session,
+				clientID: clientID,
+				clientSecret: clientSecret
+			) { [weak self] session, error in
 				if let session = session, error == nil {
 					self?.session = session
 					completion(session.accessToken, nil)
 				} else {
 					completion(nil, error)
 				}
-			})
+			}
 		}
 	}
 	

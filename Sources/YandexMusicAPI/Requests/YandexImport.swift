@@ -41,8 +41,8 @@ extension Yandex.Music.API {
 				url: Yandex.Music.API.Import.baseURL.path("handlers").resource("import-file.jsx"),
 				method: .post,
 				headers: [
-					.key(.contentType): "text/plain",
-					.custom("Connection"): "keep-alive"
+					.contentType: "text/plain",
+					"Connection": "keep-alive"
 				],
 				body: E3U.Formatter().convert(e3u)
 		)

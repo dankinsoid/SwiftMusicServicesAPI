@@ -27,11 +27,11 @@ extension Yandex.Music.API {
 				auth: false,
 				body: Data(encoder.encodePath(input).utf8),
 				headers: [
-					.key(.contentType): "application/x-www-form-urlencoded",
-					.custom("Cookie"): cookies,
-					.custom("Ya-Client-Cookie"): cookies,
-					.custom("Ya-Client-Host"): cookies,
-					.custom("Host"): "mobileproxy.passport.yandex.net"
+					.contentType: "application/x-www-form-urlencoded",
+					"Cookie": cookies,
+					"Ya-Client-Cookie": cookies,
+					"Ya-Client-Host": cookies,
+					"Host": "mobileproxy.passport.yandex.net"
 				]
 		)
 	}

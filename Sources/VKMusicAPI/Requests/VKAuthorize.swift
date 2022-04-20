@@ -13,7 +13,7 @@ extension VK.API {
 				executor: client.dataTask,
 				url: HttpUrl(host: "login.vk.com").query(from: input),
 				method: .post,
-				headers: headers()
+				headers: headers(minimum: true)
 		)
 	}
 
@@ -29,7 +29,8 @@ extension VK.API {
 	public func checkAuthorize() async throws -> VKAuthorizationState {
 		try await request(
 				url: baseURL,
-				method: .get
+				method: .get,
+				minimum: true
 		)
 	}
 }

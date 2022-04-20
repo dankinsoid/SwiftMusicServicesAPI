@@ -47,7 +47,7 @@ let package = Package(
 		],
     dependencies: [
       .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.1"),
-      .package(url: "https://github.com/dankinsoid/swift-http", from: "1.0.5"),
+      .package(url: "https://github.com/dankinsoid/swift-http", from: "1.1.1"),
       .package(url: "https://github.com/dankinsoid/VDCodable", from: "2.10.0"),
 			.package(url: "https://github.com/Kitura/swift-html-entities.git", from: "3.0.0"),
 			.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),

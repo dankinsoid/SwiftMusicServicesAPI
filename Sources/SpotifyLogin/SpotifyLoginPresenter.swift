@@ -37,9 +37,20 @@ public class SpotifyLoginPresenter {
 		return nil
 	}
 	
+	public class func canOpenSpotifyApp(scopes: [Scope], open: Bool, _ completion: @escaping (Error?) -> Void = { _ in }) -> Bool {
+		SpotifyLogin.shared.onLogin = completion
+		if let appAuthenticationURL = SpotifyLogin.shared.urlBuilder?.authenticationURL(type: .app, scopes: scopes),
+			 UIApplication.shared.canOpenURL(appAuthenticationURL) {
+			if open {
+				UIApplication.shared.open(appAuthenticationURL, options: [:], completionHandler: nil)
+			}
+			return true
+		}
+		return false
+	}
 }
 
-fileprivate final class SafariViewController: SFSafariViewController {
+final class SafariViewController: SFSafariViewController {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)

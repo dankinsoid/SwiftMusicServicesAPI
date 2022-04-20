@@ -25,9 +25,9 @@ extension Yandex.Music.API {
 				auth: false,
 				body: Data(encoder.encodePath(input).utf8),
 				headers: [
-					.key(.contentType): "application/x-www-form-urlencoded",
-					.custom("Cookie"): "_yasc=\(_yasc)",
-					.custom("Host"): "mobileproxy.passport.yandex.net"
+					.contentType: "application/x-www-form-urlencoded",
+					"Cookie": "_yasc=\(_yasc)",
+					"Host": "mobileproxy.passport.yandex.net"
 				]
 		)
 	}

@@ -101,7 +101,7 @@ extension Spotify.API {
             executor: client.dataTask,
             url: baseURL.path("users", userId, "playlists"),
             method: .post,
-            headers: headers(with: [.key(.contentType): "application/json"]),
+            headers: headers(with: [.contentType: "application/json"]),
             body: input
         )
     }

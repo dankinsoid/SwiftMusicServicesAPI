@@ -21,7 +21,10 @@ public enum Yandex {
 extension Yandex.Music {
 	public enum Objects {}
 
-	public struct API: HttpCodablePipelineCollection {
+	public final class API: HttpCodablePipelineCollection {
+		public static let clientID = "23cabbbdc6cd418abb4b39c32c41195d"
+		public static let clientSecret = "53bc75238f0c4d08a118e51fe9203300"
+		
 		public static let baseURL = HttpUrl(host: "api.music.yandex.net")
 		public static let authURL = HttpUrl(host: "oauth.yandex.ru")
 		public static let passportURL = HttpUrl(host: "passport.yandex.com")
@@ -144,11 +147,11 @@ extension Yandex.Music {
 
 		public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: Bool = true) -> [HttpHeaderKey: String] {
 			var headers: [HttpHeaderKey: String] = [
-				.key(.userAgent): "Yandex-Music-API",
-				.custom("X-Yandex-Music-Client"): "Yandex.Music/493"
+				.userAgent: "Yandex-Music-API",
+				"X-Yandex-Music-Client": "Yandex.Music/493"
 			]
 			if auth, let token = token {
-				headers[.key(.authorization)] = "OAuth \(token)"
+				headers[.authorization] = "OAuth \(token)"
 			}
 			return additionalHeaders.merging(headers) { _, s in
 				s

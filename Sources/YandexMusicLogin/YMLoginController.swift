@@ -15,8 +15,8 @@ import VDCodable
 
 open class YMLoginController: UIViewController, WKNavigationDelegate {
 	open var api = YM.API(client: UrlSessionHttpClient())
-	open var clientId = ""
-	open var clientSecret = ""
+	open var clientId = YM.API.clientID
+	open var clientSecret = YM.API.clientSecret
 	open var info = YMLoginInfo()
 	open var hideOnLogin = false
 	open var tokenBySessionIDQuery = YM.API.TokenBySessionIDQuery()
@@ -29,9 +29,9 @@ open class YMLoginController: UIViewController, WKNavigationDelegate {
 	public init(
 		api: YM.API = YM.API(client: UrlSessionHttpClient()),
 		info: YMLoginInfo = YMLoginInfo(),
-		clientId: String,
-		clientSecret: String,
-		successLogin: @escaping (_ token: String, _ userID: Int) -> Void
+		clientId: String = YM.API.clientID,
+		clientSecret: String = YM.API.clientSecret,
+		successLogin: @escaping (_ token: String, _ userID: Int) -> Void = {_, _ in }
 	) {
 		super.init(nibName: nil, bundle: nil)
 		self.api = api
@@ -70,7 +70,7 @@ open class YMLoginController: UIViewController, WKNavigationDelegate {
 		])
 		webView.navigationDelegate = self
 		webView.backgroundColor = #colorLiteral(red: 0.074509345, green: 0.07451017946, blue: 0.09161251038, alpha: 1)
-//		webView.isOpaque = false
+		//		webView.isOpaque = false
 		webView.scrollView.indicatorStyle = .default
 		
 		let url = try! URLQueryEncoder().encode(info, for: YM.API.passportURL.url)
@@ -78,13 +78,6 @@ open class YMLoginController: UIViewController, WKNavigationDelegate {
 		request.addValue("passport.yandex.com", forHTTPHeaderField: "Host")
 		webView.load(request)
 		webView.allowsBackForwardNavigationGestures = true
-		
-		let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-		let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(self.reload))
-		toolbarItems = [spacer, refresh]
-		
-		navigationController?.isToolbarHidden = toolbarItems?.isEmpty != false
-		navigationController?.setNavigationBarHidden(true, animated: false)
 		view.backgroundColor = .clear
 	}
 	

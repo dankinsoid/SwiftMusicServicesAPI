@@ -65,7 +65,7 @@ extension VK.API {
 				url: baseURL.path("audio").query(from: input),
 				method: .post,
 				body: multipartData(AudioPageRequestBody()),
-				headers: headers()
+				headers: headers(with: [.xRequestedWith: "XMLHttpRequest"])
 		)
 		return output.list
 	}
@@ -98,7 +98,9 @@ extension VK.API {
 	public func list(tracks: [VKAudio] = [], block: String? = nil, next: String? = nil) async throws -> [VKAudio] {
 		if let block = block {
 			if let next = next, !next.isEmpty {
+				print("1")
 				let tr = try await myTracksPageRequest(start_from: next, block: block)
+				print("2", tr.list.count)
 				return try await list(tracks: tracks + tr.list, block: block, next: next == tr.nextOffset ? nil : tr.nextOffset)
 			} else {
 				return tracks

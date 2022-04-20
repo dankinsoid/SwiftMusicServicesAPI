@@ -15,7 +15,7 @@ public enum Spotify {
 
     ///https://developer.spotify.com/documentation/web-api/
     ///https://developer.spotify.com/documentation/ios/quick-start/
-    public struct API: HttpCodablePipelineCollection {
+    public final class API: HttpCodablePipelineCollection {
         public static var baseURL = HttpUrl(host: "api.spotify.com", path: ["v1"])
 
         public var client: HttpClient
@@ -41,7 +41,7 @@ public enum Spotify {
 
         public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: Bool = true) -> [HttpHeaderKey: String] {
             if auth, let token = token {
-                return additionalHeaders.merging([.key(.authorization): "Bearer \(token)"]) { _, s in s }
+                return additionalHeaders.merging([.authorization: "Bearer \(token)"]) { _, s in s }
             } else {
                 return additionalHeaders
             }
