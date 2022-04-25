@@ -11,7 +11,6 @@ extension VK.API {
 
 	public func myTracksPageRequest(start_from: String, block: String) async throws -> VKAudioListSection {
 		let input = MyTracksPageRequestInput(act: .block, block: block, start_from: start_from)
-		try! print(baseURL.path("audio").query(from: input).url.absoluteString)
 		let response = try await rawRequest(
 				executor: client.dataTask,
 				url: baseURL.path("audio").query(from: input),
@@ -19,13 +18,12 @@ extension VK.API {
 				headers: headers(
 					with: [
 						.xRequestedWith: "XMLHttpRequest"
-//						"Referer": baseURL.path("audio").query(from: input).query(["back_url": "/audio", "back_hash": "cd3bcbbfc8e65ca3"]).url.absoluteString
-					]
+					],
+					multipart: true
 				),
-				body: Data("_ajax=1".utf8)
+				body: multipartData(MyTracksPageRequestInputBody())
 		)
 		var string = String(data: response.data, encoding: .utf8) ?? ""
-		print(string)
 		string = string
 				.components(separatedBy: "\"playlist\"")
 				.dropFirst()

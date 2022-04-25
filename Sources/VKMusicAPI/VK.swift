@@ -18,6 +18,7 @@ public struct VK {
 		public var client: HttpClient
 		public var baseURL: HttpUrl
 		public var webCookies: [String: String] = [:]
+		public var boundary = "boundary." + RandomBoundaryGenerator.generate()
 		
 		public init(client: HttpClient, baseURL: HttpUrl = API.baseURL, webCookies: [String: String] = [:]) {
 			self.client = client
@@ -29,23 +30,23 @@ public struct VK {
 			HttpResponseDecoder(decoder: VDJSONDecoder())
 		}
 
-		public func headers(with additional: [HttpHeaderKey: String] = [:], minimum: Bool = false, cookie: Bool = true) -> [HttpHeaderKey: String] {
+		public func headers(with additional: [HttpHeaderKey: String] = [:], multipart: Bool = false, minimum: Bool = false, cookie: Bool = true) -> [HttpHeaderKey: String] {
 			var defaultHeaders: [HttpHeaderKey: String] = [
-				.contentType: "application/x-www-form-urlencoded"
+				.contentType: multipart ? "multipart/form-data; boundary=\(boundary)" : "application/x-www-form-urlencoded"
 			]
 			if !minimum {
 				defaultHeaders.merge([
 					.accept: "*/*",
 					"Origin": baseURL.url.absoluteString,
-					.userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",
-//					.custom("X-Requested-With"): "XMLHttpRequest"
+					.acceptLanguage: "ru-RU;q=1.0, en-RU;q=0.9",
+					.userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15"
 				]) { _, s in
 					s
 				}
 			}
+			
 			if cookie, !webCookies.isEmpty {
 				defaultHeaders["Cookie"] = webCookies.map { "\($0.key)=\($0.value)" }.joined(separator: "; ")
-					//.merge(webCookies.map { (.custom($0.key), $0.value) }) { _, s in s }
 			}
 			return defaultHeaders.merging(additional) { _, s in s }
 		}
@@ -92,11 +93,11 @@ public struct VK {
 								(
 										name: $0.key,
 										filename: nil,
-										mimeType: MIMEType(text: "application/x-www-form-urlencoded"),
+										mimeType: nil,
 										data: $0.value.data(using: .utf8) ?? Data()
 								)
 							},
-							willSeparateBy: RandomBoundaryGenerator.generate()
+							willSeparateBy: boundary
 					).body
 		}
 	}
