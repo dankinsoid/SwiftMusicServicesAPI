@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-music-services-api",
+    name: "SwiftMusicServicesAPI",
     platforms: [
       .macOS("10.15"),
       .iOS("13.0"),
