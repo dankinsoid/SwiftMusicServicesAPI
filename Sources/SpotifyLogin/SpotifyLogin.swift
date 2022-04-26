@@ -172,7 +172,7 @@ public class SpotifyLogin {
 #endif
 
 /// Login error
-public enum LoginError: Error {
+public enum LoginError: Error, CaseIterable {
 	/// Generic error message.
 	case general
 	/// Spotify Login is not fully configured. Use the configuration function.

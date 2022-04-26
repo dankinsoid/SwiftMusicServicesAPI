@@ -16,11 +16,14 @@ extension VK.API {
 		)
 	}
 
-	public struct AudioBlock: HTMLStringInitable {
+	public struct AudioBlock {
 		public var href: String
 		public var block: String
+	}
+}
 
-		public init(htmlString html: String) throws {
+extension VK.API.AudioBlock: HTMLStringInitable {
+	public init(htmlString html: String) throws {
 			let document = try SwiftSoup.parse(html.trimmingCharacters(in: .whitespaces))
 			let key = "Pad__corner al_empty"
 			guard let div = try document.getElementsByClass(key).first(where: { try $0.attr("href").contains("act=block") }) else {
@@ -28,6 +31,5 @@ extension VK.API {
 			}
 			href = try div.attr("href")
 			block = href.components(separatedBy: "block=").dropFirst().first?.components(separatedBy: "&").first ?? ""
-		}
 	}
 }

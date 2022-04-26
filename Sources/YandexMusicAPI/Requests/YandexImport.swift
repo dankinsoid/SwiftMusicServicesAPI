@@ -71,7 +71,7 @@ extension Yandex.Music.API {
 		public var status: RawEnum<Status>
 		public var tracks: [YMO.Track]?
 
-		public enum Status: String, Codable {
+		public enum Status: String, Codable, CaseIterable {
 			case done, inProgress = "in-progress", failure
 		}
 	}
@@ -83,7 +83,7 @@ extension Yandex.Music.Objects {
 		public let success: Bool
 		public var object: T
 
-		public enum CodingKeys: String, CodingKey {
+		public enum CodingKeys: String, CodingKey, CaseIterable {
 			case success
 		}
 

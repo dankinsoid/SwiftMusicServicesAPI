@@ -83,7 +83,7 @@ internal class URLBuilder {
 
 }
 
-internal enum AuthenticationURLType: String {
+internal enum AuthenticationURLType: String, CaseIterable {
     case app = "spotify-action://"
     case web = "https://accounts.spotify.com/"
 }

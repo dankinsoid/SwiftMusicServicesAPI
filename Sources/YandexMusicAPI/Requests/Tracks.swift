@@ -27,7 +27,7 @@ extension Yandex.Music.API {
         public var ids: [Int]
         public var withPositions: Bool = true
 
-        enum CodingKeys: String, CodingKey {
+        enum CodingKeys: String, CodingKey, CaseIterable {
             case ids = "track-ids", withPositions = "with-positions"
         }
 
@@ -90,7 +90,7 @@ extension Yandex.Music.API {
         let from = "mobile"
         let play = false
 
-        private enum CodingKeys: String, CodingKey {
+        private enum CodingKeys: String, CodingKey, CaseIterable {
             case trackId = "track-id", uid, from, play
         }
     }

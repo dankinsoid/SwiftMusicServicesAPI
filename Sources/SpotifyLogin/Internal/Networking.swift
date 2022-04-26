@@ -23,7 +23,7 @@ internal let profileServiceEndpointURL = "https://api.spotify.com/v1/me"
 
 internal struct TokenEndpointResponse: Codable {
 	
-	enum CodingKeys: String, CodingKey {
+	enum CodingKeys: String, CodingKey, CaseIterable {
 		case accessToken = "access_token"
 		case expiresIn = "expires_in"
 		case refreshToken = "refresh_token"
@@ -36,7 +36,7 @@ internal struct TokenEndpointResponse: Codable {
 
 internal struct ProfileEndpointResponse: Codable {
 	
-	enum CodingKeys: String, CodingKey {
+	enum CodingKeys: String, CodingKey, CaseIterable {
 		case identifier = "id"
 	}
 	

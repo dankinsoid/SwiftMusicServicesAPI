@@ -5,7 +5,7 @@
 import Foundation
 import SwiftSoup
 
-public struct VKPlaylistItemHTML: XMLInitable {
+public struct VKPlaylistItemHTML {
 	public var href: String
 	public var act: String? {
 		href.components(separatedBy: "act=").dropFirst().first?.components(separatedBy: "&").first
@@ -16,7 +16,9 @@ public struct VKPlaylistItemHTML: XMLInitable {
 	public var id: Int? {
 		Int(href.components(separatedBy: "audio_playlist").dropFirst().first?.prefix(while: { $0.isNumber }) ?? "")
 	}
+}
 
+extension VKPlaylistItemHTML: XMLInitable {
 	public init(xml: SwiftSoup.Element) throws {
 		let div = xml.child(0)
 		href = try div.select("a").attr("href")
@@ -28,12 +30,5 @@ public struct VKPlaylistItemHTML: XMLInitable {
 		} catch {
 			image = nil
 		}
-	}
-
-	public init(href: String, image: String? = nil, title: String, subtitle: String) {
-		self.href = href
-		self.image = image
-		self.title = title
-		self.subtitle = subtitle
 	}
 }

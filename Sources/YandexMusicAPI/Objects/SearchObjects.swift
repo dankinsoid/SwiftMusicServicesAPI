@@ -11,7 +11,7 @@ import VDCodable
 
 extension Yandex.Music.Objects {
     
-    public enum SearchType: String, Codable {
+    public enum SearchType: String, Codable, CaseIterable {
         case all, track, playlist, album, artist //(трек, плейлист, альбом, исполнитель)
     }
     
@@ -182,7 +182,7 @@ extension Yandex.Music.Objects {
         public let verified: Bool?
     }
     
-    public enum Region: String, Codable {
+    public enum Region: String, Codable, CaseIterable {
         case russia = "RUSSIA"
         case russiaPremium = "RUSSIA_PREMIUM"
     }
@@ -200,7 +200,7 @@ extension Yandex.Music.Objects {
         public let direct: Bool?
     }
 
-    public enum Codec: String, Codable {
+    public enum Codec: String, Codable, CaseIterable {
         case mp3, aac
     }
 }

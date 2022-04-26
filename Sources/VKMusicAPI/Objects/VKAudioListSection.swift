@@ -13,7 +13,9 @@ public struct VKAudioListSection: Codable, HTMLStringInitable {
 	public var totalCount: Int
 	public var editHash: String?
 	public var nextOffset: String?
-	
+}
+
+extension VKAudioListSection {
 	public init(htmlString html: String) throws {
 		let html = html.replacingOccurrences(of: "<!--", with: "")
 		let jsc = html.components(separatedBy: "<!json>")
@@ -28,13 +30,6 @@ public struct VKAudioListSection: Codable, HTMLStringInitable {
 			let decoder = VDJSONDecoder()
 			self = try decoder.decode(VKAudioListSection.self, json: json)
 		}
-	}
-	
-	public init(list: [VKAudio], totalCount: Int, editHash: String? = nil, nextOffset: String? = nil) {
-		self.list = list
-		self.totalCount = totalCount
-		self.editHash = editHash
-		self.nextOffset = nextOffset
 	}
 }
 

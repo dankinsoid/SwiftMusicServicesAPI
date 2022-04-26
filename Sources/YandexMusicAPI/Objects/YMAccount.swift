@@ -11,16 +11,16 @@ import Foundation
 extension YMO {
     
     public struct AccountStatus: Codable {
-        public let subeditorLevel: Int?
-        public let account: Account
-        public let permissions: Permissions?
-        public let barBelow: BarBelow?
-        public let defaultEmail: String?
-        public let plus: Plus?
-        public let subeditor: Bool?
-        public let subscription: Subscription
+        public var subeditorLevel: Int?
+        public var account: Account
+        public var permissions: Permissions?
+        public var barBelow: BarBelow?
+        public var defaultEmail: String?
+        public var plus: Plus?
+        public var subeditor: Bool?
+        public var subscription: Subscription
         
-        enum CodingKeys: String, CodingKey {
+        enum CodingKeys: String, CodingKey, CaseIterable {
             case subeditorLevel, account, permissions
             case barBelow = "bar-below"
             case defaultEmail, plus, subeditor, subscription
@@ -28,21 +28,21 @@ extension YMO {
     }
     
     public struct Account: Codable {
-        public let displayName: String
-        public let birthday: String?
-        public let secondName: String?
-        public let fullName: String?
-        public let region: Int?
-        public let registeredAt: Date?
-        public let serviceAvailable: Bool?
-        public let firstName: String?
-        public let now: Date?
-        public let passportPhones: [PassportPhone]?
-        public let hostedUser: Bool?
-        public let uid: Int
-        public let login: String?
+        public var displayName: String
+        public var birthday: String?
+        public var secondName: String?
+        public var fullName: String?
+        public var region: Int?
+        public var registeredAt: Date?
+        public var serviceAvailable: Bool?
+        public var firstName: String?
+        public var now: Date?
+        public var passportPhones: [PassportPhone]?
+        public var hostedUser: Bool?
+        public var uid: Int
+        public var login: String?
         
-        enum CodingKeys: String, CodingKey {
+        enum CodingKeys: String, CodingKey, CaseIterable {
             case displayName, birthday, secondName, fullName, region, registeredAt, serviceAvailable, firstName, now
             case passportPhones = "passport-phones"
             case hostedUser, uid, login
@@ -50,76 +50,76 @@ extension YMO {
     }
     
     public struct PassportPhone: Codable {
-        public let phone: String?
+        public var phone: String?
     }
     
     public struct BarBelow: Codable {
-        public let bgColor: HEXColor?
-        public let textColor: HEXColor?
-        public let text: String?
-        public let button: Button?
+        public var bgColor: HEXColor?
+        public var textColor: HEXColor?
+        public var text: String?
+        public var button: Button?
     }
     
     public struct Button: Codable {
-        public let bgColor: HEXColor?
-        public let textColor: HEXColor?
-        public let text: String?
-        public let uri: String?
+        public var bgColor: HEXColor?
+        public var textColor: HEXColor?
+        public var text: String?
+        public var uri: String?
     }
     
     // MARK: - Permissions
     public struct Permissions: Codable {
-        public let `default`, values: [String]?
-        public let until: Date?
+        public var `default`, values: [String]?
+        public var until: Date?
 
     }
     
     // MARK: - Plus
     public struct Plus: Codable {
-        public let hasPlus: Bool
-        public let isTutorialCompleted: Bool?
+        public var hasPlus: Bool
+        public var isTutorialCompleted: Bool?
     }
     
     // MARK: - Subscription
     public struct Subscription: Codable {
-        public let canStartTrial: Bool
-        public let nonAutoRenewableRemainder: NonAutoRenewableRemainder?
-        public let mcdonalds: Bool?
-        public let autoRenewable: [AutoRenewable]?
+        public var canStartTrial: Bool
+        public var nonAutoRenewableRemainder: NonAutoRenewableRemainder?
+        public var mcdonalds: Bool?
+        public var autoRenewable: [AutoRenewable]?
     }
     
     // MARK: - AutoRenewable
     public struct AutoRenewable: Codable {
-        public let productId: String
-        public let expires: Date?
-        public let finished: Bool?
-        public let vendorHelpUrl: String?
-        public let vendor: String?
-        public let product: Product
-        public let orderId: Int?
+        public var productId: String
+        public var expires: Date?
+        public var finished: Bool?
+        public var vendorHelpUrl: String?
+        public var vendor: String?
+        public var product: Product
+        public var orderId: Int?
     }
     
     // MARK: - Product
     public struct Product: Codable {
-        public let features: [String]?
-        public let trialDuration: Int?
-        public let productId: String
-        public let plus: Bool?
-        public let feature, trialPeriodDuration, type, commonPeriodDuration: String?
-        public let duration: Int?
-        public let debug: Bool?
-        public let price: Price
+        public var features: [String]?
+        public var trialDuration: Int?
+        public var productId: String
+        public var plus: Bool?
+        public var feature, trialPeriodDuration, type, commonPeriodDuration: String?
+        public var duration: Int?
+        public var debug: Bool?
+        public var price: Price
     }
     
     // MARK: - Price
     public struct Price: Codable {
-        public let amount: Int
-        public let currency: String?
+        public var amount: Int
+        public var currency: String?
     }
     
     // MARK: - NonAutoRenewableRemainder
     public struct NonAutoRenewableRemainder: Codable {
-        public let days: Int?
+        public var days: Int?
     }
     
     public struct HEXColor: Codable {
@@ -150,7 +150,7 @@ extension YMO {
         }
     }
 
-    private enum ScanError: Error {
+    private enum ScanError: Error, CaseIterable {
         case cannotScanColor
     }
 }

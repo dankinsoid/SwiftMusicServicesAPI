@@ -37,7 +37,7 @@ extension Yandex.Music.API {
             self.playlistInBest = playlistInBest
         }
 
-        public enum CodingKeys: String, CodingKey {
+        public enum CodingKeys: String, CodingKey, CaseIterable {
             case text, nocorrect, type, page, playlistInBest = "playlist-in-best"
         }
     }

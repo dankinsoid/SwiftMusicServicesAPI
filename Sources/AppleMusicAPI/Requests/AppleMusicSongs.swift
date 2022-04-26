@@ -53,7 +53,7 @@ extension AppleMusic.API {
 	public struct SongsByISRCInput: Encodable {
 		public var isrcs: [String]
 
-		private enum CodingKeys: String, CodingKey {
+		private enum CodingKeys: String, CodingKey, CaseIterable {
 			case isrcs = "filter[isrc]"
 		}
 	}

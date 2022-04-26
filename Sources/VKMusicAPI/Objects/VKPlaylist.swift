@@ -16,15 +16,4 @@ public struct VKPlaylist: Codable, Identifiable, Hashable {
 	public var tracks: [VKAudio]?
 	public var hash: String
 	public var editHash: String?
-	
-	public init(id: Int, owner: Int, name: String, artist: String? = nil, imageURL: URL? = nil, tracks: [VKAudio], hash: String, editHash: String? = nil) {
-		self.id = id
-		self.owner = owner
-		self.name = name
-		self.artist = artist
-		self.imageURL = imageURL
-		self.tracks = tracks
-		self.hash = hash
-		self.editHash = editHash
-	}
 }

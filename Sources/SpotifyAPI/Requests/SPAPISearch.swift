@@ -54,7 +54,7 @@ extension Spotify.API {
 		public var offset: Int?
 		public var includeExternal: External?
 
-		public enum External: String, Codable {
+		public enum External: String, Codable, CaseIterable {
 			case audio
 		}
 
@@ -99,7 +99,9 @@ public struct SPQuery: Encodable {
 			}
 			return result//.replacingOccurrences(of: " ", with: "%20")
     }
-  
+}
+
+extension SPQuery {
 	public subscript(_ key: FieldFilters) -> String? {
 		get { filters[key] }
 		set { filters[key] = newValue }
@@ -120,7 +122,7 @@ public struct SPQuery: Encodable {
 			try value.encode(to: encoder)
     }
     
-    public enum FieldFilters: String, Codable, Hashable {
+    public enum FieldFilters: String, Codable, Hashable, CaseIterable {
         case album, artist, track, year, genre, isrc, upc
     }
 }

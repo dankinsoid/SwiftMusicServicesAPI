@@ -43,21 +43,23 @@ extension VK.API {
 		public var _ajax = 1
 	}
 
-	public struct MyTracksPageRequestInputOutput: Decodable {
+	public struct MyTracksPageRequestInputOutput {
 		public var playlist: VKAudioListSection
+	}
+}
 
-		public init(from decoder: Decoder) throws {
-			let container = try decoder.container(keyedBy: PlainCodingKey.self)
-			var unkeyed = try container.nestedUnkeyedContainer(forKey: "data")
-			let keyed = try unkeyed.nestedContainer(keyedBy: PlainCodingKey.self)
-			do {
-				playlist = try keyed.decode(VKAudioListSection.self, forKey: "playlist")
-			} catch {
-				guard let playlists = try keyed.decode([VKAudioListSection].self, forKey: "playlists").first else {
-					throw HttpError.invalidResponse
-				}
-				self.playlist = playlists
+extension VK.API.MyTracksPageRequestInputOutput: Decodable {
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: PlainCodingKey.self)
+		var unkeyed = try container.nestedUnkeyedContainer(forKey: "data")
+		let keyed = try unkeyed.nestedContainer(keyedBy: PlainCodingKey.self)
+		do {
+			playlist = try keyed.decode(VKAudioListSection.self, forKey: "playlist")
+		} catch {
+			guard let playlists = try keyed.decode([VKAudioListSection].self, forKey: "playlists").first else {
+				throw HttpError.invalidResponse
 			}
+			self.playlist = playlists
 		}
 	}
 }

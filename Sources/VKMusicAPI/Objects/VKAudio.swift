@@ -11,7 +11,7 @@ import VDCodable
 import HTMLEntities
 import SimpleCoders
 
-public struct VKAudio: Codable, Hashable, Identifiable {
+public struct VKAudio: Encodable, Hashable, Identifiable {
 	public var id: Int
 	public var ownerId: Int?
 	public var title: String
@@ -21,19 +21,14 @@ public struct VKAudio: Codable, Hashable, Identifiable {
 	public var ids: String?
 	public var addHash: String?
 	public var trackCode: String?
+
 	
-	public init(id: Int, ownerId: Int? = nil, title: String, artist: String, duration: Int, imageURL: URL? = nil, ids: String? = nil, addHash: String? = nil, trackCode: String? = nil) {
-		self.id = id
-		self.ownerId = ownerId
-		self.title = title
-		self.artist = artist
-		self.duration = duration
-		self.imageURL = imageURL
-		self.ids = ids
-		self.addHash = addHash
-		self.trackCode = trackCode
+	public static func ==(_ lhs: VKAudio, _ rhs: VKAudio) -> Bool {
+		return lhs.id == rhs.id
 	}
-	
+}
+
+extension VKAudio: Decodable {
 	public init(from decoder: Decoder) throws {
 		do {
 			var container = try decoder.unkeyedContainer()
@@ -75,10 +70,6 @@ public struct VKAudio: Codable, Hashable, Identifiable {
 			trackCode = try container.decodeIfPresent(String.self, forKey: .trackCode)
 			addHash = try container.decodeIfPresent(String.self, forKey: .addHash)
 		}
-	}
-	
-	public static func ==(_ lhs: VKAudio, _ rhs: VKAudio) -> Bool {
-		return lhs.id == rhs.id
 	}
 }
 

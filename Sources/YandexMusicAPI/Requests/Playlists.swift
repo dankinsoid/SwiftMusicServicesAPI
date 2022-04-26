@@ -24,7 +24,7 @@ extension Yandex.Music.API {
         public let richTracks = false
         public let mixed = true
 
-        private enum CodingKeys: String, CodingKey {
+        private enum CodingKeys: String, CodingKey, CaseIterable {
             case kinds, richTracks = "rich-tracks", mixed
         }
 

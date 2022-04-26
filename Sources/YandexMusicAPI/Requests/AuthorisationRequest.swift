@@ -44,7 +44,7 @@ extension Yandex.Music.API {
 		public let uid: Int?
 	}
 	
-	public enum GrantType: String, Codable {
+	public enum GrantType: String, Codable, CaseIterable {
 		case password, authorization_code, sessionid, x_token = "x-token"
 	}
 }

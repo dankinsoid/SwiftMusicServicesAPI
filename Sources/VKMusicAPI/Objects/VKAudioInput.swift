@@ -43,52 +43,15 @@ public struct VKAudioInput: Encodable {
 	public var __query: String?
 	public var _ref: String?
 	
-	public enum CodingKeys: String, CodingKey {
+	public enum CodingKeys: String, CodingKey, CaseIterable {
 		case accessHash = "access_hash", statusCode = "Status Code", formData = "Form Data", playlistId = "playlist_id", ownerId = "owner_id", al, claim, offset, type, section, fromId = "from_id", isLoadingAll = "is_loading_all", q, isLayer = "is_layer", sectionId = "section_id", hash, audioId = "audio_id", trackCode = "track_code", groupId = "group_id", ids, audios = "Audios", cover, description, noDiscover = "no_discover", title, alId = "al_id", __query, audioOwnerId = "audio_owner_id", addPlIds = "add_pl_ids", removePlIds = "remove_pl_ids", from, playlistOwnerId = "playlist_owner_id", doAdd = "do_add"
 	}
 	
-	public enum ActType: String, Codable {
+	public enum ActType: String, Codable, CaseIterable {
 		case playlist, playlists
 	}
 	
-	public enum Section: String, Codable {
+	public enum Section: String, Codable, CaseIterable {
 		case playlists, search
-	}
-	
-	public init(accessHash: String? = nil, hash: String? = nil, statusCode: Int? = 200, formData: String? = "", al: Int = 1, claim: Int? = 0, isLayer: Int? = nil, offset: Int? = nil, alId: Int? = nil, ownerId: Int? = nil, fromId: Int? = nil, playlistId: Int? = nil, playlistOwnerId: Int? = nil, addPlIds: Int? = nil, removePlIds: String? = nil, isLoadingAll: Int? = nil, type: VKAudioInput.ActType? = .playlist, section: VKAudioInput.Section? = nil, sectionId: String? = nil, q: String? = nil, audioId: Int? = nil, audioOwnerId: Int? = nil, trackCode: String? = nil, groupId: Int? = nil, doAdd: Int? = nil, ids: [String]? = nil, audios: [String]? = nil, cover: Int? = nil, title: String? = nil, description: String? = nil, noDiscover: Int? = nil, from: String? = nil, __query: String? = nil, _ref: String? = nil) {
-		self.accessHash = accessHash
-		self.hash = hash
-		self.statusCode = statusCode
-		self.formData = formData
-		self.al = al
-		self.claim = claim
-		self.isLayer = isLayer
-		self.offset = offset
-		self.alId = alId
-		self.ownerId = ownerId
-		self.fromId = fromId
-		self.playlistId = playlistId
-		self.playlistOwnerId = playlistOwnerId
-		self.addPlIds = addPlIds
-		self.removePlIds = removePlIds
-		self.isLoadingAll = isLoadingAll
-		self.type = type
-		self.section = section
-		self.sectionId = sectionId
-		self.q = q
-		self.audioId = audioId
-		self.audioOwnerId = audioOwnerId
-		self.trackCode = trackCode
-		self.groupId = groupId
-		self.doAdd = doAdd
-		self.ids = ids
-		self.audios = audios
-		self.cover = cover
-		self.title = title
-		self.description = description
-		self.noDiscover = noDiscover
-		self.from = from
-		self.__query = __query
-		self._ref = _ref
 	}
 }

@@ -9,17 +9,11 @@ public struct VKAudioPageInput: Codable {
 	public var block: Block?
 	public var z: String?
 
-	public init(section: Section? = nil, block: Block? = nil, z: String? = nil) {
-		self.section = section
-		self.block = block
-		self.z = z
-	}
-
-	public enum Section: String, Codable {
+	public enum Section: String, Codable, CaseIterable {
 		case my, all
 	}
 
-	public enum Block: String, Codable {
+	public enum Block: String, Codable, CaseIterable {
 		case my_playlists
 	}
 }

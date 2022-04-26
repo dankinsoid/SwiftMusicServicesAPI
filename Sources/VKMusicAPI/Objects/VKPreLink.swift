@@ -10,17 +10,15 @@ import VDCodable
 
 public struct PreLink: Codable, HTMLStringInitable {
 	public let value: String
-	
+}
+
+extension PreLink {
 	public init(htmlString html: String) throws {
 		let json = try JSON(from: Data(html.replacingOccurrences(of: "<!--", with: "").utf8))
 		guard let v = json.payload.deepFind(where: { $0.string?.hasPrefix("https://vk.com/mp3/audio_api_unavailable") == true })?.string, !v.isEmpty else {
 			throw Er(json: json)
 		}
 		value = v
-	}
-	
-	public init(value: String) {
-		self.value = value
 	}
 	
 	struct Er: Error {

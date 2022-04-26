@@ -18,7 +18,7 @@ extension AppleMusic.Objects {
 			case .libraryPlaylists:     return .libraryPlaylists
 			}
 		}
-		enum CodingKeys: String, CodingKey {
+		enum CodingKeys: String, CodingKey, CaseIterable {
 			case attributes, id, type, href
 		}
 
@@ -62,6 +62,13 @@ extension AppleMusic.Objects {
 		}
 
 		public struct Item<T: Codable>: Codable {
+			public init(attributes: T, id: String, type: AppleMusic.TrackType, href: String) {
+				self.attributes = attributes
+				self.id = id
+				self.type = type
+				self.href = href
+			}
+			
 			public var attributes: T
 			public var id: String
 			public var type: AppleMusic.TrackType
@@ -69,7 +76,13 @@ extension AppleMusic.Objects {
 		}
 	}
 
-	public struct Song: Codable {}
-	public struct MusicVideo: Codable {}
-	public struct Playlist: Codable {}
+	public struct Song: Codable {
+		public init() {}
+	}
+	public struct MusicVideo: Codable {
+		public init() {}
+	}
+	public struct Playlist: Codable {
+		public init() {}
+	}
 }

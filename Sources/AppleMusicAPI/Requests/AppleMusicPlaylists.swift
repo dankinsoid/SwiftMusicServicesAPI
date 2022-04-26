@@ -25,8 +25,8 @@ extension AppleMusic.API {
 	}
 
 	public struct AddPlaylistInput: Encodable {
-		var attributes: Attributes
-		var relationships: Relationships
+		public var attributes: Attributes
+		public var relationships: Relationships
 
 		public init(name: String, description: String, tracks: [AppleMusic.Objects.ShortItem]) {
 			attributes = Attributes(name: name, description: description)
@@ -38,13 +38,18 @@ extension AppleMusic.API {
 			relationships = Relationships(tracks: .init(data: trackIDs.map({ AppleMusic.Objects.ShortItem(id: $0, type: .songs) })))
 		}
 
-		struct Relationships: Codable {
-			var tracks: AppleMusic.Objects.Response<AppleMusic.Objects.ShortItem>
+		public init(attributes: AppleMusic.API.AddPlaylistInput.Attributes, relationships: AppleMusic.API.AddPlaylistInput.Relationships) {
+			self.attributes = attributes
+			self.relationships = relationships
+		}
+		
+		public struct Relationships: Codable {
+			public var tracks: AppleMusic.Objects.Response<AppleMusic.Objects.ShortItem>
 		}
 
-		struct Attributes: Encodable {
-			var name: String
-			var description: String
+		public struct Attributes: Encodable {
+			public var name: String
+			public var description: String
 		}
 	}
 }

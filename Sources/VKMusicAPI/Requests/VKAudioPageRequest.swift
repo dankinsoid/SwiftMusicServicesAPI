@@ -30,28 +30,26 @@ extension VK.API {
 		)
 	}
 	
-	public struct AudioFirstPageRequestOutput: HTMLStringInitable, Codable, Hashable {
+	public struct AudioFirstPageRequestOutput: Codable, Hashable {
 		public var tracks: [VKAudio]
 		public var next: String?
-		
-		public init(htmlString html: String) throws {
-			let document = try SwiftSoup.parse(html.trimmingCharacters(in: .whitespaces))
-			let div = try document.getElementsByAttributeValueStarting("class", "AudioPlaylistRoot").first()?.children() ?? Elements()
-			tracks = try div.map { try VKAudio(xml: $0) }
-			do {
-				next = try document.getElementsByClass("show_more AudioSection__showMore--my_audios_block")
-					.first()?
-					.attr("href")
-					.components(separatedBy: "start_from=")
-					.last
-			} catch {
-				next = nil
-			}
-		}
-		
-		public init(tracks: [VKAudio], next: String? = nil) {
-			self.tracks = tracks
-			self.next = next
+	}
+}
+
+extension VK.API.AudioFirstPageRequestOutput: HTMLStringInitable {
+	
+	public init(htmlString html: String) throws {
+		let document = try SwiftSoup.parse(html.trimmingCharacters(in: .whitespaces))
+		let div = try document.getElementsByAttributeValueStarting("class", "AudioPlaylistRoot").first()?.children() ?? Elements()
+		tracks = try div.map { try VKAudio(xml: $0) }
+		do {
+			next = try document.getElementsByClass("show_more AudioSection__showMore--my_audios_block")
+				.first()?
+				.attr("href")
+				.components(separatedBy: "start_from=")
+				.last
+		} catch {
+			next = nil
 		}
 	}
 }
@@ -80,16 +78,18 @@ extension VK.API {
 		public var _ajax = 1
 	}
 	
-	public struct AudioPageRequestOutput: Decodable {
+	public struct AudioPageRequestOutput {
 		public var list: [VKAudio]
-		
-		public init(from decoder: Decoder) throws {
-			let container = try decoder.container(keyedBy: PlainCodingKey.self)
-			var unkeyed = try container.nestedUnkeyedContainer(forKey: "data")
-			_ = try unkeyed.decode(JSON.self)
-			_ = try unkeyed.decode(JSON.self)
-			list = try unkeyed.decode([VKAudio].self)
-		}
+	}
+}
+
+extension VK.API.AudioPageRequestOutput: Decodable {
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: PlainCodingKey.self)
+		var unkeyed = try container.nestedUnkeyedContainer(forKey: "data")
+		_ = try unkeyed.decode(JSON.self)
+		_ = try unkeyed.decode(JSON.self)
+		list = try unkeyed.decode([VKAudio].self)
 	}
 }
 

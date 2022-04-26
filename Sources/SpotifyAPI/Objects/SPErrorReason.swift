@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum SPErrorReason: String, Error, Codable {
+public enum SPErrorReason: String, Error, Codable, CaseIterable {
     ///The command requires a previous track, but there is none in the context.
     case NO_PREV_TRACK
     ///The command requires a next track, but there is none in the context.

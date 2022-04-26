@@ -1,0 +1,34 @@
+<%_ for imports in Set(types.all.flatMap({ $0.allImports })) { -%>
+import <%= imports %>
+<%_ } -%>
+<%
+extension Variable {
+  var fullTypeName: String {
+      return "\(typeName)"
+    if let type = type, !type.isGeneric, type.name != "Array" { 
+      var result = type.name
+      result += (isOptional ? "?" : "")
+      return result
+    } else {
+      return "\(typeName)"
+    }
+  }
+}
+%>
+<%_ for type in types.all where (type is Struct) && !type.storedVariables.isEmpty && type.accessLevel == "public" && type.initializers.filter({ $0.accessLevel == "public" }).isEmpty { -%>
+extension <%= type.name %> {
+
+  public static func publicInit(
+    <%_ for (i, variable) in type.storedVariables.enumerated() { -%>
+    <%= variable.name %>: <%= variable.fullTypeName %><%_ if let value = variable.defaultValue { -%> = <%= value %><%_ } else if variable.isOptional { -%> = nil<%_ } -%><%_ if i < type.storedVariables.count - 1 { -%>,<%_ } -%> 
+    <%_ } -%>
+  ) -> Self {
+    .init(
+      <%_ for (i, variable) in type.storedVariables.enumerated() { -%>
+      <%= variable.name.trimmingCharacters(in: CharacterSet(charactersIn: "`")) %>: <%= variable.name %><%_ if i < type.storedVariables.count - 1 { -%>,<%_ } -%>   
+      <%_ } -%>
+    )
+  }  
+}
+
+<%_ } -%>

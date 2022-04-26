@@ -13,6 +13,11 @@ public protocol AppleMusicPageResponse {
 extension AppleMusic.Objects {
 
 	public struct Response<T: Decodable>: Decodable, AppleMusicPageResponse {
+		public init(data: [T], next: String? = nil) {
+			self.data = data
+			self.next = next
+		}
+		
 		public var data: [T]
 		public var next: String?
 	}
@@ -28,6 +33,14 @@ extension AppleMusic.Objects {
 	}
 
 	public struct Item: Codable {
+		public init(attributes: AppleMusic.Objects.Attributes? = nil, relationships: AppleMusic.Objects.Relationships? = nil, id: String, type: AppleMusic.TrackType, href: String? = nil) {
+			self.attributes = attributes
+			self.relationships = relationships
+			self.id = id
+			self.type = type
+			self.href = href
+		}
+		
 		public var attributes: Attributes?
 		public var relationships: Relationships?
 		public var id: String
@@ -36,11 +49,34 @@ extension AppleMusic.Objects {
 	}
 
 	public struct ShortItem: Codable {
+		public init(id: String, type: AppleMusic.TrackType) {
+			self.id = id
+			self.type = type
+		}
+		
 		public var id: String
 		public var type: AppleMusic.TrackType
 	}
 
 	public struct Attributes: Codable {
+		public init(name: String, artistName: String? = nil, genreNames: [String]? = nil, albumName: String? = nil, durationInMillis: Int? = nil, releaseDate: String? = nil, dateAdded: String? = nil, playParams: AppleMusic.Objects.PlayParams? = nil, trackNumber: Int? = nil, artwork: AppleMusic.Objects.Artwork? = nil, canEdit: Bool? = nil, hasCatalog: Bool? = nil, description: AppleMusic.Objects.Description? = nil, previews: [AppleMusic.Objects.Url]? = nil, isrc: String? = nil) {
+			self.name = name
+			self.artistName = artistName
+			self.genreNames = genreNames
+			self.albumName = albumName
+			self.durationInMillis = durationInMillis
+			self.releaseDate = releaseDate
+			self.dateAdded = dateAdded
+			self.playParams = playParams
+			self.trackNumber = trackNumber
+			self.artwork = artwork
+			self.canEdit = canEdit
+			self.hasCatalog = hasCatalog
+			self.description = description
+			self.previews = previews
+			self.isrc = isrc
+		}
+		
 		public var name: String
 		public var artistName: String?
 		public var genreNames: [String]?
@@ -59,23 +95,45 @@ extension AppleMusic.Objects {
 	}
 
 	public struct Relationships: Codable {
+		public init(tracks: AppleMusic.Objects.TracksRelationship? = nil, catalog: AppleMusic.Objects.Response<AppleMusic.Objects.Item>? = nil) {
+			self.tracks = tracks
+			self.catalog = catalog
+		}
+		
 		public var tracks: TracksRelationship?
 		public var catalog: Response<Item>?
 	}
 
-	public enum Include: String, Codable {
+	public enum Include: String, Codable, CaseIterable {
 		case catalog, tracks
 	}
 
 	public struct TracksRelationship: Codable {
+		public init(data: [AppleMusic.Objects.Item]) {
+			self.data = data
+		}
+		
 		public var data: [Item]
 	}
 
 	public struct Url: Codable {
+		public init(url: String? = nil) {
+			self.url = url
+		}
+		
 		public var url: String?
 	}
 
 	public struct PlayParams: Codable {
+		public init(id: String, isLibrary: Bool? = nil, kind: String? = nil, reporting: Bool? = nil, purchasedId: String? = nil, catalogId: String? = nil) {
+			self.id = id
+			self.isLibrary = isLibrary
+			self.kind = kind
+			self.reporting = reporting
+			self.purchasedId = purchasedId
+			self.catalogId = catalogId
+		}
+		
 		public var id: String
 		public var isLibrary: Bool?
 		public var kind: String?
@@ -85,13 +143,24 @@ extension AppleMusic.Objects {
 	}
 
 	public struct Description: Codable {
+		public init(standard: String? = nil) {
+			self.standard = standard
+		}
+		
 		public var standard: String?
 	}
 
 	public struct SongRelationship: Codable {
+		public init() {}
 	}
 
 	public struct Artwork: Codable {
+		public init(width: Int? = nil, height: Int? = nil, url: String) {
+			self.width = width
+			self.height = height
+			self.url = url
+		}
+		
 		public var width: Int?
 		public var height: Int?
 		private var url: String
