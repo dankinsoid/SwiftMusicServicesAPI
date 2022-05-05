@@ -48,7 +48,6 @@ let package = Package(
     dependencies: [
       .package(url: "https://github.com/dankinsoid/swift-http", from: "1.2.2"),
       .package(url: "https://github.com/dankinsoid/VDCodable", from: "2.10.0"),
-			.package(url: "https://github.com/Kitura/swift-html-entities.git", from: "3.0.0"),
 			.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
 			.package(url: "https://github.com/dankinsoid/MultipartFormDataKit.git", from: "1.0.2"),
 			.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0")
@@ -81,7 +80,6 @@ let package = Package(
 					name: "VKMusicAPI",
 					dependencies: [
 						.target(name: "SwiftMusicServicesApi"),
-						.product(name: "HTMLEntities", package: "swift-html-entities"),
 						"SwiftSoup",
 						"MultipartFormDataKit"
 					]

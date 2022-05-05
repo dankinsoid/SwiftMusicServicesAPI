@@ -4,7 +4,6 @@
 import VDCodable
 import SwiftSoup
 import MultipartFormDataKit
-import HTMLEntities
 import SwiftMusicServicesApi
 import SimpleCoders
 import Foundation

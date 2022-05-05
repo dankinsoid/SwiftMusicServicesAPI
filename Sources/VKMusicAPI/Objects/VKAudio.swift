@@ -8,7 +8,6 @@
 import Foundation
 import SwiftSoup
 import VDCodable
-import HTMLEntities
 import SimpleCoders
 
 public struct VKAudio: Encodable, Hashable, Identifiable {
@@ -39,8 +38,8 @@ extension VKAudio: Decodable {
 			for _ in 2..<3 {
 				_ = try container.decode(JSON.self)
 			}
-			title = try container.decode(String.self).htmlUnescape()
-			artist = try container.decode(String.self).htmlUnescape()
+			title = try Entities.unescape(container.decode(String.self))
+			artist = try Entities.unescape(container.decode(String.self))
 			duration = try container.decode(Int.self)
 			for _ in 6..<13 {
 				_ = try container.decode(JSON.self)
