@@ -46,7 +46,6 @@ let package = Package(
 			),
 		],
     dependencies: [
-      .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.1"),
       .package(url: "https://github.com/dankinsoid/swift-http", from: "1.2.2"),
       .package(url: "https://github.com/dankinsoid/VDCodable", from: "2.10.0"),
 			.package(url: "https://github.com/Kitura/swift-html-entities.git", from: "3.0.0"),
@@ -58,7 +57,6 @@ let package = Package(
       .target(
           name: "SwiftMusicServicesApi",
           dependencies: [
-            .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
             .product(name: "SwiftHttp", package: "swift-http"),
             .product(name: "VDCodable", package: "VDCodable")
           ]

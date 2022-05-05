@@ -5,7 +5,6 @@ import Foundation
 import SwiftMusicServicesApi
 import SwiftHttp
 import VDCodable
-import AsyncAlgorithms
 
 extension SPAlbum {
 

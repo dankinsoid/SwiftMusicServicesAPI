@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import AsyncAlgorithms
 
 extension AsyncSequence where Element: Collection {
 

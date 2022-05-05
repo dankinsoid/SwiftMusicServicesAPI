@@ -8,7 +8,6 @@
 
 import Foundation
 import SwiftHttp
-import AsyncAlgorithms
 
 public protocol SpotifyPaging {
     associatedtype NextParameter
