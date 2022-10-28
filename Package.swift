@@ -6,10 +6,10 @@ import PackageDescription
 let package = Package(
     name: "SwiftMusicServicesAPI",
     platforms: [
-        .macOS("10.15"),
-        .iOS("13.0"),
-        .tvOS("13.0"),
-        .watchOS("6.0")
+        .macOS(.v10_15),
+        .iOS(.v13),
+        .tvOS(.v13),
+        .watchOS(.v6)
     ],
     products: [
         .library(
@@ -87,10 +87,6 @@ let package = Package(
         .target(
             name: "VKLogin",
             dependencies: [.target(name: "VKMusicAPI")]
-        ),
-        .testTarget(
-            name: "SwiftMusicServicesApiTests",
-            dependencies: ["SwiftMusicServicesApi"]
         ),
         .target(
             name: "AppleMusicAPI",
