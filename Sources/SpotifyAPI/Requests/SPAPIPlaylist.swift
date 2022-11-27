@@ -13,8 +13,8 @@ extension Spotify.API {
     
     ///https://developer.spotify.com/documentation/web-api/reference/playlists/get-a-list-of-current-users-playlists/
     public func playlists(
-        limit: Int? = nil,
-        offset: Int? = nil
+        limit: Int? = 50,
+        offset: Int? = 0
     ) throws -> AsyncThrowingStream<[SPPlaylistSimplified], Error>  {
         try pagingRequest(
             output: SPPaging<SPPlaylistSimplified>.self,
@@ -35,7 +35,24 @@ extension Spotify.API {
             self.offset = offset
         }
     }
-
+    
+    ///https://developer.spotify.com/console/get-playlist-tracks/
+    public func playlistTracks(
+        id: String,
+        limit: Int? = 100,
+        offset: Int? = 0,
+        market: String? = nil
+    ) throws -> AsyncThrowingStream<[SPPlaylistTrack], Error>  {
+        try pagingRequest(
+            output: SPPaging<SPPlaylistTrack>.self,
+            executor: client.dataTask,
+            url: baseURL.path("playlists", id, "tracks").query(from: SavedInput(limit: limit, offset: offset, market: market)),
+            method: .get,
+            parameters: (),
+            headers: headers()
+        )
+    }
+    
     public func playlist(
         id: String,
         input: PlaylistInput
