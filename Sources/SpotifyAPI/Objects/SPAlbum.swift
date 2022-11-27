@@ -37,4 +37,26 @@ public struct SPAlbum: Codable {
    public var type: String?
    ///The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the album.
    public var uri: String
+
+    public init(albumType: String? = nil, artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, copyrights: [SPCopyright]? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, genres: [String]? = nil, href: String? = nil, id: String, images: [SPImage]? = nil, label: String? = nil, name: String, popularity: Int? = nil, releaseDate: String? = nil, releaseDatePrecision: String? = nil, restrictions: SPRestrictions? = nil, tracks: [SPTrack]? = nil, type: String? = nil, uri: String) {
+        self.albumType = albumType
+        self.artists = artists
+        self.availableMarkets = availableMarkets
+        self.copyrights = copyrights
+        self.externalIds = externalIds
+        self.externalUrls = externalUrls
+        self.genres = genres
+        self.href = href
+        self.id = id
+        self.images = images
+        self.label = label
+        self.name = name
+        self.popularity = popularity
+        self.releaseDate = releaseDate
+        self.releaseDatePrecision = releaseDatePrecision
+        self.restrictions = restrictions
+        self.tracks = tracks
+        self.type = type
+        self.uri = uri
+    }
 }

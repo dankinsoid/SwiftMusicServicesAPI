@@ -13,7 +13,6 @@ extension Spotify.API {
     
     ///https://developer.spotify.com/documentation/web-api/reference/playlists/get-a-list-of-current-users-playlists/
     public func playlists(
-        token: String,
         limit: Int? = nil,
         offset: Int? = nil
     ) throws -> AsyncThrowingStream<[SPPlaylistSimplified], Error>  {
@@ -64,7 +63,6 @@ extension Spotify.API {
     ///https://developer.spotify.com/documentation/web-api/reference/playlists/add-tracks-to-playlist/
     @discardableResult
     public func addPlaylist(
-        token: String,
         id: String,
         input: AddPlaylistInput
     ) async throws -> AddPlaylistOutput {
@@ -93,7 +91,6 @@ extension Spotify.API {
 
     ///https://developer.spotify.com/documentation/web-api/reference/playlists/add-tracks-to-playlist/
     public func createPlaylist(
-        token: String,
         userId: String,
         input: CreatePlaylistInput
     ) async throws -> SPPlaylist {

@@ -19,4 +19,17 @@ public struct SPArtist: Codable {
    public var type: String?
    ///The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the artist.
    public var uri: String
+    
+    public init(externalUrls: SPExternalURL? = nil, followers: [SPFollower]? = nil, genres: [String]? = nil, href: String? = nil, id: String, images: [SPImage]? = nil, name: String, popularity: Int? = nil, type: String? = nil, uri: String) {
+        self.externalUrls = externalUrls
+        self.followers = followers
+        self.genres = genres
+        self.href = href
+        self.id = id
+        self.images = images
+        self.name = name
+        self.popularity = popularity
+        self.type = type
+        self.uri = uri
+    }
 }

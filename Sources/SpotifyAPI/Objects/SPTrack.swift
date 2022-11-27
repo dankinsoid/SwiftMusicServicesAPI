@@ -39,4 +39,27 @@ public struct SPTrack: Codable {
    public var uri: String
    ///Whether or not the track is from a local file.
    public var isLocal: Bool?
+    
+    public init(album: SPAlbum? = nil, artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, discNumber: Int? = nil, durationMs: Int, explicit: Bool? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, href: String? = nil, id: String, isPlayable: Bool? = nil, linkedFrom: SPTrackLink? = nil, restrictions: SPRestrictions? = nil, name: String, popularity: Int? = nil, previewUrl: String? = nil, trackNumber: Int? = nil, type: String? = nil, uri: String, isLocal: Bool? = nil) {
+        self.album = album
+        self.artists = artists
+        self.availableMarkets = availableMarkets
+        self.discNumber = discNumber
+        self.durationMs = durationMs
+        self.explicit = explicit
+        self.externalIds = externalIds
+        self.externalUrls = externalUrls
+        self.href = href
+        self.id = id
+        self.isPlayable = isPlayable
+        self.linkedFrom = linkedFrom
+        self.restrictions = restrictions
+        self.name = name
+        self.popularity = popularity
+        self.previewUrl = previewUrl
+        self.trackNumber = trackNumber
+        self.type = type
+        self.uri = uri
+        self.isLocal = isLocal
+    }
 }

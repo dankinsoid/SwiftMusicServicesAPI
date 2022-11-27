@@ -31,4 +31,23 @@ public struct SPShow: Codable {
    public var type: String
    ///The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the show.
    public var uri: String
+    
+    public init(availableMarkets: [String], copyrights: [SPCopyright]? = nil, description: String, explicit: Bool, episodes: [SPEpisode]? = nil, externalUrls: SPExternalURL? = nil, href: String, id: String, images: [SPImage]? = nil, isExternallyHosted: Bool? = nil, languages: [String]? = nil, mediaType: String, name: String, publisher: String, type: String, uri: String) {
+        self.availableMarkets = availableMarkets
+        self.copyrights = copyrights
+        self.description = description
+        self.explicit = explicit
+        self.episodes = episodes
+        self.externalUrls = externalUrls
+        self.href = href
+        self.id = id
+        self.images = images
+        self.isExternallyHosted = isExternallyHosted
+        self.languages = languages
+        self.mediaType = mediaType
+        self.name = name
+        self.publisher = publisher
+        self.type = type
+        self.uri = uri
+    }
 }

@@ -9,6 +9,7 @@
 import Foundation
 
 public enum SPDisallows: String, Codable, CaseIterable {
+    
     case interrupting_playback
     case pausing
     case resuming

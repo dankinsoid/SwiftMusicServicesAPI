@@ -5,4 +5,9 @@ public struct SPSavedTrack: Codable {
    public var addedAt: Date?
    ///Information about the track.
    public var track: SPTrack
+    
+    public init(addedAt: Date? = nil, track: SPTrack) {
+        self.addedAt = addedAt
+        self.track = track
+    }
 }

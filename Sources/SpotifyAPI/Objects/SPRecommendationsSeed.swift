@@ -11,4 +11,13 @@ public struct SPRecommendationsSeed: Codable {
    public var initialPoolSize: Int
    ///The entity type of this seed. One of artist , track or genre.
    public var type: String
+    
+    public init(afterFilteringSize: Int, afterRelinkingSize: Int, href: String? = nil, id: String, initialPoolSize: Int, type: String) {
+        self.afterFilteringSize = afterFilteringSize
+        self.afterRelinkingSize = afterRelinkingSize
+        self.href = href
+        self.id = id
+        self.initialPoolSize = initialPoolSize
+        self.type = type
+    }
 }

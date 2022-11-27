@@ -7,4 +7,10 @@ public struct SPPlayHistory: Codable {
    public var playedAt: Date
    ///The context the track was played from.
    public var context: SPContext
+    
+    public init(track: SPTrackSimplified, playedAt: Date, context: SPContext) {
+        self.track = track
+        self.playedAt = playedAt
+        self.context = context
+    }
 }

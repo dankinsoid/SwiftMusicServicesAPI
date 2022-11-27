@@ -35,4 +35,25 @@ public struct SPAudioFeatures: Codable {
    public var uri: String
    ///A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).
    public var valence: Double
+    
+    public init(acousticness: Double, analysisUrl: String, danceability: Double, durationMs: Int, energy: Double, id: String, instrumentalness: Double, key: Int, liveness: Double, loudness: Double, mode: Int, speechiness: Double, tempo: Double, timeSignature: Int, trackHref: String, type: String, uri: String, valence: Double) {
+        self.acousticness = acousticness
+        self.analysisUrl = analysisUrl
+        self.danceability = danceability
+        self.durationMs = durationMs
+        self.energy = energy
+        self.id = id
+        self.instrumentalness = instrumentalness
+        self.key = key
+        self.liveness = liveness
+        self.loudness = loudness
+        self.mode = mode
+        self.speechiness = speechiness
+        self.tempo = tempo
+        self.timeSignature = timeSignature
+        self.trackHref = trackHref
+        self.type = type
+        self.uri = uri
+        self.valence = valence
+    }
 }

@@ -37,4 +37,26 @@ public struct SPEpisode: Codable {
    public var type: String
    ///The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the episode.
    public var uri: String
+    
+    public init(audioPreviewUrl: String? = nil, description: String, durationMs: Int, explicit: Bool, externalUrls: SPExternalURL? = nil, href: String, id: String, images: [SPImage]? = nil, isExternallyHosted: Bool, isPlayable: Bool? = nil, language: String, languages: [String]? = nil, name: String, releaseDate: String, releaseDatePrecision: String, resumePoint: SPResumePoint, show: SPShow, type: String, uri: String) {
+        self.audioPreviewUrl = audioPreviewUrl
+        self.description = description
+        self.durationMs = durationMs
+        self.explicit = explicit
+        self.externalUrls = externalUrls
+        self.href = href
+        self.id = id
+        self.images = images
+        self.isExternallyHosted = isExternallyHosted
+        self.isPlayable = isPlayable
+        self.language = language
+        self.languages = languages
+        self.name = name
+        self.releaseDate = releaseDate
+        self.releaseDatePrecision = releaseDatePrecision
+        self.resumePoint = resumePoint
+        self.show = show
+        self.type = type
+        self.uri = uri
+    }
 }

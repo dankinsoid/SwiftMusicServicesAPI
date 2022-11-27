@@ -7,4 +7,11 @@ public struct SPContext: Codable {
    public var externalUrls: SPExternalURL?
    ///The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the context.
    public var uri: String
+    
+    public init(type: String, href: String, externalUrls: SPExternalURL? = nil, uri: String) {
+        self.type = type
+        self.href = href
+        self.externalUrls = externalUrls
+        self.uri = uri
+    }
 }

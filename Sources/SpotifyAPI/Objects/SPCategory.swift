@@ -7,4 +7,11 @@ public struct SPCategory: Codable {
    public var id: String
    ///The name of the category.
    public var name: String
+    
+    public init(href: String, icons: [SPImage]? = nil, id: String, name: String) {
+        self.href = href
+        self.icons = icons
+        self.id = id
+        self.name = name
+    }
 }

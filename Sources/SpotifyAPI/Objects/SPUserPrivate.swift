@@ -21,4 +21,18 @@ public struct SPUserPrivate: Codable {
    public var type: String
    ///The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the user.
    public var uri: String
+    
+    public init(country: String, displayName: String? = nil, email: String, externalUrls: SPExternalURL? = nil, followers: [SPFollower]? = nil, href: String, id: String, images: [SPImage]? = nil, product: String, type: String, uri: String) {
+        self.country = country
+        self.displayName = displayName
+        self.email = email
+        self.externalUrls = externalUrls
+        self.followers = followers
+        self.href = href
+        self.id = id
+        self.images = images
+        self.product = product
+        self.type = type
+        self.uri = uri
+    }
 }

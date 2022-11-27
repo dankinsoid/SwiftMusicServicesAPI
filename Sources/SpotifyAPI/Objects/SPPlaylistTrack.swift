@@ -9,4 +9,11 @@ public struct SPPlaylistTrack: Codable {
    public var isLocal: Bool?
    ///Information about the track or episode.
    public var track: SPTrack?
+    
+    public init(addedAt: Date? = nil, addedBy: SPUser? = nil, isLocal: Bool? = nil, track: SPTrack? = nil) {
+        self.addedAt = addedAt
+        self.addedBy = addedBy
+        self.isLocal = isLocal
+        self.track = track
+    }
 }

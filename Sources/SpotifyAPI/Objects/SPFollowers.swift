@@ -3,4 +3,9 @@ public struct SPFollower: Codable {
    public var href: String?
    ///The total number of followers.
    public var total: Int
+    
+    public init(href: String? = nil, total: Int) {
+        self.href = href
+        self.total = total
+    }
 }

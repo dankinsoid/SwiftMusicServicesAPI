@@ -27,4 +27,20 @@ public struct SPPlaylist: Codable {
    public var type: String
    ///The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the playlist.
    public var uri: String
+    
+    public init(collaborative: Bool, description: String? = nil, externalUrls: SPExternalURL? = nil, followers: [SPFollower]? = nil, href: String, id: String, images: [SPImage]? = nil, name: String, owner: SPUser, snapshotId: String, tracks: SPTracks? = nil, type: String, uri: String) {
+        self.collaborative = collaborative
+        self.description = description
+        self.externalUrls = externalUrls
+        self.followers = followers
+        self.href = href
+        self.id = id
+        self.images = images
+        self.name = name
+        self.owner = owner
+        self.snapshotId = snapshotId
+        self.tracks = tracks
+        self.type = type
+        self.uri = uri
+    }
 }

@@ -9,4 +9,12 @@ public struct SPTrackLink: Codable {
    public var type: String
    ///The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the track.
    public var uri: String
+    
+    public init(externalUrls: SPExternalURL? = nil, href: String, id: String, type: String, uri: String) {
+        self.externalUrls = externalUrls
+        self.href = href
+        self.id = id
+        self.type = type
+        self.uri = uri
+    }
 }

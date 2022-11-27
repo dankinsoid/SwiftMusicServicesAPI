@@ -24,6 +24,16 @@ public struct SPPaging<Item> {
     public var previous: String?
     ///The total number of items available to return.
     public var total: Int
+    
+    public init(href: String, items: [Item], limit: Int, next: String? = nil, offset: Int, previous: String? = nil, total: Int) {
+        self.href = href
+        self.items = items
+        self.limit = limit
+        self.next = next
+        self.offset = offset
+        self.previous = previous
+        self.total = total
+    }
 }
 
 extension SPPaging: Decodable where Item: Decodable {}

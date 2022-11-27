@@ -5,4 +5,10 @@ public struct SPPlayerError: Codable {
    public var message: String
    ///One of the predefined [player error reasons](#player-error-reasons).
    public var reason: String
+    
+    public init(status: Int, message: String, reason: String) {
+        self.status = status
+        self.message = message
+        self.reason = reason
+    }
 }

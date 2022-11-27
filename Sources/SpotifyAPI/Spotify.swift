@@ -39,8 +39,11 @@ public enum Spotify {
             return HttpResponseDecoder(decoder: decoder)
         }
 
-        public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: Bool = true) -> [HttpHeaderKey: String] {
-            if auth, let token = token {
+        public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: Bool = true) throws -> [HttpHeaderKey: String] {
+            if auth {
+                guard let token else {
+                    throw SPError(status: 401, message: "Token is missed")
+                }
                 return additionalHeaders.merging([.authorization: "Bearer \(token)"]) { _, s in s }
             } else {
                 return additionalHeaders

@@ -3,4 +3,9 @@ public struct SPRecommendations: Codable {
    public var seeds: [SPRecommendationsSeed]?
    ///An array of [track object (simplified)](#track-object-simplified) ordered according to the parameters supplied.
    public var tracks: [SPTrackSimplified]?
+    
+    public init(seeds: [SPRecommendationsSeed]? = nil, tracks: [SPTrackSimplified]? = nil) {
+        self.seeds = seeds
+        self.tracks = tracks
+    }
 }

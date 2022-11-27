@@ -5,4 +5,9 @@ public struct SPSavedAlbum: Codable {
    public var addedAt: Date
    ///Information about the album.
    public var album: SPAlbum
+    
+    public init(addedAt: Date, album: SPAlbum) {
+        self.addedAt = addedAt
+        self.album = album
+    }
 }
