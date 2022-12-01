@@ -1,11 +1,3 @@
-//
-//  Common.swift
-//  YandexAPI
-//
-//  Created by Daniil on 27.11.2019.
-//  Copyright © 2019 Daniil. All rights reserved.
-//
-
 import Foundation
 
 @propertyWrapper

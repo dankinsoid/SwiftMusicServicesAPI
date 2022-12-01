@@ -22,7 +22,9 @@ extension Spotify.API {
 	) async throws -> SearchOutput {
 		try await decodableRequest(
 				executor: client.dataTask,
-				url: baseURL.path("search").query(from: SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)),
+				url: baseURL.path("search").query(
+            from: SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)
+        ),
 				method: .get,
 				headers: headers()
 		)
@@ -39,7 +41,9 @@ extension Spotify.API {
 		try pagingRequest(
 				output: SearchOutput.self,
 				executor: client.dataTask,
-				url: baseURL.path("search").query(from: SearchInput(q: q, type: [type], market: market, limit: limit, offset: offset, includeExternal: includeExternal)),
+				url: baseURL.path("search").query(
+            from: SearchInput(q: q, type: [type], market: market, limit: limit, offset: offset, includeExternal: includeExternal)
+        ),
 				method: .get,
 				parameters: type,
 				headers: headers()
@@ -47,6 +51,7 @@ extension Spotify.API {
 	}
 
 	public struct SearchInput: Encodable {
+      
 		public var q: SPQuery
 		public var type: [SPContentType]
 		public var market: String?
@@ -55,6 +60,7 @@ extension Spotify.API {
 		public var includeExternal: External?
 
 		public enum External: String, Codable, CaseIterable {
+        
 			case audio
 		}
 
@@ -76,6 +82,7 @@ extension Spotify.API {
 	}
 
 	public struct SearchOutput: Decodable {
+      
 		public var artists: SPPaging<SPArtist>?
 		public var albums: SPPaging<SPAlbumSimplified>?
 		public var tracks: SPPaging<SPTrack>?
@@ -86,6 +93,7 @@ extension Spotify.API {
 
 //Добавить: NOT, OR
 public struct SPQuery: Encodable {
+    
 	private var filters: [FieldFilters: String] = [:]
 	private var text: String?
 	
@@ -102,6 +110,7 @@ public struct SPQuery: Encodable {
 }
 
 extension SPQuery {
+    
 	public subscript(_ key: FieldFilters) -> String? {
 		get { filters[key] }
 		set { filters[key] = newValue }
@@ -128,6 +137,7 @@ extension SPQuery {
 }
 
 extension Spotify.API.SearchOutput: SpotifyPaging {
+    
 	public typealias Item = Spotify.API.SearchOutput
 
 	public var items: [Spotify.API.SearchOutput] { [self] }

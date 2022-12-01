@@ -1,7 +1,3 @@
-//
-// Created by Данил Войдилов on 06.04.2022.
-//
-
 import Foundation
 
 extension AsyncSequence where Element: Collection {

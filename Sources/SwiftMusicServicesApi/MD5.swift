@@ -1,15 +1,7 @@
-//
-//  MD5.swift
-//  MusicImport
-//
-//  Created by Daniil on 15.07.2020.
-//  Copyright © 2020 Данил Войдилов. All rights reserved.
-//
-
 import Foundation
 
 // MARK: - Public
-public func MD5(_ input: String) -> String {
+func MD5(_ input: String) -> String {
     return hex_md5(input)
 }
 

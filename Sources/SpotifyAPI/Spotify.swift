@@ -16,6 +16,7 @@ public enum Spotify {
     ///https://developer.spotify.com/documentation/web-api/
     ///https://developer.spotify.com/documentation/ios/quick-start/
     public final class API: HttpCodablePipelineCollection {
+        
         public static var baseURL = HttpUrl(host: "api.spotify.com", path: ["v1"])
 
         public var client: HttpClient
