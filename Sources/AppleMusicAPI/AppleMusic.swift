@@ -12,7 +12,7 @@ public enum AppleMusic {
 		public var userToken: String?
 
 		public init(client: HttpClient, baseURL: HttpUrl = API.baseURL, token: AppleMusic.Objects.Tokens? = nil) {
-			self.client = client.rateLimit()
+			self.client = client.rateLimit(errorCodes: [.tooManyRequests, .forbidden])
 			self.baseURL = baseURL
 			self.token = token
 		}
