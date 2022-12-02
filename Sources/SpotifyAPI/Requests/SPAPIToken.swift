@@ -77,7 +77,7 @@ public extension Spotify.API {
 				"nolinks": "true",
 				"utm_source": "spotify-sdk",
 				"utm_medium": "spotifylogin",
-				"utm_campaign":"spotifylogin"
+				"utm_campaign": "spotifylogin"
 			]
 		)
 		if !scope.isEmpty {
