@@ -61,10 +61,10 @@ public extension Spotify.API {
 		return result
 	}
 
-	func authenticationURL(
+	nonisolated func authenticationURL(
 		redirectURI: String,
 		scope: [Scope]
-	) async throws -> HttpUrl {
+	) -> HttpUrl {
 		var url = HttpUrl(
 			host: "accounts.spotify.com",
 			path: ["authorize"],
