@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Данил Войдилов on 08.04.2022.
-//
-
 import Foundation
 import VDCodable
 
@@ -15,8 +8,8 @@ public struct VKAudioListSection: Codable, HTMLStringInitable {
 	public var nextOffset: String?
 }
 
-extension VKAudioListSection {
-	public init(htmlString html: String) throws {
+public extension VKAudioListSection {
+	init(htmlString html: String) throws {
 		let html = html.replacingOccurrences(of: "<!--", with: "")
 		let jsc = html.components(separatedBy: "<!json>")
 		if jsc.count > 1 {
@@ -34,7 +27,6 @@ extension VKAudioListSection {
 }
 
 extension JSON {
-	
 	func recursiveFind(containsKey key: String) -> JSON? {
 		if object?[key] != nil {
 			return self

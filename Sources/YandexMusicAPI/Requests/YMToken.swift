@@ -1,18 +1,9 @@
-//
-//  YMToken.swift
-//  MusicImport
-//
-//  Created by Данил Войдилов on 21.03.2022.
-//  Copyright © 2022 Данил Войдилов. All rights reserved.
-//
-
 import Foundation
 import SwiftHttp
 import VDCodable
 
-extension Yandex.Music.API {
-	
-	public func passportToken(clientId: String, clientSecret: String, accessToken: String, _yasc: String, info: TokenBySessionIDQuery) async throws -> Yandex.Music.API.TokenOutput {
+public extension Yandex.Music.API {
+	func passportToken(clientId: String, clientSecret: String, accessToken: String, _yasc: String, info: TokenBySessionIDQuery) async throws -> Yandex.Music.API.TokenOutput {
 		let input = PassportTokenInput(client_id: clientId, client_secret: clientSecret, access_token: accessToken)
 
 		let encoder = URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase)
@@ -20,23 +11,23 @@ extension Yandex.Music.API {
 		encoder.trimmingSquareBrackets = true
 
 		return try await request(
-				url: Yandex.Music.API.mobileproxyPassportURL.path("1", "token").query(from: info, encoder: encoder),
-				method: .post,
-				auth: false,
-				body: Data(encoder.encodePath(input).utf8),
-				headers: [
-					.contentType: "application/x-www-form-urlencoded",
-					"Cookie": "_yasc=\(_yasc)",
-					"Host": "mobileproxy.passport.yandex.net"
-				]
+			url: Yandex.Music.API.mobileproxyPassportURL.path("1", "token").query(from: info, encoder: encoder),
+			method: .post,
+			auth: false,
+			body: Data(encoder.encodePath(input).utf8),
+			headers: [
+				.contentType: "application/x-www-form-urlencoded",
+				"Cookie": "_yasc=\(_yasc)",
+				"Host": "mobileproxy.passport.yandex.net",
+			]
 		)
 	}
 
-	public struct PassportTokenInput: Codable {
+	struct PassportTokenInput: Codable {
 		public var client_id: String
 		public var client_secret: String
 		public var grant_type: YM.API.GrantType = .x_token
 		public var access_token: String
-		public var payment_auth_retpath	= "yandexmusic://am/payment_auth"
+		public var payment_auth_retpath = "yandexmusic://am/payment_auth"
 	}
 }

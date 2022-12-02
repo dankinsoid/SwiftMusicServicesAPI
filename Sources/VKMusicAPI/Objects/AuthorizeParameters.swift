@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Данил Войдилов on 08.04.2022.
-//
-
 import Foundation
 
 public struct VKPreAuthorizeParameters: Codable {

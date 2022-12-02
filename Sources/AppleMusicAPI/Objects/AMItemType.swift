@@ -1,23 +1,19 @@
-//
-// Created by Данил Войдилов on 12.04.2022.
-//
-
 import Foundation
 
-extension AppleMusic.Objects {
-
-	public enum ItemType: Codable {
+public extension AppleMusic.Objects {
+	enum ItemType: Codable {
 		case songs(Song), musicVideos(MusicVideo), librarySongs(Song), libraryMusicVideos(MusicVideo), libraryPlaylists(Playlist)
 
 		public var kind: AppleMusic.TrackType {
 			switch self {
-			case .songs:                return .songs
-			case .musicVideos:          return .musicVideos
-			case .librarySongs:         return .librarySongs
-			case .libraryMusicVideos:   return .libraryMusicVideos
-			case .libraryPlaylists:     return .libraryPlaylists
+			case .songs: return .songs
+			case .musicVideos: return .musicVideos
+			case .librarySongs: return .librarySongs
+			case .libraryMusicVideos: return .libraryMusicVideos
+			case .libraryPlaylists: return .libraryPlaylists
 			}
 		}
+
 		enum CodingKeys: String, CodingKey, CaseIterable {
 			case attributes, id, type, href
 		}
@@ -48,15 +44,15 @@ extension AppleMusic.Objects {
 			var container = encoder.container(keyedBy: CodingKeys.self)
 			try container.encode(kind, forKey: .type)
 			switch self {
-			case .songs(let song):
+			case let .songs(song):
 				try container.encode(song, forKey: .attributes)
-			case .musicVideos(let musicVideos):
+			case let .musicVideos(musicVideos):
 				try container.encode(musicVideos, forKey: .attributes)
-			case .librarySongs(let librarySongs):
+			case let .librarySongs(librarySongs):
 				try container.encode(librarySongs, forKey: .attributes)
-			case .libraryMusicVideos(let libraryMusicVideos):
+			case let .libraryMusicVideos(libraryMusicVideos):
 				try container.encode(libraryMusicVideos, forKey: .attributes)
-			case .libraryPlaylists(let libraryPlaylists):
+			case let .libraryPlaylists(libraryPlaylists):
 				try container.encode(libraryPlaylists, forKey: .attributes)
 			}
 		}
@@ -68,7 +64,7 @@ extension AppleMusic.Objects {
 				self.type = type
 				self.href = href
 			}
-			
+
 			public var attributes: T
 			public var id: String
 			public var type: AppleMusic.TrackType
@@ -76,13 +72,15 @@ extension AppleMusic.Objects {
 		}
 	}
 
-	public struct Song: Codable {
+	struct Song: Codable {
 		public init() {}
 	}
-	public struct MusicVideo: Codable {
+
+	struct MusicVideo: Codable {
 		public init() {}
 	}
-	public struct Playlist: Codable {
+
+	struct Playlist: Codable {
 		public init() {}
 	}
 }

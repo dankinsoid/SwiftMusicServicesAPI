@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Данил Войдилов on 08.04.2022.
-//
-
 import Foundation
 
 public struct VKAudioInput: Encodable {
@@ -42,15 +35,15 @@ public struct VKAudioInput: Encodable {
 	public var from: String?
 	public var __query: String?
 	public var _ref: String?
-	
+
 	public enum CodingKeys: String, CodingKey, CaseIterable {
 		case accessHash = "access_hash", statusCode = "Status Code", formData = "Form Data", playlistId = "playlist_id", ownerId = "owner_id", al, claim, offset, type, section, fromId = "from_id", isLoadingAll = "is_loading_all", q, isLayer = "is_layer", sectionId = "section_id", hash, audioId = "audio_id", trackCode = "track_code", groupId = "group_id", ids, audios = "Audios", cover, description, noDiscover = "no_discover", title, alId = "al_id", __query, audioOwnerId = "audio_owner_id", addPlIds = "add_pl_ids", removePlIds = "remove_pl_ids", from, playlistOwnerId = "playlist_owner_id", doAdd = "do_add"
 	}
-	
+
 	public enum ActType: String, Codable, CaseIterable {
 		case playlist, playlists
 	}
-	
+
 	public enum Section: String, Codable, CaseIterable {
 		case playlists, search
 	}

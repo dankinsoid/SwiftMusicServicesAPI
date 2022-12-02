@@ -1,15 +1,7 @@
-//
-//  BaseRequests.swift
-//  YandexAPI
-//
-//  Created by Daniil on 08.11.2019.
-//  Copyright © 2019 Daniil. All rights reserved.
-//
-
 import Foundation
 import SwiftHttp
-import VDCodable
 @_exported import SwiftMusicServicesApi
+import VDCodable
 
 public typealias YM = Yandex.Music
 public typealias YMO = Yandex.Music.Objects
@@ -18,13 +10,13 @@ public enum Yandex {
 	public enum Music {}
 }
 
-extension Yandex.Music {
-	public enum Objects {}
+public extension Yandex.Music {
+	enum Objects {}
 
-	public final class API: HttpCodablePipelineCollection {
+	final class API: HttpCodablePipelineCollection {
 		public static let clientID = "23cabbbdc6cd418abb4b39c32c41195d"
 		public static let clientSecret = "53bc75238f0c4d08a118e51fe9203300"
-		
+
 		public static let baseURL = HttpUrl(host: "api.music.yandex.net")
 		public static let authURL = HttpUrl(host: "oauth.yandex.ru")
 		public static let passportURL = HttpUrl(host: "passport.yandex.com")
@@ -38,7 +30,7 @@ extension Yandex.Music {
 		public var baseURL: HttpUrl
 
 		public init(client: HttpClient, token: String? = nil, baseURL: HttpUrl = API.baseURL) {
-			self.client = client
+			self.client = client.rateLimit()
 			self.token = token
 			self.baseURL = baseURL
 			let encoder = URLQueryEncoder()
@@ -70,31 +62,31 @@ extension Yandex.Music {
 		/// - Returns: The decoded response object
 		///
 		public func request<U: Decodable>(
-				url: HttpUrl,
-				method: HttpMethod,
-				auth: Bool = true,
-				body: Data? = nil,
-				headers: [HttpHeaderKey: String] = [:],
-				validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+			url: HttpUrl,
+			method: HttpMethod,
+			auth: Bool = true,
+			body: Data? = nil,
+			headers: [HttpHeaderKey: String] = [:],
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			if auth {
 				let result: YMO.Result<U> = try await decodableRequest(
-						executor: client.dataTask,
-						url: url,
-						method: method,
-						body: body,
-						headers: self.headers(with: headers, auth: auth),
-						validators: validators
+					executor: client.dataTask,
+					url: url,
+					method: method,
+					body: body,
+					headers: self.headers(with: headers, auth: auth),
+					validators: validators
 				)
 				return result.result
 			} else {
 				let result: U = try await decodableRequest(
-						executor: client.dataTask,
-						url: url,
-						method: method,
-						body: body,
-						headers: self.headers(with: headers, auth: auth),
-						validators: validators
+					executor: client.dataTask,
+					url: url,
+					method: method,
+					body: body,
+					headers: self.headers(with: headers, auth: auth),
+					validators: validators
 				)
 				return result
 			}
@@ -114,32 +106,32 @@ extension Yandex.Music {
 		///
 		/// - Returns: The decoded response object
 		///
-		public func request<I: Encodable, U: Decodable>(
-				url: HttpUrl,
-				method: HttpMethod = .post,
-				auth: Bool = true,
-				body: I,
-				headers: [HttpHeaderKey: String] = [:],
-				validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+		public func request<U: Decodable>(
+			url: HttpUrl,
+			method: HttpMethod = .post,
+			auth: Bool = true,
+			body: some Encodable,
+			headers: [HttpHeaderKey: String] = [:],
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			if auth {
 				let result: YMO.Result<U> = try await codableRequest(
-						executor: client.dataTask,
-						url: url,
-						method: method,
-						headers: self.headers(with: headers, auth: auth),
-						body: body,
-						validators: validators
+					executor: client.dataTask,
+					url: url,
+					method: method,
+					headers: self.headers(with: headers, auth: auth),
+					body: body,
+					validators: validators
 				)
 				return result.result
 			} else {
 				let result: U = try await codableRequest(
-						executor: client.dataTask,
-						url: url,
-						method: method,
-						headers: self.headers(with: headers, auth: auth),
-						body: body,
-						validators: validators
+					executor: client.dataTask,
+					url: url,
+					method: method,
+					headers: self.headers(with: headers, auth: auth),
+					body: body,
+					validators: validators
 				)
 				return result
 			}
@@ -148,9 +140,9 @@ extension Yandex.Music {
 		public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: Bool = true) -> [HttpHeaderKey: String] {
 			var headers: [HttpHeaderKey: String] = [
 				.userAgent: "Yandex-Music-API",
-				"X-Yandex-Music-Client": "Yandex.Music/493"
+				"X-Yandex-Music-Client": "Yandex.Music/493",
 			]
-			if auth, let token = token {
+			if auth, let token {
 				headers[.authorization] = "OAuth \(token)"
 			}
 			return additionalHeaders.merging(headers) { _, s in

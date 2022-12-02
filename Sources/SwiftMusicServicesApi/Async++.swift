@@ -1,8 +1,7 @@
 import Foundation
 
-extension AsyncSequence where Element: Collection {
-
-	public func collect() async throws -> [Element.Element] {
+public extension AsyncSequence where Element: Collection {
+	func collect() async throws -> [Element.Element] {
 		try await reduce([], +)
 	}
 }

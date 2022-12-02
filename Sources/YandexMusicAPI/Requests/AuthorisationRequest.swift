@@ -1,27 +1,18 @@
-//
-//  AuthorisationRequest.swift
-//  YandexAPI
-//
-//  Created by Daniil on 08.11.2019.
-//  Copyright © 2019 Daniil. All rights reserved.
-//
-
 import Foundation
 import SwiftHttp
 import VDCodable
 
-extension Yandex.Music.API {
-	
-	public func token(input: TokenInput) async throws -> TokenOutput {
+public extension Yandex.Music.API {
+	func token(input: TokenInput) async throws -> TokenOutput {
 		try await request(
-				url: Yandex.Music.API.authURL.path("token"),
-				method: .post,
-				auth: false,
-				body: Data(URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase).encodePath(input).utf8)
+			url: Yandex.Music.API.authURL.path("token"),
+			method: .post,
+			auth: false,
+			body: Data(URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase).encodePath(input).utf8)
 		)
 	}
 
-	public struct TokenInput: Codable {
+	struct TokenInput: Codable {
 		public var clientId: String
 		public var clientSecret: String
 		public var username: String
@@ -37,14 +28,14 @@ extension Yandex.Music.API {
 		}
 	}
 
-	public struct TokenOutput: Decodable {
-		public let tokenType: String?   //"bearer"
+	struct TokenOutput: Decodable {
+		public let tokenType: String? // "bearer"
 		public let accessToken: String
 		public let expiresIn: Int?
 		public let uid: Int?
 	}
-	
-	public enum GrantType: String, Codable, CaseIterable {
+
+	enum GrantType: String, Codable, CaseIterable {
 		case password, authorization_code, sessionid, x_token = "x-token"
 	}
 }

@@ -1,47 +1,40 @@
-//
-//  SpotifyLoginView.swift
-//  
-//
-//  Created by Данил Войдилов on 13.04.2022.
-//
-
 #if canImport(SafariServices) && canImport(UIKit) && canImport(SwiftUI)
-import Foundation
-import SwiftUI
-import Combine
+	import Combine
+	import Foundation
+	import SwiftUI
 
-public struct SpotifyLoginView: View {
-	public var scopes: [Scope]
-	private var url: URL? {
-		SpotifyLogin.shared.urlBuilder?.authenticationURL(type: .web, scopes: scopes)
-	}
-	
-	public init(scopes: [Scope]) {
-		self.scopes = scopes
-	}
-	
-	public var body: some View {
-		if let url = url {
-			SafariView(url: url)
+	public struct SpotifyLoginView: View {
+		public var scopes: [Scope]
+		private var url: URL? {
+			SpotifyLogin.shared.urlBuilder?.authenticationURL(type: .web, scopes: scopes)
+		}
+
+		public init(scopes: [Scope]) {
+			self.scopes = scopes
+		}
+
+		public var body: some View {
+			if let url {
+				SafariView(url: url)
+			}
 		}
 	}
-}
 
-private struct SafariView: UIViewControllerRepresentable {
-	let url: URL
-	
-	func makeUIViewController(context: Context) -> SafariViewController {
-		SafariViewController(url: url)
+	private struct SafariView: UIViewControllerRepresentable {
+		let url: URL
+
+		func makeUIViewController(context _: Context) -> SafariViewController {
+			SafariViewController(url: url)
+		}
+
+		func updateUIViewController(_: SafariViewController, context _: Context) {}
 	}
-	
-	func updateUIViewController(_ uiViewController: SafariViewController, context: Context) {}
-}
 
-extension View {
-	public func onSpotifyLogin(_ success: @escaping () -> Void) -> some View {
-		onReceive(NotificationCenter.default.publisher(for: .SpotifyLoginSuccessful)) { _ in
-			success()
+	public extension View {
+		func onSpotifyLogin(_ success: @escaping () -> Void) -> some View {
+			onReceive(NotificationCenter.default.publisher(for: .SpotifyLoginSuccessful)) { _ in
+				success()
+			}
 		}
 	}
-}
 #endif

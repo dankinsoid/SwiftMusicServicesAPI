@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Данил Войдилов on 08.04.2022.
-//
-
 import Foundation
 import VDCodable
 
@@ -20,27 +13,25 @@ extension PreLink {
 		}
 		value = v
 	}
-	
+
 	struct Er: Error {
 		let json: JSON
 	}
 }
 
-
 extension JSON {
-
 	func deepFind(where block: (JSON) -> Bool) -> JSON? {
 		if block(self) {
 			return self
 		}
 		switch self {
-		case .array(let list):
+		case let .array(list):
 			for json in list {
 				if let result = json.deepFind(where: block) {
 					return result
 				}
 			}
-		case .object(let dict):
+		case let .object(dict):
 			for (_, json) in dict {
 				if let result = json.deepFind(where: block) {
 					return result

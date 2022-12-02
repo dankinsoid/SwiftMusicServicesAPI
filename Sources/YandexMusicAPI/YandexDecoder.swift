@@ -1,7 +1,3 @@
-//
-// Created by Данил Войдилов on 07.04.2022.
-//
-
 import Foundation
 import SwiftHttp
 import VDCodable

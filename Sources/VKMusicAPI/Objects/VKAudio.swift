@@ -1,29 +1,21 @@
-//
-//  File.swift
-//  
-//
-//  Created by Данил Войдилов on 08.04.2022.
-//
-
 import Foundation
+import SimpleCoders
 import SwiftSoup
 import VDCodable
-import SimpleCoders
 
 public struct VKAudio: Encodable, Hashable, Identifiable {
 	public var id: Int
 	public var ownerId: Int?
 	public var title: String
 	public var artist: String
-	public var duration: Int		//seconds
+	public var duration: Int // seconds
 	public var imageURL: URL?
 	public var ids: String?
 	public var addHash: String?
 	public var trackCode: String?
 
-	
-	public static func ==(_ lhs: VKAudio, _ rhs: VKAudio) -> Bool {
-		return lhs.id == rhs.id
+	public static func == (_ lhs: VKAudio, _ rhs: VKAudio) -> Bool {
+		lhs.id == rhs.id
 	}
 }
 
@@ -35,13 +27,13 @@ extension VKAudio: Decodable {
 			id = _id
 			let id2 = try container.decode(Int.self)
 			ownerId = id2
-			for _ in 2..<3 {
+			for _ in 2 ..< 3 {
 				_ = try container.decode(JSON.self)
 			}
 			title = try Entities.unescape(container.decode(String.self))
 			artist = try Entities.unescape(container.decode(String.self))
 			duration = try container.decode(Int.self)
-			for _ in 6..<13 {
+			for _ in 6 ..< 13 {
 				_ = try container.decode(JSON.self)
 			}
 			let str = try container.decode(String.self)
@@ -53,7 +45,7 @@ extension VKAudio: Decodable {
 				.replacingOccurrences(of: "/", with: "")
 			ids = "\(id2)_\(_id)_\(id3)"
 			imageURL = try? URL(string: container.decode(String.self).components(separatedBy: ",").last ?? "")
-			for _ in 15..<20 {
+			for _ in 15 ..< 20 {
 				_ = try container.decode(JSON.self)
 			}
 			trackCode = try? container.decode(String.self)
@@ -73,14 +65,13 @@ extension VKAudio: Decodable {
 }
 
 extension VKAudio: XMLInitable {
-
 	public init(xml: SwiftSoup.Element) throws {
 		let dataId = try xml.attr("data-id")
 		guard let int = dataId.components(separatedBy: "_").last.flatMap({ Int($0) }) else {
 			throw DecodingError.keyNotFound(PlainCodingKey("id"), DecodingError.Context(codingPath: [], debugDescription: "", underlyingError: nil))
 		}
 		id = int
-		ownerId = dataId.components(separatedBy: "_").first.flatMap({ Int($0) })
+		ownerId = dataId.components(separatedBy: "_").first.flatMap { Int($0) }
 		title = try xml.getElementsByClass("ai_title").first()?.text() ?? ""
 		artist = try xml.getElementsByClass("ai_artist").first()?.text() ?? ""
 		duration = try Int(xml.getElementsByClass("ai_dur").first()?.attr("data-dur") ?? "") ?? 0

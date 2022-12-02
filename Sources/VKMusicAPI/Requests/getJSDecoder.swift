@@ -1,16 +1,8 @@
+// import Foundation
+// import SwiftHttp
+// import VDCodable
 //
-//  VKAPI.swift
-//  MusicImport
-//
-//  Created by Данил Войдилов on 11.03.2018.
-//  Copyright © 2018 Данил Войдилов. All rights reserved.
-//
-
-//import Foundation
-//import SwiftHttp
-//import VDCodable
-//
-//extension VK.API {
+// extension VK.API {
 //
 //	static func getJSDecoder(id: Int) async throws -> AudioDecoder {
 //		let result = Promise<AudioDecoder>.pending()
@@ -57,32 +49,32 @@
 //		let fun: String
 //		let code: String
 //	}
-//}
+// }
 
-//[0] = "isOfficial"
-//[1] = "listens"
-//[2] = "id"
-//[3] = "authorLine"
-//[4] = "authorName"
-//[5] = "gridCovers"
-//[6] = "hasMore"
-//[7] = "rawDescription"
-//[8] = "totalCount"
-//[9] = "subTitle"
-//[10] = "isFollowed"
-//[11] = "authorHref"
-//[12] = "infoLine1"
-//[13] = "list"
-//[14] = "editHash"
-//[15] = "addClasses"
-//[16] = "nextOffset"
-//[17] = "infoLine2"
-//[18] = "type"
-//[19] = "description"
-//[20] = "followHash"
-//[21] = "totalCountHash"
-//[22] = "title"
-//[23] = "lastUpdated"
-//[24] = "accessHash"
-//[25] = "ownerId"
-//[26] = "coverUrl"
+// [0] = "isOfficial"
+// [1] = "listens"
+// [2] = "id"
+// [3] = "authorLine"
+// [4] = "authorName"
+// [5] = "gridCovers"
+// [6] = "hasMore"
+// [7] = "rawDescription"
+// [8] = "totalCount"
+// [9] = "subTitle"
+// [10] = "isFollowed"
+// [11] = "authorHref"
+// [12] = "infoLine1"
+// [13] = "list"
+// [14] = "editHash"
+// [15] = "addClasses"
+// [16] = "nextOffset"
+// [17] = "infoLine2"
+// [18] = "type"
+// [19] = "description"
+// [20] = "followHash"
+// [21] = "totalCountHash"
+// [22] = "title"
+// [23] = "lastUpdated"
+// [24] = "accessHash"
+// [25] = "ownerId"
+// [26] = "coverUrl"

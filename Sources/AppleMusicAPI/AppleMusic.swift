@@ -1,14 +1,9 @@
-//
-// Created by Данил Войдилов on 11.04.2022.
-//
-
 import Foundation
 import SwiftHttp
-import VDCodable
 @_exported import SwiftMusicServicesApi
+import VDCodable
 
 public enum AppleMusic {
-
 	public final class API: HttpCodablePipelineCollection {
 		public static var baseURL = HttpUrl(host: "api.music.apple.com").path("v1")
 		public var client: HttpClient
@@ -17,7 +12,7 @@ public enum AppleMusic {
 		public var userToken: String?
 
 		public init(client: HttpClient, baseURL: HttpUrl = API.baseURL, token: AppleMusic.Objects.Tokens? = nil) {
-			self.client = client
+			self.client = client.rateLimit()
 			self.baseURL = baseURL
 			self.token = token
 		}
@@ -32,7 +27,7 @@ public enum AppleMusic {
 
 		public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: Bool = true) -> [HttpHeaderKey: String] {
 			var result: [HttpHeaderKey: String] = additionalHeaders
-			if auth, let token = token {
+			if auth, let token {
 				result[.authorization] = "Bearer \(token.token)"
 				result["Music-User-Token"] = token.userToken
 			}

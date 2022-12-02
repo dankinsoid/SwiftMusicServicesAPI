@@ -1,15 +1,11 @@
-//
-// Created by Данил Войдилов on 12.04.2022.
-//
-
 import Foundation
 import SwiftHttp
 
-extension AppleMusic.API {
-	public func dataRequest<I: Encodable, T: Decodable>(
+public extension AppleMusic.API {
+	func dataRequest<T: Decodable>(
 		url: HttpUrl,
 		method: HttpMethod = .get,
-		body: I,
+		body: some Encodable,
 		headers: [HttpHeaderKey: String] = [:],
 		auth: Bool = true,
 		validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
@@ -34,8 +30,8 @@ extension AppleMusic.API {
 			)
 		}
 	}
-	
-	public func dataRequest<T: Decodable>(
+
+	func dataRequest<T: Decodable>(
 		url: HttpUrl,
 		method: HttpMethod = .get,
 		body: Data? = nil,
@@ -63,7 +59,7 @@ extension AppleMusic.API {
 			)
 		}
 	}
-	
+
 	private func executeNext<Output: Decodable>(
 		output: Output.Type,
 		url: HttpUrl,
@@ -76,11 +72,11 @@ extension AppleMusic.API {
 			do {
 				let result = try await request()
 				observer.yield(result.data)
-				
+
 				if let next = result.next {
 					var newUrl = HttpUrl(string: (baseURL.url.absoluteString + next).replacingOccurrences(of: "//", with: "/")) ?? url
 					newUrl = newUrl.query(url.query)
-					
+
 					self.executeNext(
 						output: output,
 						url: newUrl,

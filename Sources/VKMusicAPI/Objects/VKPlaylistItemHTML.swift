@@ -1,7 +1,3 @@
-//
-// Created by Данил Войдилов on 08.04.2022.
-//
-
 import Foundation
 import SwiftSoup
 
@@ -10,6 +6,7 @@ public struct VKPlaylistItemHTML {
 	public var act: String? {
 		href.components(separatedBy: "act=").dropFirst().first?.components(separatedBy: "&").first
 	}
+
 	public var image: String?
 	public var title: String
 	public var subtitle: String

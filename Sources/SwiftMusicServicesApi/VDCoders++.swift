@@ -1,6 +1,6 @@
 import Foundation
-import VDCodable
 import SwiftHttp
+import VDCodable
 
 extension VDJSONDecoder: HttpDataDecoder {}
 extension VDJSONEncoder: HttpDataEncoder {}

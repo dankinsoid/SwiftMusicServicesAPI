@@ -13,48 +13,48 @@
 // limitations under the License.
 
 #if canImport(SafariServices) && canImport(UIKit)
-import Foundation
-import UIKit
-import SafariServices
+	import Foundation
+	import SafariServices
+	import UIKit
 
-/// Use the login presenter to manually present the login authentication screen.
-public class SpotifyLoginPresenter {
-	
-	/// Trigger log in flow.
-	///
-	/// - Parameters:
-	///   - scopes: A list of requested scopes and permissions.
-	@discardableResult
-	public class func login(scopes: [Scope], completion: @escaping (Error?) -> Void = { _ in }) -> UIViewController? {
-		SpotifyLogin.shared.onLogin = completion
-		let urlBuilder = SpotifyLogin.shared.urlBuilder
-		if let appAuthenticationURL = urlBuilder?.authenticationURL(type: .app, scopes: scopes),
-			 UIApplication.shared.canOpenURL(appAuthenticationURL) {
-			UIApplication.shared.open(appAuthenticationURL, options: [:], completionHandler: nil)
-		} else if let webAuthenticationURL = urlBuilder?.authenticationURL(type: .web, scopes: scopes) {
-			return SafariViewController(url: webAuthenticationURL)
-		}
-		return nil
-	}
-	
-	public class func canOpenSpotifyApp(scopes: [Scope], open: Bool, _ completion: @escaping (Error?) -> Void = { _ in }) -> Bool {
-		SpotifyLogin.shared.onLogin = completion
-		if let appAuthenticationURL = SpotifyLogin.shared.urlBuilder?.authenticationURL(type: .app, scopes: scopes),
-			 UIApplication.shared.canOpenURL(appAuthenticationURL) {
-			if open {
+	/// Use the login presenter to manually present the login authentication screen.
+	public class SpotifyLoginPresenter {
+		/// Trigger log in flow.
+		///
+		/// - Parameters:
+		///   - scopes: A list of requested scopes and permissions.
+		@discardableResult
+		public class func login(scopes: [Scope], completion: @escaping (Error?) -> Void = { _ in }) -> UIViewController? {
+			SpotifyLogin.shared.onLogin = completion
+			let urlBuilder = SpotifyLogin.shared.urlBuilder
+			if let appAuthenticationURL = urlBuilder?.authenticationURL(type: .app, scopes: scopes),
+			   UIApplication.shared.canOpenURL(appAuthenticationURL)
+			{
 				UIApplication.shared.open(appAuthenticationURL, options: [:], completionHandler: nil)
+			} else if let webAuthenticationURL = urlBuilder?.authenticationURL(type: .web, scopes: scopes) {
+				return SafariViewController(url: webAuthenticationURL)
 			}
-			return true
+			return nil
 		}
-		return false
-	}
-}
 
-final class SafariViewController: SFSafariViewController {
-	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		navigationController?.setNavigationBarHidden(true, animated: true)
+		public class func canOpenSpotifyApp(scopes: [Scope], open: Bool, _ completion: @escaping (Error?) -> Void = { _ in }) -> Bool {
+			SpotifyLogin.shared.onLogin = completion
+			if let appAuthenticationURL = SpotifyLogin.shared.urlBuilder?.authenticationURL(type: .app, scopes: scopes),
+			   UIApplication.shared.canOpenURL(appAuthenticationURL)
+			{
+				if open {
+					UIApplication.shared.open(appAuthenticationURL, options: [:], completionHandler: nil)
+				}
+				return true
+			}
+			return false
+		}
 	}
-}
+
+	final class SafariViewController: SFSafariViewController {
+		override func viewWillAppear(_ animated: Bool) {
+			super.viewWillAppear(animated)
+			navigationController?.setNavigationBarHidden(true, animated: true)
+		}
+	}
 #endif

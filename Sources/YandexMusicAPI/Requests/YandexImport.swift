@@ -1,24 +1,15 @@
-//
-//  YandexImport.swift
-//  MusicImport
-//
-//  Created by Daniil on 11.03.2020.
-//  Copyright © 2020 Данил Войдилов. All rights reserved.
-//
-
 import Foundation
-import VDCodable
 import SwiftHttp
+import VDCodable
 
-extension Yandex.Music.API {
-	public enum Import {
+public extension Yandex.Music.API {
+	enum Import {
 		public static var baseURL = HttpUrl(host: "music.yandex.ru")
 	}
 }
 
-extension Yandex.Music.API {
-
-	public func importSearch(_ tracks: [E3U.Line]) async throws -> [YMO.Track] {
+public extension Yandex.Music.API {
+	func importSearch(_ tracks: [E3U.Line]) async throws -> [YMO.Track] {
 		let e3u = E3U(lines: tracks)
 		let code = try await importFile(e3u: e3u).importCode
 		var result = try await importCode(code)
@@ -33,41 +24,39 @@ extension Yandex.Music.API {
 	}
 }
 
-extension Yandex.Music.API {
-
-	public func importFile(e3u: E3U) async throws -> ImportFileOutput {
+public extension Yandex.Music.API {
+	func importFile(e3u: E3U) async throws -> ImportFileOutput {
 		let response = try await encodableRequest(
-				executor: client.dataTask,
-				url: Yandex.Music.API.Import.baseURL.path("handlers").resource("import-file.jsx"),
-				method: .post,
-				headers: [
-					.contentType: "text/plain",
-					"Connection": "keep-alive"
-				],
-				body: E3U.Formatter().convert(e3u)
+			executor: client.dataTask,
+			url: Yandex.Music.API.Import.baseURL.path("handlers").resource("import-file.jsx"),
+			method: .post,
+			headers: [
+				.contentType: "text/plain",
+				"Connection": "keep-alive",
+			],
+			body: E3U.Formatter().convert(e3u)
 		)
 		return try VDJSONDecoder().decode(ImportFileOutput.self, from: response.data)
 	}
 
-	public struct ImportFileOutput: Codable {
+	struct ImportFileOutput: Codable {
 		public let importCode: String
 	}
 }
 
-extension Yandex.Music.API {
-
-	public func importCode(_ code: String) async throws -> ImportCodeOutput {
+public extension Yandex.Music.API {
+	func importCode(_ code: String) async throws -> ImportCodeOutput {
 		let response = try await rawRequest(
-				executor: client.dataTask,
-				url: Yandex.Music.API.Import.baseURL
-						.path("handlers").resource("import.jsx")
-						.query("code", code),
-				method: .post
+			executor: client.dataTask,
+			url: Yandex.Music.API.Import.baseURL
+				.path("handlers").resource("import.jsx")
+				.query("code", code),
+			method: .post
 		)
 		return try VDJSONDecoder().decode(ImportCodeOutput.self, from: response.data)
 	}
 
-	public struct ImportCodeOutput: Codable {
+	struct ImportCodeOutput: Codable {
 		public var status: RawEnum<Status>
 		public var tracks: [YMO.Track]?
 
@@ -77,9 +66,8 @@ extension Yandex.Music.API {
 	}
 }
 
-extension Yandex.Music.Objects {
-
-	public struct ImportResult<T: Codable>: Codable {
+public extension Yandex.Music.Objects {
+	struct ImportResult<T: Codable>: Codable {
 		public let success: Bool
 		public var object: T
 
@@ -88,7 +76,7 @@ extension Yandex.Music.Objects {
 		}
 
 		public init(from decoder: Decoder) throws {
-			object = try T.init(from: decoder)
+			object = try T(from: decoder)
 			let container = try decoder.container(keyedBy: CodingKeys.self)
 			success = try container.decode(Bool.self, forKey: .success)
 		}

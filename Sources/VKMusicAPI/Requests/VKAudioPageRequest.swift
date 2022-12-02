@@ -1,16 +1,11 @@
-//
-// Created by Данил Войдилов on 09.04.2022.
-//
-
 import Foundation
 import SimpleCoders
-import VDCodable
-import SwiftSoup
 import SwiftHttp
+import SwiftSoup
+import VDCodable
 
-extension VK.API {
-	
-	public func audioFirstPageRequest(href: String) async throws -> AudioFirstPageRequestOutput {
+public extension VK.API {
+	func audioFirstPageRequest(href: String) async throws -> AudioFirstPageRequestOutput {
 		try await request(
 			url: baseURL
 				.path(href.components(separatedBy: "?").first?.trimmingCharacters(in: CharacterSet(charactersIn: "/")) ?? "")
@@ -29,15 +24,14 @@ extension VK.API {
 			method: .get
 		)
 	}
-	
-	public struct AudioFirstPageRequestOutput: Codable, Hashable {
+
+	struct AudioFirstPageRequestOutput: Codable, Hashable {
 		public var tracks: [VKAudio]
 		public var next: String?
 	}
 }
 
 extension VK.API.AudioFirstPageRequestOutput: HTMLStringInitable {
-	
 	public init(htmlString html: String) throws {
 		let document = try SwiftSoup.parse(html.trimmingCharacters(in: .whitespaces))
 		let div = try document.getElementsByAttributeValueStarting("class", "AudioPlaylistRoot").first()?.children() ?? Elements()
@@ -54,9 +48,8 @@ extension VK.API.AudioFirstPageRequestOutput: HTMLStringInitable {
 	}
 }
 
-extension VK.API {
-	
-	public func audioPageRequest(act: String, offset: Int, from: String? = nil) async throws -> [VKAudio] {
+public extension VK.API {
+	func audioPageRequest(act: String, offset: Int, from: String? = nil) async throws -> [VKAudio] {
 		let input = AudioPageRequestInput(act: act, offset: offset, from: from)
 		let output: AudioPageRequestOutput = try await decodableRequest(
 			executor: client.dataTask,
@@ -67,18 +60,18 @@ extension VK.API {
 		)
 		return output.list
 	}
-	
-	public struct AudioPageRequestInput: Codable {
+
+	struct AudioPageRequestInput: Codable {
 		public var act: String
 		public var offset: Int
 		public var from: String?
 	}
-	
-	public struct AudioPageRequestBody: Codable {
+
+	struct AudioPageRequestBody: Codable {
 		public var _ajax = 1
 	}
-	
-	public struct AudioPageRequestOutput {
+
+	struct AudioPageRequestOutput {
 		public var list: [VKAudio]
 	}
 }
@@ -93,11 +86,10 @@ extension VK.API.AudioPageRequestOutput: Decodable {
 	}
 }
 
-extension VK.API {
-	
-	public func list(tracks: [VKAudio] = [], block: String? = nil, next: String? = nil) async throws -> [VKAudio] {
-		if let block = block {
-			if let next = next, !next.isEmpty {
+public extension VK.API {
+	func list(tracks: [VKAudio] = [], block: String? = nil, next: String? = nil) async throws -> [VKAudio] {
+		if let block {
+			if let next, !next.isEmpty {
 				let tr = try await myTracksPageRequest(start_from: next, block: block)
 				return try await list(tracks: tracks + tr.list, block: block, next: next == tr.nextOffset ? nil : tr.nextOffset)
 			} else {
@@ -109,9 +101,9 @@ extension VK.API {
 			return try await list(tracks: tracks + tr.tracks, block: bl.block, next: tr.next)
 		}
 	}
-	
-	public func list(playlist: VKPlaylistItemHTML, tracks: [VKAudio] = [], offset: Int? = 0) async throws -> [VKAudio] {
-		if let offset = offset {
+
+	func list(playlist: VKPlaylistItemHTML, tracks: [VKAudio] = [], offset: Int? = 0) async throws -> [VKAudio] {
+		if let offset {
 			let tr = try await audioPageRequest(act: playlist.act ?? "", offset: offset)
 			return try await list(playlist: playlist, tracks: tracks + tr, offset: tr.count < 100 || tr.count == 0 ? nil : offset + tr.count)
 		} else {

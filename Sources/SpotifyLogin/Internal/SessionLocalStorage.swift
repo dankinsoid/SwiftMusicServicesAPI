@@ -15,51 +15,51 @@
 import Foundation
 
 internal class SessionLocalStorage {
+	internal class func save(session: Session?) {
+		guard let session else {
+			return
+		}
 
-    internal class func save(session: Session?) {
-        guard let session = session else {
-            return
-        }
+		do {
+			let encodedSession = try PropertyListEncoder().encode(session)
+			if !KeychainWrapper.save(encodedSession, forKey: session.username) {
+				// handle error
+			}
+			storeUsername(session.username)
+		} catch {}
+	}
 
-        do {
-            let encodedSession = try PropertyListEncoder().encode(session)
-            if !KeychainWrapper.save(encodedSession, forKey: session.username) {
-                // handle error
-            }
-            storeUsername(session.username)
-        } catch {}
-    }
+	internal class func loadSession() -> Session? {
+		guard let userName = storedUsername() else {
+			return nil
+		}
 
-    internal class func loadSession() -> Session? {
-        guard let userName = storedUsername() else {
-            return nil
-        }
+		if let data = KeychainWrapper.data(forKey: userName) {
+			let decodedSession = try? PropertyListDecoder().decode(Session.self, from: data)
+			return decodedSession
+		}
 
-        if let data = KeychainWrapper.data(forKey: userName) {
-            let decodedSession = try? PropertyListDecoder().decode(Session.self, from: data)
-            return decodedSession
-        }
+		return nil
+	}
 
-        return nil
-    }
+	internal class func removeSession() {
+		if let userName = storedUsername() {
+			if !KeychainWrapper.removeData(forKey: userName) {
+				// handle error
+			}
+		}
+		UserDefaults.standard.removeObject(forKey: Constants.KeychainUsernameKey)
+	}
 
-    internal class func removeSession() {
-        if let userName = storedUsername() {
-            if !KeychainWrapper.removeData(forKey: userName) {
-                // handle error
-            }
-        }
-        UserDefaults.standard.removeObject(forKey: Constants.KeychainUsernameKey)
-    }
+	// MARK: - Private
 
-    // MARK: - Private
-    private class func storeUsername(_ username: String) {
-        UserDefaults.standard.set(username, forKey: Constants.KeychainUsernameKey)
-    }
+	private class func storeUsername(_ username: String) {
+		UserDefaults.standard.set(username, forKey: Constants.KeychainUsernameKey)
+	}
 
-    private class func storedUsername() -> String? {
-        return UserDefaults.standard.value(forKey: Constants.KeychainUsernameKey) as? String
-    }
+	private class func storedUsername() -> String? {
+		UserDefaults.standard.value(forKey: Constants.KeychainUsernameKey) as? String
+	}
 }
 
 import Security
@@ -77,37 +77,36 @@ private let kSecMatchLimitOneValue = String(kSecMatchLimitOne)
 private let keychainServiceValue = Constants.KeychainServiceValue
 
 internal class KeychainWrapper {
+	class func save(_ data: Data, forKey key: String) -> Bool {
+		let keychainQuery: [String: Any] = [kSecClassValue: kSecClassGenericPasswordValue,
+		                                    kSecAttrServiceValue: keychainServiceValue,
+		                                    kSecAttrAccountValue: key,
+		                                    kSecValueDataValue: data]
+		SecItemDelete(keychainQuery as CFDictionary)
+		let status: OSStatus = SecItemAdd(keychainQuery as CFDictionary, nil)
+		return (status == errSecSuccess)
+	}
 
-    class func save(_ data: Data, forKey key: String) -> Bool {
-        let keychainQuery: [String: Any] = [kSecClassValue: kSecClassGenericPasswordValue,
-                                            kSecAttrServiceValue: keychainServiceValue,
-                                            kSecAttrAccountValue: key,
-                                            kSecValueDataValue: data]
-        SecItemDelete(keychainQuery as CFDictionary)
-        let status: OSStatus = SecItemAdd(keychainQuery as CFDictionary, nil)
-        return (status == errSecSuccess)
-    }
+	class func data(forKey key: String) -> Data? {
+		let keychainQuery: [String: Any] = [kSecClassValue: kSecClassGenericPasswordValue,
+		                                    kSecAttrServiceValue: keychainServiceValue,
+		                                    kSecAttrAccountValue: key,
+		                                    kSecReturnDataValue: kCFBooleanTrue ?? true,
+		                                    kSecMatchLimitValue: kSecMatchLimitOneValue]
 
-    class func data(forKey key: String) -> Data? {
-        let keychainQuery: [String: Any] = [kSecClassValue: kSecClassGenericPasswordValue,
-                                            kSecAttrServiceValue: keychainServiceValue,
-                                            kSecAttrAccountValue: key,
-                                            kSecReturnDataValue: kCFBooleanTrue ?? true,
-                                            kSecMatchLimitValue: kSecMatchLimitOneValue]
+		var dataBuffer: AnyObject?
+		let status: OSStatus = SecItemCopyMatching(keychainQuery as CFDictionary, &dataBuffer)
+		if status == errSecSuccess {
+			return dataBuffer as? Data
+		}
+		return nil
+	}
 
-        var dataBuffer: AnyObject?
-        let status: OSStatus = SecItemCopyMatching(keychainQuery as CFDictionary, &dataBuffer)
-        if status == errSecSuccess {
-            return dataBuffer as? Data
-        }
-        return nil
-    }
-
-    class func removeData(forKey key: String) -> Bool {
-        let keychainQuery: [String: Any] = [kSecClassValue: kSecClassGenericPasswordValue,
-                                            kSecAttrServiceValue: keychainServiceValue,
-                                            kSecAttrAccountValue: key]
-        let status: OSStatus = SecItemDelete(keychainQuery as CFDictionary)
-        return (status == errSecSuccess)
-    }
+	class func removeData(forKey key: String) -> Bool {
+		let keychainQuery: [String: Any] = [kSecClassValue: kSecClassGenericPasswordValue,
+		                                    kSecAttrServiceValue: keychainServiceValue,
+		                                    kSecAttrAccountValue: key]
+		let status: OSStatus = SecItemDelete(keychainQuery as CFDictionary)
+		return (status == errSecSuccess)
+	}
 }
