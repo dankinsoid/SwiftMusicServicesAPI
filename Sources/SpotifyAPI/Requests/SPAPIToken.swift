@@ -60,4 +60,29 @@ public extension Spotify.API {
 		token = result.accessToken
 		return result
 	}
+
+	func authenticationURL(
+		redirectURI: String,
+		scope: [Scope]
+	) async throws -> HttpUrl {
+		var url = HttpUrl(
+			host: "accounts.spotify.com",
+			path: ["authorize"],
+			query: [
+				"client_id": clientID,
+				"redirect_uri": redirectURI,
+				"response_type": "code",
+				"show_dialog": "true",
+				"nosignup": "true",
+				"nolinks": "true",
+				"utm_source": "spotify-sdk",
+				"utm_medium": "spotifylogin",
+				"utm_campaign":"spotifylogin"
+			]
+		)
+		if !scope.isEmpty {
+			url.query["scope"] = scope.map(\.rawValue).joined(separator: " ")
+		}
+		return url
+	}
 }

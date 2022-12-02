@@ -7,45 +7,42 @@ public enum Spotify {
 
 	/// https://developer.spotify.com/documentation/web-api/
 	/// https://developer.spotify.com/documentation/ios/quick-start/
-	public final class API: HttpCodablePipelineCollection {
+	public final actor API: HttpCodablePipelineCollection {
 
 		public static var apiBaseURL = HttpUrl(host: "accounts.spotify.com", path: ["api"])
 		public static var v1BaseURL =  HttpUrl(host: "api.spotify.com", path: ["v1"])
 
-		public var client: HttpClient
-		public var apiBaseURL: HttpUrl
-		public var v1BaseURL: HttpUrl
+		var client: HttpClient
+		public nonisolated var apiBaseURL: HttpUrl { API.apiBaseURL }
+		public nonisolated var v1BaseURL: HttpUrl { API.v1BaseURL }
 		public var token: String?
 		public var refreshToken: String?
-		public var clientID: String
-		public var clientSecret: String
+		public nonisolated let clientID: String
+		public nonisolated let clientSecret: String
+
 		private var refreshTokenTask: Task<Void, Error>?
 
 		public init(
 			client: HttpClient,
-			apiBaseURL: HttpUrl = API.apiBaseURL,
-			v1BaseURL: HttpUrl = API.v1BaseURL,
 			clientID: String,
 			clientSecret: String,
 			token: String? = nil,
 			refreshToken: String? = nil
 		) {
 			self.client = client.rateLimit(timeout: 30)
-			self.v1BaseURL = v1BaseURL
-			self.apiBaseURL = apiBaseURL
 			self.clientID = clientID
 			self.clientSecret = clientSecret
 			self.token = token
 			self.refreshToken = refreshToken
 		}
 
-		public func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
+		public nonisolated func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
 			HttpRequestEncoder(
 				encoder: VDJSONEncoder()
 			)
 		}
 
-		public func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
+		public nonisolated func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
 			let decoder = VDJSONDecoder()
 			decoder.keyDecodingStrategy = .convertFromSnakeCase(separators: CharacterSet(charactersIn: "_"))
 			decoder.dateDecodingStrategy = .iso8601
@@ -73,6 +70,12 @@ public enum Spotify {
 			case .none:
 				return additionalHeaders
 			}
+		}
+
+		public func update(accessToken: String, refreshToken: String) async {
+			try? await refreshTokenTask?.value
+			token = accessToken
+			self.refreshToken = refreshToken
 		}
 
 		func dataTask(_ req: HttpRequest) async throws -> HttpResponse {

@@ -15,6 +15,7 @@
 import Foundation
 
 internal enum Constants {
+
 	static let AuthUTMSourceQueryValue = "spotify-sdk"
 	static let AuthUTMMediumCampaignQueryValue = "spotifylogin"
 	static let KeychainUsernameKey = "SpotifyUsername"

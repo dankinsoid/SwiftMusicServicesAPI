@@ -22,7 +22,9 @@ internal let profileServiceEndpointURL = "https://api.spotify.com/v1/me"
 // MARK: API responses
 
 internal struct TokenEndpointResponse: Codable {
+
 	enum CodingKeys: String, CodingKey, CaseIterable {
+
 		case accessToken = "access_token"
 		case expiresIn = "expires_in"
 		case refreshToken = "refresh_token"
@@ -34,7 +36,9 @@ internal struct TokenEndpointResponse: Codable {
 }
 
 internal struct ProfileEndpointResponse: Codable {
+
 	enum CodingKeys: String, CodingKey, CaseIterable {
+
 		case identifier = "id"
 	}
 
@@ -42,6 +46,7 @@ internal struct ProfileEndpointResponse: Codable {
 }
 
 internal class Networking {
+
 	internal class func createSession(
 		code: String,
 		redirectURL: URL,

@@ -66,7 +66,7 @@ let package = Package(
 		),
 		.target(
 			name: "SpotifyLogin",
-			dependencies: []
+			dependencies: [.target(name: "SpotifyAPI")]
 		),
 		.target(
 			name: "YandexMusicAPI",

@@ -13,8 +13,10 @@
 // limitations under the License.
 
 import Foundation
+import SpotifyAPI
 
 internal class URLBuilder {
+
 	let clientID: String
 	let clientSecret: String
 	let redirectURL: URL
@@ -30,18 +32,21 @@ internal class URLBuilder {
 	// MARK: URL functions
 
 	internal func authenticationURL(type: AuthenticationURLType, scopes: [Scope]) -> URL? {
+
 		let endpoint = type.rawValue
 		let scopeStrings = scopes.map { $0.rawValue }
 
-		var params = ["client_id": clientID,
-		              "redirect_uri": redirectURL.absoluteString,
-		              "response_type": "code",
-		              "show_dialog": "true",
-		              "nosignup": "true",
-		              "nolinks": "true",
-		              "utm_source": Constants.AuthUTMSourceQueryValue,
-		              "utm_medium": Constants.AuthUTMMediumCampaignQueryValue,
-		              "utm_campaign": Constants.AuthUTMMediumCampaignQueryValue]
+		var params = [
+			"client_id": clientID,
+			"redirect_uri": redirectURL.absoluteString,
+			"response_type": "code",
+			"show_dialog": "true",
+			"nosignup": "true",
+			"nolinks": "true",
+			"utm_source": Constants.AuthUTMSourceQueryValue,
+			"utm_medium": Constants.AuthUTMMediumCampaignQueryValue,
+			"utm_campaign": Constants.AuthUTMMediumCampaignQueryValue
+		]
 
 		if scopeStrings.count > 0 {
 			params["scope"] = scopeStrings.joined(separator: " ")
@@ -82,6 +87,7 @@ internal class URLBuilder {
 }
 
 internal enum AuthenticationURLType: String, CaseIterable {
+
 	case app = "spotify-action://"
 	case web = "https://accounts.spotify.com/"
 }
