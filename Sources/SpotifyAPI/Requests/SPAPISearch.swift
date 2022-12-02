@@ -12,8 +12,8 @@ public extension Spotify.API {
 		includeExternal: SearchInput.External? = nil
 	) async throws -> SearchOutput {
 		try await decodableRequest(
-			executor: client.dataTask,
-			url: baseURL.path("search").query(
+			executor: dataTask,
+			url: v1BaseURL.path("search").query(
 				from: SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)
 			),
 			method: .get,
@@ -31,8 +31,8 @@ public extension Spotify.API {
 	) throws -> AsyncThrowingStream<[SearchOutput], Error> {
 		try pagingRequest(
 			output: SearchOutput.self,
-			executor: client.dataTask,
-			url: baseURL.path("search").query(
+			executor: dataTask,
+			url: v1BaseURL.path("search").query(
 				from: SearchInput(q: q, type: [type], market: market, limit: limit, offset: offset, includeExternal: includeExternal)
 			),
 			method: .get,
@@ -42,6 +42,7 @@ public extension Spotify.API {
 	}
 
 	struct SearchInput: Encodable {
+
 		public var q: SPQuery
 		public var type: [SPContentType]
 		public var market: String?
@@ -71,6 +72,7 @@ public extension Spotify.API {
 	}
 
 	struct SearchOutput: Decodable {
+
 		public var artists: SPPaging<SPArtist>?
 		public var albums: SPPaging<SPAlbumSimplified>?
 		public var tracks: SPPaging<SPTrack>?
@@ -81,6 +83,7 @@ public extension Spotify.API {
 
 // Добавить: NOT, OR
 public struct SPQuery: Encodable {
+
 	private var filters: [FieldFilters: String] = [:]
 	private var text: String?
 
@@ -97,6 +100,7 @@ public struct SPQuery: Encodable {
 }
 
 public extension SPQuery {
+
 	subscript(_ key: FieldFilters) -> String? {
 		get { filters[key] }
 		set { filters[key] = newValue }
@@ -111,18 +115,17 @@ public extension SPQuery {
 	}
 
 	func encode(to encoder: Encoder) throws {
-		//        guard !(text ?? "").isEmpty || !(filters ?? [:]).isEmpty else {
-//
-		//        }
 		try value.encode(to: encoder)
 	}
 
 	enum FieldFilters: String, Codable, Hashable, CaseIterable {
+
 		case album, artist, track, year, genre, isrc, upc
 	}
 }
 
 extension Spotify.API.SearchOutput: SpotifyPaging {
+
 	public typealias Item = Spotify.API.SearchOutput
 
 	public var items: [Spotify.API.SearchOutput] { [self] }

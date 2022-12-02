@@ -9,8 +9,8 @@ public extension Spotify.API {
 	) throws -> AsyncThrowingStream<[SPPlaylistSimplified], Error> {
 		try pagingRequest(
 			output: SPPaging<SPPlaylistSimplified>.self,
-			executor: client.dataTask,
-			url: baseURL.path("me", "playlists").query(from: PlaylistsInput(limit: limit, offset: offset)),
+			executor: dataTask,
+			url: v1BaseURL.path("me", "playlists").query(from: PlaylistsInput(limit: limit, offset: offset)),
 			method: .get,
 			parameters: (),
 			headers: headers()
@@ -36,8 +36,8 @@ public extension Spotify.API {
 	) throws -> AsyncThrowingStream<[SPPlaylistTrack], Error> {
 		try pagingRequest(
 			output: SPPaging<SPPlaylistTrack>.self,
-			executor: client.dataTask,
-			url: baseURL.path("playlists", id, "tracks").query(from: SavedInput(limit: limit, offset: offset, market: market)),
+			executor: dataTask,
+			url: v1BaseURL.path("playlists", id, "tracks").query(from: SavedInput(limit: limit, offset: offset, market: market)),
 			method: .get,
 			parameters: (),
 			headers: headers()
@@ -49,8 +49,8 @@ public extension Spotify.API {
 		input: PlaylistInput
 	) async throws -> SPPlaylist {
 		try await decodableRequest(
-			executor: client.dataTask,
-			url: baseURL.path("playlists", id).query(from: input),
+			executor: dataTask,
+			url: v1BaseURL.path("playlists", id).query(from: input),
 			method: .get,
 			headers: headers()
 		)
@@ -75,8 +75,8 @@ public extension Spotify.API {
 		input: AddPlaylistInput
 	) async throws -> AddPlaylistOutput {
 		try await codableRequest(
-			executor: client.dataTask,
-			url: baseURL.path("playlists", id, "tracks"),
+			executor: dataTask,
+			url: v1BaseURL.path("playlists", id, "tracks"),
 			method: .post,
 			headers: headers(),
 			body: input
@@ -84,6 +84,7 @@ public extension Spotify.API {
 	}
 
 	struct AddPlaylistInput: Encodable {
+
 		public var uris: [String]?
 		public var position: Int?
 
@@ -103,8 +104,8 @@ public extension Spotify.API {
 		input: CreatePlaylistInput
 	) async throws -> SPPlaylist {
 		try await codableRequest(
-			executor: client.dataTask,
-			url: baseURL.path("users", userId, "playlists"),
+			executor: dataTask,
+			url: v1BaseURL.path("users", userId, "playlists"),
 			method: .post,
 			headers: headers(with: [.contentType: "application/json"]),
 			body: input
