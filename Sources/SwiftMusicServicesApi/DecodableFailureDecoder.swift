@@ -29,8 +29,49 @@ struct DecodableFailureDecoder: HttpDataDecoder {
 			if let failure = try? decodeFailure(data) {
 				throw failure
 			}
-			throw error
+			switch error {
+			case let error as DecodingError:
+				throw DecodingReadableError(error: error, data: data)
+			default:
+				throw error
+			}
 		}
+	}
+}
+
+private struct DecodingReadableError: LocalizedError {
+
+	let error: DecodingError
+	let data: Data
+
+	var errorDescription: String? {
+		switch error {
+		case .dataCorrupted(let context):
+			return "Data corrupted at \(path(for: context))\(body)"
+		case .keyNotFound(let key, let context):
+			return "Key \(key.stringValue) not found at \(path(for: context))\(body)"
+		case .typeMismatch(let type, let context):
+			return "Type \(type) mismatch at \(path(for: context))\(body)"
+		case .valueNotFound(let type, let context):
+			return "Value of \(type) not found at \(path(for: context))\(body)"
+		@unknown default:
+			return error.localizedDescription
+		}
+	}
+
+	private func path(for context: DecodingError.Context) -> String {
+		context.codingPath.map(\.stringValue).joined(separator: ".")
+	}
+
+	private var body: String {
+		guard
+			let object = try? JSONSerialization.jsonObject(with: data, options: []),
+			let data = try? JSONSerialization.data(withJSONObject: object, options: .prettyPrinted),
+			let prettyPrintedString = String(data: data, encoding: .utf8)
+		else {
+			return "Empty body"
+		}
+		return "\n" + prettyPrintedString
 	}
 }
 
