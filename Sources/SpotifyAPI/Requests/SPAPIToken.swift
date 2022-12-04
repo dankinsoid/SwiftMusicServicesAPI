@@ -18,6 +18,7 @@ public extension Spotify.API {
 					"code": code,
 					"redirect_uri": redirectURI,
 					"client_id": clientID,
+					"client_secret": clientSecret,
 					"code_verifier": codeVerifier
 				]
 			),
@@ -26,7 +27,7 @@ public extension Spotify.API {
 				with: [
 					.contentType: "application/x-www-form-urlencoded"
 				],
-				auth: .clientBase64
+				auth: nil
 			)
 		)
 		refreshToken = result.refreshToken ?? refreshToken
@@ -46,7 +47,8 @@ public extension Spotify.API {
 				[
 					"grant_type": "refresh_token",
 					"refresh_token": refreshToken,
-					"client_id": clientID
+					"client_id": clientID,
+					"client_secret": clientSecret
 				]
 			),
 			method: .post,
@@ -54,7 +56,7 @@ public extension Spotify.API {
 				with: [
 					.contentType: "application/x-www-form-urlencoded"
 				],
-				auth: .clientBase64
+				auth: nil
 			)
 		)
 		token = result.accessToken
