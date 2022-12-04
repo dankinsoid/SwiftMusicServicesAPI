@@ -4,11 +4,11 @@ public struct SPTokenResponse: Codable {
 
 	public enum CodingKeys: String, CodingKey, CaseIterable {
 
-		case accessToken = "access_token"
-		case expiresIn = "expires_in"
-		case refreshToken = "refresh_token"
+		case accessToken
+		case expiresIn
+		case refreshToken
 		case scope
-		case tokenType = "token_type"
+		case tokenType
 	}
 
 	public var accessToken: String
