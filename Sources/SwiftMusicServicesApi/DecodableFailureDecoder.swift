@@ -69,7 +69,7 @@ private struct DecodingReadableError: LocalizedError {
 			let data = try? JSONSerialization.data(withJSONObject: object, options: .prettyPrinted),
 			let prettyPrintedString = String(data: data, encoding: .utf8)
 		else {
-			return "Empty body"
+			return String(data: data, encoding: .utf8) ?? ""
 		}
 		return "\n" + prettyPrintedString
 	}

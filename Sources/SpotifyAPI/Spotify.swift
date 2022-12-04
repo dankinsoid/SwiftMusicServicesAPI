@@ -43,8 +43,8 @@ public enum Spotify {
 		}
 
 		public nonisolated func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
-			let decoder = VDJSONDecoder()
-			decoder.keyDecodingStrategy = .convertFromSnakeCase(separators: CharacterSet(charactersIn: "_"))
+			let decoder = JSONDecoder()
+			decoder.keyDecodingStrategy = .convertFromSnakeCase
 			decoder.dateDecodingStrategy = .iso8601
 			return HttpResponseDecoder(
 				decoder: decoder.decodeError(SPError.self)
