@@ -1,12 +1,13 @@
 import Foundation
 import SwiftHttp
 import VDCodable
+import SimpleCoders
 
 public extension Yandex.Music.API {
 	func passportToken(clientId: String, clientSecret: String, accessToken: String, _yasc: String, info: TokenBySessionIDQuery) async throws -> Yandex.Music.API.TokenOutput {
 		let input = PassportTokenInput(client_id: clientId, client_secret: clientSecret, access_token: accessToken)
 
-		let encoder = URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase)
+		let encoder = URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase())
 		encoder.nestedEncodingStrategy = .json
 		encoder.trimmingSquareBrackets = true
 

@@ -1,5 +1,6 @@
 import Foundation
 import SwiftHttp
+import SimpleCoders
 import VDCodable
 
 public extension Yandex.Music.API {
@@ -8,7 +9,11 @@ public extension Yandex.Music.API {
 			url: Yandex.Music.API.authURL.path("token"),
 			method: .post,
 			auth: false,
-			body: Data(URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase).encodePath(input).utf8)
+			body: Data(
+                URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase())
+                    .encodePath(input)
+                    .utf8
+            )
 		)
 	}
 

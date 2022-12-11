@@ -1,6 +1,7 @@
 import Foundation
 import SwiftHttp
 import VDCodable
+import SimpleCoders
 
 public extension Yandex.Music.API {
 	func tokenBySessionID(cookies: [(String, String)], track_id: String?, info: TokenBySessionIDQuery) async throws -> Yandex.Music.API.TokenOutput {
@@ -8,7 +9,7 @@ public extension Yandex.Music.API {
 		let set = CharacterSet(charactersIn: "=\"#%/<>?@\\^`{|};: ").inverted
 		let input = TokenBySessionIDInput(track_id: track_id, cookies: cookies.addingPercentEncoding(withAllowedCharacters: set) ?? cookies)
 
-		let encoder = URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase)
+		let encoder = URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase())
 		encoder.nestedEncodingStrategy = .json
 		encoder.trimmingSquareBrackets = true
 

@@ -1,14 +1,15 @@
 import Foundation
 import SwiftHttp
 import VDCodable
+import SimpleCoders
 
 struct YandexDecoder: HttpDataDecoder {
 	let decoder: VDJSONDecoder
 
 	init() {
 		let decoder = VDJSONDecoder()
-		decoder.keyDecodingStrategy = .convertFromSnakeCase(separators: CharacterSet(charactersIn: "_-"))
-		decoder.dateDecodingStrategy = .iso8601
+		decoder.keyDecodingStrategy = .convertFromSnakeCase(separators: ["_", "-"])
+		decoder.dateDecodingStrategy = ISO8601CodingStrategy()
 		self.decoder = decoder
 	}
 
