@@ -16,6 +16,7 @@
 	import Foundation
 	import SafariServices
 	import UIKit
+    import SpotifyAPI
 
 	/// Use the login presenter to manually present the login authentication screen.
 	public class SpotifyLoginPresenter {

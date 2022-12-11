@@ -2,6 +2,7 @@
 	import Combine
 	import Foundation
 	import SwiftUI
+    import SpotifyAPI
 
 	public struct SpotifyLoginView: View {
 		public var scopes: [Scope]
