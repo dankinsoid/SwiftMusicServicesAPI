@@ -20,6 +20,11 @@
 
 	/// Use the login presenter to manually present the login authentication screen.
 	public class SpotifyLoginPresenter {
+        
+        public static var isSpotifyInstalled: Bool {
+            UIApplication.shared.canOpenURL(URL(string: AuthenticationURLType.app.rawValue)!)
+        }
+        
 		/// Trigger log in flow.
 		///
 		/// - Parameters:
