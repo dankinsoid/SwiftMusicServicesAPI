@@ -22,7 +22,9 @@
 	public class SpotifyLoginPresenter {
         
         public static var isSpotifyInstalled: Bool {
-            UIApplication.shared.canOpenURL(URL(string: AuthenticationURLType.app.rawValue)!)
+            UIApplication.shared.canOpenURL(
+                URL(string: AuthenticationURLType.app.rawValue)!
+            )
         }
         
 		/// Trigger log in flow.
@@ -30,8 +32,11 @@
 		/// - Parameters:
 		///   - scopes: A list of requested scopes and permissions.
 		@discardableResult
-		public class func login(scopes: [Scope], completion: @escaping (Error?) -> Void = { _ in }) -> UIViewController? {
-			SpotifyLogin.shared.onLogin = completion
+        public class func login(
+            scopes: [Scope],
+            completion: @escaping (Result<SPTokenResponse, LoginError>) -> Void = { _ in }
+        ) -> UIViewController? {
+            SpotifyLogin.shared.onLogin = completion
 			let urlBuilder = SpotifyLogin.shared.urlBuilder
 			if let appAuthenticationURL = urlBuilder?.authenticationURL(type: .app, scopes: scopes),
 			   UIApplication.shared.canOpenURL(appAuthenticationURL)
@@ -41,19 +46,6 @@
 				return SafariViewController(url: webAuthenticationURL)
 			}
 			return nil
-		}
-
-		public class func canOpenSpotifyApp(scopes: [Scope], open: Bool, _ completion: @escaping (Error?) -> Void = { _ in }) -> Bool {
-			SpotifyLogin.shared.onLogin = completion
-			if let appAuthenticationURL = SpotifyLogin.shared.urlBuilder?.authenticationURL(type: .app, scopes: scopes),
-			   UIApplication.shared.canOpenURL(appAuthenticationURL)
-			{
-				if open {
-					UIApplication.shared.open(appAuthenticationURL, options: [:], completionHandler: nil)
-				}
-				return true
-			}
-			return false
 		}
 	}
 

@@ -33,7 +33,7 @@
 
 	public extension View {
 		func onSpotifyLogin(_ success: @escaping () -> Void) -> some View {
-			onReceive(NotificationCenter.default.publisher(for: .SpotifyLoginSuccessful)) { _ in
+            onReceive(NotificationCenter.default.publisher(for: .spotifyLoginSuccessful)) { _ in
 				success()
 			}
 		}

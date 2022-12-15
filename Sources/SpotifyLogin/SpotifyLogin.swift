@@ -15,102 +15,58 @@
 #if canImport(SafariServices)
 	import Foundation
 	import SafariServices
+    import SpotifyAPI
+    import SwiftHttp
 
 	/// Spotify login object.
 	public class SpotifyLogin {
+        
 		/// Shared instance.
 		public static let shared = SpotifyLogin()
 
-		/// The userName for the current session.
-		public var username: String? {
-			session?.username
-		}
-
-		private var clientID: String?
-		private var clientSecret: String?
-		private var redirectURL: URL?
-		var onLogin: ((Error?) -> Void)?
-
-		internal var session: Session? {
-			didSet {
-				SessionLocalStorage.save(session: session)
-			}
-		}
-
-		internal var urlBuilder: URLBuilder?
+        private var api: Spotify.API?
+		var onLogin: ((Result<SPTokenResponse, LoginError>) -> Void)?
+        var urlBuilder: URLBuilder?
 
 		private init() {
-			session = SessionLocalStorage.loadSession()
 		}
 
 		// MARK: Interface
 
+        /// Configure login object.
+        ///
+        /// - Parameters:
+        ///   - api: Spotify.API
+        ///   - redirectURL: App's redirect url.
+        public func configure(
+            api: Spotify.API,
+            redirectURL: URL
+        ) {
+            self.api = api
+            urlBuilder = URLBuilder(clientID: api.clientID, clientSecret: api.clientSecret, redirectURL: redirectURL)
+        }
+        
 		/// Configure login object.
 		///
 		/// - Parameters:
+        ///   - client: HttpClient.
 		///   - clientID: App's client id.
 		///   - clientSecret: App's client secret.
 		///   - redirectURL: App's redirect url.
-		public func configure(clientID: String, clientSecret: String, redirectURL: URL) {
-			self.clientID = clientID
-			self.clientSecret = clientSecret
-			self.redirectURL = redirectURL
-			urlBuilder = URLBuilder(clientID: clientID, clientSecret: clientSecret, redirectURL: redirectURL)
-		}
-
-		/// Asynchronous call to retrieve the session's auth token. Automatically refreshes if auth token expired.
-		///
-		/// - Parameter completion: Returns the auth token as a string if available and an optional error.
-		public func getAccessToken() async throws -> String {
-			try await withCheckedThrowingContinuation { cont in
-				getAccessToken {
-					if let str = $0 {
-						cont.resume(returning: str)
-					} else {
-						cont.resume(throwing: $1 ?? LoginError.general)
-					}
-				}
-			}
-		}
-
-		/// Asynchronous call to retrieve the session's auth token. Automatically refreshes if auth token expired.
-		///
-		/// - Parameter completion: Returns the auth token as a string if available and an optional error.
-		public func getAccessToken(completion: @escaping (String?, Error?) -> Void) {
-			// If the login object is not fully configured, return an error
-			guard redirectURL != nil, let clientID, let clientSecret else {
-				completion(nil, LoginError.configurationMissing)
-				return
-			}
-			// If there is no session, return an error
-			guard let session else {
-				completion(nil, LoginError.noSession)
-				return
-			}
-			// If session is valid return access token, otherwsie refresh
-			if session.isValid() {
-				completion(session.accessToken, nil)
-				return
-			} else {
-				Networking.renewSession(
-					session: session,
-					clientID: clientID,
-					clientSecret: clientSecret
-				) { [weak self] session, error in
-					if let session, error == nil {
-						self?.session = session
-						completion(session.accessToken, nil)
-					} else {
-						completion(nil, error)
-					}
-				}
-			}
-		}
-
-		/// Log out of current session.
-		public func logout() {
-			SessionLocalStorage.removeSession()
-			session = nil
+		public func configure(
+            client: HttpClient = UrlSessionHttpClient(),
+            clientID: String,
+            clientSecret: String,
+            redirectURL: URL
+        ) {
+            configure(
+                api: Spotify.API(
+                    client: client,
+                    clientID: clientID,
+                    clientSecret: clientSecret
+                ),
+                redirectURL: redirectURL
+            )
 		}
 
 		/// Process URL and attempts to create a session.
@@ -119,59 +75,56 @@
 		///   - url: url to handle.
 		///   - completion: Returns an optional error or nil if successful.
 		/// - Returns: Whether or not the URL was handled.
-		public func applicationOpenURL(_ url: URL, completion block: @escaping (Error?) -> Void = { _ in }) -> Bool {
-			let completion: (Error?) -> Void = { [weak self] in
-				block($0)
-				self?.onLogin?($0)
-				self?.onLogin = nil
+		public func applicationOpenURL(_ url: URL, completion block: @escaping (Result<SPTokenResponse, LoginError>) -> Void = { _ in }) -> Bool {
+            let onLogin = self.onLogin
+			let completion: (Result<SPTokenResponse, LoginError>) -> Void = { result in
+                DispatchQueue.main.async {
+                    block(result)
+                    onLogin?(result)
+                    if case .success = result {
+                        NotificationCenter.default.post(name: .spotifyLoginSuccessful, object: nil)
+                    }
+                }
 			}
-			guard let urlBuilder,
-			      let redirectURL,
-			      let clientID,
-			      let clientSecret
-			else {
-				DispatchQueue.main.async {
-					completion(LoginError.configurationMissing)
-				}
+			guard
+                let urlBuilder,
+                let api
+            else {
+                completion(.failure(.configurationMissing))
 				return false
 			}
-
+            
 			guard urlBuilder.canHandleURL(url) else {
-				DispatchQueue.main.async {
-					completion(LoginError.invalidUrl)
-				}
+                completion(.failure(.invalidUrl))
 				return false
 			}
-
+        
+            self.onLogin = nil
 			let parsedURL = urlBuilder.parse(url: url)
-			if let code = parsedURL.code, !parsedURL.error {
-				Networking.createSession(
-					code: code,
-					redirectURL: redirectURL,
-					clientID: clientID,
-					clientSecret: clientSecret
-				) { [weak self] session, error in
-					DispatchQueue.main.async {
-						if error == nil {
-							self?.session = session
-							NotificationCenter.default.post(name: .SpotifyLoginSuccessful, object: nil)
-						}
-						completion(error)
-					}
-				}
-			} else {
-				DispatchQueue.main.async {
-					NotificationCenter.default.post(name: .SpotifyLoginSuccessful, object: nil)
-					completion(LoginError.invalidUrl)
-				}
-			}
+            guard let code = parsedURL.code, !parsedURL.error else {
+                completion(.failure(.invalidUrl))
+                return true
+            }
+            Task {
+                do {
+                    let result = try await api.accessToken(code: code, redirectURI: urlBuilder.redirectURL.absoluteString)
+                    completion(.success(result))
+                } catch {
+                    if let sperror = error as? SPError {
+                        completion(.failure(.spotifyError(sperror)))
+                    } else {
+                        completion(.failure(.general))
+                    }
+                }
+            }
 			return true
 		}
 	}
 #endif
 
 /// Login error
-public enum LoginError: Error, CaseIterable {
+public enum LoginError: Error {
+    
 	/// Generic error message.
 	case general
 	/// Spotify Login is not fully configured. Use the configuration function.
@@ -180,9 +133,10 @@ public enum LoginError: Error, CaseIterable {
 	case noSession
 	/// The url provided to the app can not be handled or parsed.
 	case invalidUrl
+    case spotifyError(SPError)
 }
 
 public extension Notification.Name {
 	/// A Notification that is emitted by SpotifyLogin after a successful login. Can be used to update the UI.
-	static let SpotifyLoginSuccessful = Notification.Name("SpotifyLoginSuccessful")
+	static let spotifyLoginSuccessful = Notification.Name("SpotifyLoginSuccessful")
 }

@@ -15,7 +15,7 @@
 import Foundation
 import SpotifyAPI
 
-internal class URLBuilder {
+final class URLBuilder {
 
 	let clientID: String
 	let clientSecret: String
@@ -23,7 +23,7 @@ internal class URLBuilder {
 
 	// MARK: Lifecycle
 
-	internal init(clientID: String, clientSecret: String, redirectURL: URL) {
+    init(clientID: String, clientSecret: String, redirectURL: URL) {
 		self.clientID = clientID
 		self.clientSecret = clientSecret
 		self.redirectURL = redirectURL
@@ -31,7 +31,7 @@ internal class URLBuilder {
 
 	// MARK: URL functions
 
-	internal func authenticationURL(type: AuthenticationURLType, scopes: [Scope]) -> URL? {
+    func authenticationURL(type: AuthenticationURLType, scopes: [Scope]) -> URL? {
 
 		let endpoint = type.rawValue
 		let scopeStrings = scopes.map { $0.rawValue }
@@ -60,7 +60,7 @@ internal class URLBuilder {
 		return URL(string: loginPageURLString)
 	}
 
-	internal func parse(url: URL) -> (code: String?, error: Bool) {
+    func parse(url: URL) -> (code: String?, error: Bool) {
 		var code: String?
 		var error = false
 		let components = URLComponents(string: url.absoluteString)
@@ -80,13 +80,13 @@ internal class URLBuilder {
 		return (code: code, error: error)
 	}
 
-	internal func canHandleURL(_ url: URL) -> Bool {
+    func canHandleURL(_ url: URL) -> Bool {
 		let redirectURLString = redirectURL.absoluteString
 		return url.absoluteString.hasPrefix(redirectURLString)
 	}
 }
 
-internal enum AuthenticationURLType: String, CaseIterable {
+enum AuthenticationURLType: String, CaseIterable {
 
 	case app = "spotify-action://"
 	case web = "https://accounts.spotify.com/"
