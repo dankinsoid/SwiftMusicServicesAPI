@@ -51,7 +51,11 @@ public extension Spotify.API {
 		public var includeExternal: External?
 
 		public enum External: String, Codable, CaseIterable {
-			case audio
+			case audio, unknown
+            
+            public init(from decoder: Decoder) throws {
+                self = try Self(rawValue: String(from: decoder)) ?? .unknown
+            }
 		}
 
 		public init(
@@ -120,7 +124,11 @@ public extension SPQuery {
 
 	enum FieldFilters: String, Codable, Hashable, CaseIterable {
 
-		case album, artist, track, year, genre, isrc, upc
+		case album, artist, track, year, genre, isrc, upc, unknown
+        
+        public init(from decoder: Decoder) throws {
+            self = try Self(rawValue: String(from: decoder)) ?? .unknown
+        }
 	}
 }
 
@@ -138,6 +146,7 @@ extension Spotify.API.SearchOutput: SpotifyPaging {
 		case .track: return tracks?.nextURL()
 		case .show: return shows?.nextURL()
 		case .episode: return episodes?.nextURL()
+        case .unknown: return nil
 		}
 	}
 }

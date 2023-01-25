@@ -100,7 +100,11 @@ public extension AppleMusic.Objects {
 	}
 
 	enum Include: String, Codable, CaseIterable {
-		case catalog, tracks
+		case catalog, tracks, unknown
+        
+        public init(from decoder: Decoder) throws {
+            self = try Self(rawValue: String(from: decoder)) ?? .unknown
+        }
 	}
 
 	struct TracksRelationship: Codable {

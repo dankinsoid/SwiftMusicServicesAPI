@@ -60,11 +60,19 @@ public extension Yandex.Music.Objects {
 	}
 
 	enum Visibility: String, Codable, CaseIterable {
-		case `public`
+		case `public`, unknown
+        
+        public init(from decoder: Decoder) throws {
+            self = try Self(rawValue: String(from: decoder)) ?? .unknown
+        }
 	}
 
 	enum Operation: String, Codable, CaseIterable {
-		case insert, delete
+		case insert, delete, unknown
+        
+        public init(from decoder: Decoder) throws {
+            self = try Self(rawValue: String(from: decoder)) ?? .unknown
+        }
 	}
 }
 

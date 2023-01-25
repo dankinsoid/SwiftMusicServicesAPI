@@ -2,7 +2,7 @@ import Foundation
 
 public extension AppleMusic.Objects {
 	enum ItemType: Codable {
-		case songs(Song), musicVideos(MusicVideo), librarySongs(Song), libraryMusicVideos(MusicVideo), libraryPlaylists(Playlist)
+		case songs(Song), musicVideos(MusicVideo), librarySongs(Song), libraryMusicVideos(MusicVideo), libraryPlaylists(Playlist), playlists(Playlist)
 
 		public var kind: AppleMusic.TrackType {
 			switch self {
@@ -11,6 +11,7 @@ public extension AppleMusic.Objects {
 			case .librarySongs: return .librarySongs
 			case .libraryMusicVideos: return .libraryMusicVideos
 			case .libraryPlaylists: return .libraryPlaylists
+            case .playlists: return .playlists
 			}
 		}
 
@@ -37,6 +38,11 @@ public extension AppleMusic.Objects {
 			case .libraryPlaylists:
 				let song = try container.decode(Playlist.self, forKey: .attributes)
 				self = .libraryPlaylists(song)
+            case .playlists:
+                let song = try container.decode(Playlist.self, forKey: .attributes)
+                self = .playlists(song)
+            case .unknown:
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "unknown track type"))
 			}
 		}
 
@@ -54,6 +60,8 @@ public extension AppleMusic.Objects {
 				try container.encode(libraryMusicVideos, forKey: .attributes)
 			case let .libraryPlaylists(libraryPlaylists):
 				try container.encode(libraryPlaylists, forKey: .attributes)
+            case let .playlists(playlists):
+                try container.encode(playlists, forKey: .attributes)
 			}
 		}
 

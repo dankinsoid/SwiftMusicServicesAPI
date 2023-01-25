@@ -61,7 +61,11 @@ public extension Yandex.Music.API {
 		public var tracks: [YMO.Track]?
 
 		public enum Status: String, Codable, CaseIterable {
-			case done, inProgress = "in-progress", failure
+			case done, inProgress = "in-progress", failure, unknown
+            
+            public init(from decoder: Decoder) throws {
+                self = try Self(rawValue: String(from: decoder)) ?? .unknown
+            }
 		}
 	}
 }

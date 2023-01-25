@@ -41,6 +41,10 @@ public extension Yandex.Music.API {
 	}
 
 	enum GrantType: String, Codable, CaseIterable {
-		case password, authorization_code, sessionid, x_token = "x-token"
+		case password, authorization_code, sessionid, x_token = "x-token", unknown
+        
+        public init(from decoder: Decoder) throws {
+            self = try Self(rawValue: String(from: decoder)) ?? .unknown
+        }
 	}
 }
