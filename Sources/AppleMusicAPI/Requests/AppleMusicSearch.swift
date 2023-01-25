@@ -10,7 +10,7 @@ public extension AppleMusic.API {
 	func search(storefront: String, input: SearchInput) async throws -> [AppleMusic.Objects.Item] {
 		let results: SearchResults = try await decodableRequest(
 			executor: client.dataTask,
-			url: baseURL.path("catalog", storefront, "search").query(from: input),
+			url: baseURL.path("v1", "catalog", storefront, "search").query(from: input),
 			method: .get,
 			headers: headers()
 		)

@@ -9,7 +9,7 @@ public extension AppleMusic.API {
 
 	func mySongs(input: MySongsInput) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
 		try dataRequest(
-			url: baseURL.path("me", "library", "songs").query(from: input)
+			url: baseURL.path("v1", "me", "library", "songs").query(from: input)
 		)
 	}
 
@@ -23,7 +23,7 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 	func songs(storefront: String, ids: [String]) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
 		try dataRequest(
-			url: baseURL.path("catalog", storefront, "songs").query(from: SongsInput(ids: ids))
+			url: baseURL.path("v1", "catalog", storefront, "songs").query(from: SongsInput(ids: ids))
 		)
 	}
 
@@ -35,7 +35,7 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 	func songsByISRC(storefront: String, isrcs: [String]) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
 		try dataRequest(
-			url: baseURL.path("catalog", storefront, "songs").query(from: SongsByISRCInput(isrcs: isrcs))
+			url: baseURL.path("v1", "catalog", storefront, "songs").query(from: SongsByISRCInput(isrcs: isrcs))
 		)
 	}
 

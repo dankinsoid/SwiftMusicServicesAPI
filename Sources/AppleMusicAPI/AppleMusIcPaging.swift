@@ -74,8 +74,8 @@ public extension AppleMusic.API {
 				observer.yield(result.data)
 
 				if let next = result.next {
-					var newUrl = HttpUrl(string: (baseURL.url.absoluteString + next).replacingOccurrences(of: "//", with: "/")) ?? url
-					newUrl = newUrl.query(url.query)
+                    var newUrl = HttpUrl(string: [baseURL.url.absoluteString, next].map { $0.trimmingCharacters(in: ["/"]) }.joined(separator: "/")) ?? url
+                    newUrl.query.merge(url.query) { new, old in new }
 
 					self.executeNext(
 						output: output,

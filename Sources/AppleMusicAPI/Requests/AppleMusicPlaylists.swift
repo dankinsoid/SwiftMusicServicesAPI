@@ -9,7 +9,7 @@ public extension AppleMusic.API {
 
 	func addPlaylist(input: AddPlaylistInput) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
 		dataRequest(
-			url: baseURL.path("me", "library", "playlists"),
+			url: baseURL.path("v1", "me", "library", "playlists"),
 			method: .post,
 			body: input
 		)
@@ -49,7 +49,7 @@ public extension AppleMusic.API {
 	func addTracks(playlistID id: String, tracks: AppleMusic.Objects.Response<AppleMusic.Objects.Item>) async throws {
 		_ = try await encodableRequest(
 			executor: client.dataTask,
-			url: baseURL.path("me", "library", "playlists", id, "tracks"),
+			url: baseURL.path("v1", "me", "library", "playlists", id, "tracks"),
 			method: .post,
 			headers: headers(),
 			body: tracks
@@ -60,7 +60,7 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 	func getTracks(playlistID id: String) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
 		dataRequest(
-			url: baseURL.path("me", "library", "playlists", id, "tracks")
+			url: baseURL.path("v1", "me", "library", "playlists", id, "tracks")
 		)
 	}
 }
@@ -68,7 +68,7 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 	func getMyPlaylists(limit: Int = 100, include: [AppleMusic.Objects.Include]? = nil) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
 		try dataRequest(
-			url: baseURL.path("me", "library", "playlists").query(from: GetMyPlaylistsInput(limit: limit, include: include))
+			url: baseURL.path("v1", "me", "library", "playlists").query(from: GetMyPlaylistsInput(limit: limit, include: include))
 		)
 	}
 
@@ -81,7 +81,7 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 	func libraryPlaylist(playlistID id: String, include: [AppleMusic.Objects.Include]? = [.tracks, .catalog]) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
 		try dataRequest(
-			url: baseURL.path("me", "library", "playlists", id).query(from: LibraryPlaylistInput(include: include))
+			url: baseURL.path("v1", "me", "library", "playlists", id).query(from: LibraryPlaylistInput(include: include))
 		)
 	}
 
@@ -93,7 +93,7 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 	func getPlaylists(ids: [String], storefront: String) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
 		try dataRequest(
-			url: baseURL.path("catalog", storefront, "playlists").query(from: GetPlaylistsInput(ids: ids))
+			url: baseURL.path("v1", "catalog", storefront, "playlists").query(from: GetPlaylistsInput(ids: ids))
 		)
 	}
 

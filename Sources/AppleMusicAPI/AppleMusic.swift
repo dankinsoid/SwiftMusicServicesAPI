@@ -4,8 +4,10 @@ import SwiftHttp
 import VDCodable
 
 public enum AppleMusic {
+    
 	public final class API: HttpCodablePipelineCollection {
-		public static var baseURL = HttpUrl(host: "api.music.apple.com").path("v1")
+        
+        public static var baseURL = HttpUrl(host: "api.music.apple.com", trailingSlashEnabled: false)
 		public var client: HttpClient
 		public var baseURL: HttpUrl
 		public var token: AppleMusic.Objects.Tokens?
