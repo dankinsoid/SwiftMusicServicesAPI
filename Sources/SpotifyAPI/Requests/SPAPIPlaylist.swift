@@ -4,16 +4,17 @@ import SwiftHttp
 public extension Spotify.API {
 	/// https://developer.spotify.com/documentation/web-api/reference/playlists/get-a-list-of-current-users-playlists/
 	func playlists(
-		limit: Int? = 50,
+		limit: Int? = nil,
 		offset: Int? = 0
 	) throws -> AsyncThrowingStream<[SPPlaylistSimplified], Error> {
 		try pagingRequest(
 			output: SPPaging<SPPlaylistSimplified>.self,
 			executor: dataTask,
-			url: v1BaseURL.path("me", "playlists").query(from: PlaylistsInput(limit: limit, offset: offset)),
+			url: v1BaseURL.path("me", "playlists").query(from: PlaylistsInput(limit: limit ?? 50, offset: offset)),
 			method: .get,
 			parameters: (),
-			headers: headers()
+			headers: headers(),
+            limit: limit
 		)
 	}
 
@@ -30,17 +31,18 @@ public extension Spotify.API {
 	/// https://developer.spotify.com/console/get-playlist-tracks/
 	func playlistTracks(
 		id: String,
-		limit: Int? = 100,
+		limit: Int? = nil,
 		offset: Int? = 0,
 		market: String? = nil
 	) throws -> AsyncThrowingStream<[SPPlaylistTrack], Error> {
 		try pagingRequest(
 			output: SPPaging<SPPlaylistTrack>.self,
 			executor: dataTask,
-			url: v1BaseURL.path("playlists", id, "tracks").query(from: SavedInput(limit: limit, offset: offset, market: market)),
+			url: v1BaseURL.path("playlists", id, "tracks").query(from: SavedInput(limit: limit ?? 100, offset: offset, market: market)),
 			method: .get,
 			parameters: (),
-			headers: headers()
+			headers: headers(),
+            limit: limit
 		)
 	}
 

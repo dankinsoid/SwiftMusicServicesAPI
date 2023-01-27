@@ -8,7 +8,7 @@ public extension AppleMusic.API {
 	}
 
 	func addPlaylist(input: AddPlaylistInput) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
-		dataRequest(
+		return dataRequest(
 			url: baseURL.path("v1", "me", "library", "playlists"),
 			method: .post,
 			body: input
@@ -66,14 +66,15 @@ public extension AppleMusic.API {
 }
 
 public extension AppleMusic.API {
-	func getMyPlaylists(limit: Int = 100, include: [AppleMusic.Objects.Include]? = nil) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
-		try dataRequest(
-			url: baseURL.path("v1", "me", "library", "playlists").query(from: GetMyPlaylistsInput(limit: limit, include: include))
+	func getMyPlaylists(limit: Int? = nil, include: [AppleMusic.Objects.Include]? = nil) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
+		return try dataRequest(
+			url: baseURL.path("v1", "me", "library", "playlists").query(from: GetMyPlaylistsInput(limit: limit ?? 100, include: include)),
+            limit: limit
 		)
 	}
 
 	struct GetMyPlaylistsInput: Encodable {
-		public var limit = 100
+        public var limit: Int
 		public var include: [AppleMusic.Objects.Include]?
 	}
 }

@@ -27,19 +27,20 @@ public extension Spotify.API {
 		public var tracks: [SPTrack]
 	}
 
-	func myTracks(limit: Int? = 50, offset: Int? = nil, market: String? = nil) throws -> AsyncThrowingStream<[SPSavedTrack], Error> {
+	func myTracks(limit: Int? = nil, offset: Int? = nil, market: String? = nil) throws -> AsyncThrowingStream<[SPSavedTrack], Error> {
 		try pagingRequest(
 			output: SPPaging<SPSavedTrack>.self,
 			executor: dataTask,
-			url: v1BaseURL.path("me", "tracks").query(from: SavedInput(limit: limit, offset: offset, market: market)),
+			url: v1BaseURL.path("me", "tracks").query(from: SavedInput(limit: limit ?? 50, offset: offset, market: market)),
 			method: .get,
 			parameters: (),
-			headers: headers()
+			headers: headers(),
+            limit: limit
 		)
 	}
 
 	struct SavedInput: Encodable {
-		public var limit: Int? = 50
+		public var limit: Int?
 		public var offset: Int?
 		public var market: String?
 	}

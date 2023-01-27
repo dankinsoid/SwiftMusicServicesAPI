@@ -27,6 +27,7 @@ extension Spotify.API {
 		body: Data? = nil,
 		parameters: Output.NextParameter,
 		headers: [HttpHeaderKey: String],
+        limit: Int? = nil,
 		validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 	) -> AsyncThrowingStream<[Output.Item], Error> {
 		AsyncThrowingStream { cont in
@@ -42,6 +43,7 @@ extension Spotify.API {
 						validators: validators
 					)
 				},
+                limit: limit,
 				observer: cont,
 				parameters: parameters
 			)
@@ -51,6 +53,7 @@ extension Spotify.API {
 	private func executeNext<Output: SpotifyPaging & Decodable>(
 		output: Output.Type,
 		request: @escaping () async throws -> Output,
+        limit: Int? = nil,
 		observer: AsyncThrowingStream<[Output.Item], Error>.Continuation,
 		parameters: Output.NextParameter
 	) {
@@ -58,10 +61,12 @@ extension Spotify.API {
 			do {
 				let result = try await request()
 				observer.yield(result.items)
-				if let url = result.nextURL(parameters: parameters) {
+                let newLimit = limit.map { $0 - result.items.count }
+                if let url = result.nextURL(parameters: parameters), (newLimit ?? .max) > 0 {
 					self.executeNext(
 						output: output,
 						request: { try await self.next(url: url) },
+                        limit: newLimit,
 						observer: observer,
 						parameters: parameters
 					)
