@@ -6,7 +6,7 @@ public struct SPPlaylist: Codable {
 	/// Known external URLs for this playlist.
 	public var externalUrls: SPExternalURL?
 	/// Information about the followers of the playlist.
-	public var followers: [SPFollower]?
+	public var followers: SPFollowers?
 	/// A link to the Web API endpoint providing full details of the playlist.
 	public var href: String
 	/// The [Spotify ID](/documentation/web-api/#spotify-uris-and-ids) for the playlist.
@@ -28,7 +28,7 @@ public struct SPPlaylist: Codable {
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the playlist.
 	public var uri: String
 
-	public init(collaborative: Bool, description: String? = nil, externalUrls: SPExternalURL? = nil, followers: [SPFollower]? = nil, href: String, id: String, images: [SPImage]? = nil, name: String, owner: SPUser, snapshotId: String, tracks: SPTracks? = nil, type: String, uri: String) {
+	public init(collaborative: Bool, description: String? = nil, externalUrls: SPExternalURL? = nil, followers: SPFollowers? = nil, href: String, id: String, images: [SPImage]? = nil, name: String, owner: SPUser, snapshotId: String, tracks: SPTracks? = nil, type: String, uri: String) {
 		self.collaborative = collaborative
 		self.description = description
 		self.externalUrls = externalUrls

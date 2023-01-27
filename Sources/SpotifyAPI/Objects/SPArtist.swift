@@ -2,7 +2,7 @@ public struct SPArtist: Codable {
 	/// Known external URLs for this artist.
 	public var externalUrls: SPExternalURL?
 	/// Information about the followers of the artist.
-	public var followers: [SPFollower]?
+	public var followers: SPFollowers?
 	/// A list of the genres the artist is associated with. For example: "Prog Rock" , "Post-Grunge". (If not yet classified, the array is empty.)
 	public var genres: [String]?
 	/// A link to the Web API endpoint providing full details of the artist.
@@ -20,7 +20,7 @@ public struct SPArtist: Codable {
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the artist.
 	public var uri: String
 
-	public init(externalUrls: SPExternalURL? = nil, followers: [SPFollower]? = nil, genres: [String]? = nil, href: String? = nil, id: String, images: [SPImage]? = nil, name: String, popularity: Int? = nil, type: String? = nil, uri: String) {
+	public init(externalUrls: SPExternalURL? = nil, followers: SPFollowers? = nil, genres: [String]? = nil, href: String? = nil, id: String, images: [SPImage]? = nil, name: String, popularity: Int? = nil, type: String? = nil, uri: String) {
 		self.externalUrls = externalUrls
 		self.followers = followers
 		self.genres = genres
