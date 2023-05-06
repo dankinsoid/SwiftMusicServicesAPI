@@ -1,6 +1,7 @@
 import Foundation
 
 public extension Yandex.Music.Objects {
+    
 	struct Icon: Codable {
 		/// Цвет заднего фона в HEX.
 		public var backgroundColor: HEXColor

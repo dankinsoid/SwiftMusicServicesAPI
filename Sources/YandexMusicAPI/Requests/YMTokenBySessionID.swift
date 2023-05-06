@@ -4,6 +4,7 @@ import VDCodable
 import SimpleCoders
 
 public extension Yandex.Music.API {
+    
 	func tokenBySessionID(cookies: [(String, String)], track_id: String?, info: TokenBySessionIDQuery) async throws -> Yandex.Music.API.TokenOutput {
 		let cookies = cookies.map { "\($0.0)=\($0.1)" }.joined(separator: "; ")
 		let set = CharacterSet(charactersIn: "=\"#%/<>?@\\^`{|};: ").inverted
@@ -29,6 +30,7 @@ public extension Yandex.Music.API {
 	}
 
 	struct TokenBySessionIDQuery: Codable {
+        
 		public var app_id = "ru.yandex.mobile.music"
 		public var uuid = Yandex.Music.API.uuid
 		public var app_version_name = "5.70"
@@ -70,12 +72,22 @@ public extension Yandex.Music.API {
 		}
 	}
 
-	struct TokenBySessionIDInput: Codable {
+    struct TokenBySessionIDInput: Codable {
+        
 		public var client_id = "c0ebe342af7d48fbbbfcf2d2eedb8f9e" // YM.API.clientID
 		public var client_secret = "ad0a908f0aa341a182a37ecd75bc319e" // YM.API.clientSecret
 		public var grant_type: YM.API.GrantType = .sessionid
 		public var host = "yandex.com"
 		public var track_id: String?
 		public var cookies: String
+        
+        public init(client_id: String = "c0ebe342af7d48fbbbfcf2d2eedb8f9e", client_secret: String = "ad0a908f0aa341a182a37ecd75bc319e", grant_type: YM.API.GrantType = .sessionid, host: String = "yandex.com", track_id: String? = nil, cookies: String) {
+            self.client_id = client_id
+            self.client_secret = client_secret
+            self.grant_type = grant_type
+            self.host = host
+            self.track_id = track_id
+            self.cookies = cookies
+        }
 	}
 }
