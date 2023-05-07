@@ -166,26 +166,6 @@ public extension Yandex.Music.API.SearchOutput {
 	}
 }
 
-public extension Yandex.Music.API.TokenBySessionIDInput {
-	static func publicInit(
-		client_id: String = "c0ebe342af7d48fbbbfcf2d2eedb8f9e",
-		client_secret: String = "ad0a908f0aa341a182a37ecd75bc319e",
-		grant_type: YM.API.GrantType = .sessionid,
-		host: String = "yandex.com",
-		track_id: String? = nil,
-		cookies: String
-	) -> Self {
-		.init(
-			client_id: client_id,
-			client_secret: client_secret,
-			grant_type: grant_type,
-			host: host,
-			track_id: track_id,
-			cookies: cookies
-		)
-	}
-}
-
 public extension Yandex.Music.API.TokenOutput {
 	static func publicInit(
 		tokenType: String? = nil,

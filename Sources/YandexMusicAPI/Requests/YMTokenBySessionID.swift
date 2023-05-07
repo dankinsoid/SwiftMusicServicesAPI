@@ -31,31 +31,30 @@ public extension Yandex.Music.API {
 
 	struct TokenBySessionIDQuery: Codable {
         
-		public var app_id = "ru.yandex.mobile.music"
-		public var uuid = Yandex.Music.API.uuid
-		public var app_version_name = "5.70"
-		public var ifv = YM.API.ifv
-		public var am_version_name = "6.6.1"
-		//			public var deviceidhash	= "4692844376287701807"
-		public var manufacturer = "Apple"
+        public var app_id: String
+        public var uuid: String
+        public var app_version_name: String
+        public var ifv: UUID
+        public var am_version_name: String
+        public var manufacturer: String
 		public var deviceid: UUID
 		public var device_name: String
 		public var device_id: UUID
-		public var app_platform = "ios"
-		public var model = "iPhone14,5"
+        public var app_platform: String
+        public var model: String
 
 		public init(
 			app_id: String = "ru.yandex.mobile.music",
 			uuid: String = Yandex.Music.API.uuid,
-			app_version_name: String = "5.70",
+			app_version_name: String = "6.16",
 			ifv: UUID = YM.API.ifv,
-			am_version_name: String = "6.6.1",
+			am_version_name: String = "6.10.1",
 			//			public var deviceidhash	= "4692844376287701807"
 			manufacturer: String = "Apple",
-			deviceid: UUID, // "FBF6FE07-938F-43D6-8EC1-301A1FFD2D94"
+			deviceid: UUID,
 			device_name: String,
-			device_id: UUID, // "FBF6FE07-938F-43D6-8EC1-301A1FFD2D94"
-			app_platform: String = "ios",
+			device_id: UUID,
+			app_platform: String = "iPhone",
 			model: String = "iPhone14,5"
 		) {
 			self.app_id = app_id
@@ -74,10 +73,10 @@ public extension Yandex.Music.API {
 
     struct TokenBySessionIDInput: Codable {
         
-		public var client_id = "c0ebe342af7d48fbbbfcf2d2eedb8f9e" // YM.API.clientID
-		public var client_secret = "ad0a908f0aa341a182a37ecd75bc319e" // YM.API.clientSecret
-		public var grant_type: YM.API.GrantType = .sessionid
-		public var host = "yandex.com"
+        public var client_id: String
+        public var client_secret: String
+		public var grant_type: YM.API.GrantType
+        public var host: String
 		public var track_id: String?
 		public var cookies: String
         
