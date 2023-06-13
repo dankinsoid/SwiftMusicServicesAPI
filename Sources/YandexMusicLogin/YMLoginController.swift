@@ -4,9 +4,10 @@
 	import VDCodable
 	import WebKit
 	import YandexMusicAPI
+    import Logging
 
 	open class YMLoginController: UIViewController, WKNavigationDelegate {
-		open var api = YM.API(client: UrlSessionHttpClient())
+        open var api = YM.API(client: UrlSessionHttpClient(logLevel: .debug))
 		open var clientId = YM.API.clientID
 		open var clientSecret = YM.API.clientSecret
 		open var info = YMLoginInfo()
@@ -19,7 +20,7 @@
 		private var _yasc: String?
 
 		public init(
-			api: YM.API = YM.API(client: UrlSessionHttpClient()),
+			api: YM.API = YM.API(client: UrlSessionHttpClient(logLevel: .debug)),
 			info: YMLoginInfo = YMLoginInfo(),
 			clientId: String = YM.API.clientID,
 			clientSecret: String = YM.API.clientSecret,

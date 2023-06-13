@@ -17,6 +17,7 @@
 	import SafariServices
     import SpotifyAPI
     import SwiftHttp
+    import Logging
 
 	/// Spotify login object.
 	public class SpotifyLogin {
@@ -54,7 +55,7 @@
 		///   - clientSecret: App's client secret.
 		///   - redirectURL: App's redirect url.
 		public func configure(
-            client: HttpClient = UrlSessionHttpClient(),
+            client: HttpClient = UrlSessionHttpClient(logLevel: .debug),
             clientID: String,
             clientSecret: String,
             redirectURL: URL
