@@ -6,7 +6,7 @@ import VDCodable
 
 public struct VK {
 	public final class API: HttpCodablePipelineCollection {
-		public static var baseURL = HttpUrl(host: "m.vk.com")
+		public static var baseURL = HttpUrl(host: "m.vk.com", trailingSlashEnabled: false)
 
 		public var client: HttpClient
 		public var baseURL: HttpUrl
