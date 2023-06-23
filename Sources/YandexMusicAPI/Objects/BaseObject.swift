@@ -40,22 +40,24 @@ public extension Yandex.Music.Objects {
 	}
 
 	struct InvocationInfo: Codable {
+        
 		public init(hostname: String? = nil, requestId: String? = nil, execDurationMillis: String? = nil) {
 			self.hostname = hostname
 			self.requestId = requestId
-			self.execDurationMillis = execDurationMillis
+//			self.execDurationMillis = execDurationMillis
 		}
 
 		public var hostname: String?
 		public var requestId: String?
-		private var execDurationMillis: String?
-		public var executionDurationInMilliseconds: Int? {
-			guard let str = execDurationMillis else { return nil }
-			return Int(str)
-		}
+//		private var execDurationMillis: String?
+        
+//		public var executionDurationInMilliseconds: Int? {
+//			guard let str = execDurationMillis else { return nil }
+//			return Int(str)
+//		}
 
 		public enum CodingKeys: String, CodingKey, CaseIterable {
-			case hostname, requestId = "req-id", execDurationMillis = "exec-duration-millis"
+			case hostname, requestId = "req-id"//, execDurationMillis = "exec-duration-millis"
 		}
 	}
 
