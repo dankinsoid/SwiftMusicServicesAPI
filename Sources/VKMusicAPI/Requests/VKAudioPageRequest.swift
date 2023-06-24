@@ -49,6 +49,7 @@ extension VK.API.AudioFirstPageRequestOutput: HTMLStringInitable {
 }
 
 public extension VK.API {
+    
 	func audioPageRequest(act: String, offset: Int, from: String? = nil) async throws -> [VKAudio] {
 		let input = AudioPageRequestInput(act: act, offset: offset, from: from)
 		let output: AudioPageRequestOutput = try await decodableRequest(
@@ -56,7 +57,7 @@ public extension VK.API {
 			url: baseURL.path("audio").query(from: input),
 			method: .post,
 			body: multipartData(AudioPageRequestBody()),
-			headers: headers(with: [.xRequestedWith: "XMLHttpRequest"], multipart: true)
+			headers: headers(multipart: true)
 		)
 		return output.list
 	}

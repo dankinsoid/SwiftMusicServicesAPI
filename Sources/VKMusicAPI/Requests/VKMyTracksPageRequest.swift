@@ -4,18 +4,14 @@ import SwiftHttp
 import SwiftSoup
 
 public extension VK.API {
+    
 	func myTracksPageRequest(start_from: String, block: String) async throws -> VKAudioListSection {
 		let input = MyTracksPageRequestInput(act: .block, block: block, start_from: start_from)
 		let response = try await rawRequest(
 			executor: client.dataTask,
 			url: baseURL.path("audio").query(from: input),
 			method: .post,
-			headers: headers(
-				with: [
-					.xRequestedWith: "XMLHttpRequest",
-				],
-				multipart: true
-			),
+			headers: headers(multipart: true),
 			body: multipartData(MyTracksPageRequestInputBody())
 		)
 		var string = String(data: response.data, encoding: .utf8) ?? ""
