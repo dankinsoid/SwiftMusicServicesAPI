@@ -5,6 +5,7 @@ import SwiftHttp
 import VDCodable
 
 public struct VK {
+    
 	public final class API: HttpCodablePipelineCollection {
 		public static var baseURL = HttpUrl(host: "m.vk.com", trailingSlashEnabled: false)
 
@@ -76,7 +77,12 @@ public struct VK {
 				body: body,
 				validators: validators
 			)
-			let string = String(data: response.data, encoding: .utf8) ?? ""
+            let string: String
+            do {
+                string = try JSONDecoder().decode(VKPage.self, from: response.data).html
+            } catch {
+                string = String(data: response.data, encoding: .utf8) ?? ""
+            }
 			return try U(htmlString: string)
 		}
 
@@ -99,8 +105,4 @@ public struct VK {
 
 public extension VK {
 	enum Objects {}
-}
-
-private struct VKPage: Codable {
-	var html: String
 }

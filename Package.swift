@@ -88,6 +88,13 @@ let package = Package(
 			name: "VKLogin",
 			dependencies: [.target(name: "VKMusicAPI")]
 		),
+        .testTarget(
+            name: "VKMusicAPITests",
+            dependencies: [
+                .target(name: "VKMusicAPI"),
+                .target(name: "VKLogin")
+            ]
+        ),
 		.target(
 			name: "AppleMusicAPI",
 			dependencies: [

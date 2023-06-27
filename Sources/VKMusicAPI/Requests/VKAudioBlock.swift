@@ -20,7 +20,7 @@ public extension VK.API {
 extension VK.API.AudioBlock: HTMLStringInitable {
     
     public init(htmlString html: String) throws {
-        let regex = "href=\\\\\"\\\\(\\/audio\\?act=block[^\\\\]+)"
+        let regex = #"href=\\?"\\?(\/audio\?act=block[^\\"]+)"#
         guard let href = html.firstGroup(of: regex) else {
             throw DecodingError.keyNotFound(PlainCodingKey("href"), DecodingError.Context(codingPath: [], debugDescription: "", underlyingError: nil))
         }

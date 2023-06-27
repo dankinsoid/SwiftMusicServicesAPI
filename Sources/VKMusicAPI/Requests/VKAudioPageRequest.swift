@@ -59,7 +59,7 @@ public extension VK.API {
 			body: multipartData(AudioPageRequestBody()),
 			headers: headers(multipart: true)
 		)
-		return output.list
+        return output.data.flatMap(\.list)
 	}
 
 	struct AudioPageRequestInput: Codable {
@@ -72,18 +72,30 @@ public extension VK.API {
 		public var _ajax = 1
 	}
 
-	struct AudioPageRequestOutput {
-		public var list: [VKAudio]
-	}
-}
-
-extension VK.API.AudioPageRequestOutput: Decodable {
-	public init(from decoder: Decoder) throws {
-		let container = try decoder.container(keyedBy: PlainCodingKey.self)
-		var unkeyed = try container.nestedUnkeyedContainer(forKey: "data")
-		_ = try unkeyed.decode(JSON.self)
-		_ = try unkeyed.decode(JSON.self)
-		list = try unkeyed.decode([VKAudio].self)
+    struct AudioPageRequestOutput: Decodable {
+        
+        public var data: [AudioData]
+        
+        public enum AudioData: Decodable {
+            case unknown
+            case plist([VKAudio])
+            
+            public var list: [VKAudio] {
+                switch self {
+                case .unknown: return []
+                case let .plist(list): return list
+                }
+            }
+            
+            public init(from decoder: Decoder) throws {
+                do {
+                    let list = try [VKAudio].init(from: decoder)
+                    self = .plist(list)
+                } catch {
+                    self = .unknown
+                }
+            }
+        }
 	}
 }
 

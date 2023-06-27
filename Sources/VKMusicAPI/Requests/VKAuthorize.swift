@@ -23,9 +23,9 @@ public extension VK.API {
 
 	func checkAuthorize() async throws -> VKAuthorizationState {
 		try await request(
-			url: baseURL,
+            url: baseURL.path("feed"),
 			method: .get,
-			minimum: true
+			minimum: false
 		)
 	}
 }
