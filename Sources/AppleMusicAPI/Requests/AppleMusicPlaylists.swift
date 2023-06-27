@@ -1,6 +1,5 @@
 import Foundation
 import SwiftHttp
-import VDCodable
 
 public extension AppleMusic.API {
 	func addPlaylist(name: String, description: String, tracks: [AppleMusic.Objects.ShortItem]) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {

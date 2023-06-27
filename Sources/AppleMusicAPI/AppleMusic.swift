@@ -1,7 +1,6 @@
 import Foundation
 import SwiftHttp
 @_exported import SwiftMusicServicesApi
-import VDCodable
 
 public enum AppleMusic {
     
@@ -20,11 +19,11 @@ public enum AppleMusic {
 		}
 
 		public func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
-			HttpRequestEncoder(encoder: VDJSONEncoder())
+			HttpRequestEncoder(encoder: JSONEncoder())
 		}
 
 		public func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
-			HttpResponseDecoder(decoder: VDJSONDecoder())
+			HttpResponseDecoder(decoder: JSONDecoder())
 		}
 
 		public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: Bool = true) -> [HttpHeaderKey: String] {

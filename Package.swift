@@ -47,7 +47,7 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
-		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.11.0"),
+		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.12.0"),
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
 		.package(url: "https://github.com/dankinsoid/MultipartFormDataKit.git", from: "1.0.2"),
 		.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
@@ -76,6 +76,13 @@ let package = Package(
 			name: "YandexMusicLogin",
 			dependencies: [.target(name: "YandexMusicAPI")]
 		),
+        .testTarget(
+            name: "YandexMusicTests",
+            dependencies: [
+                .target(name: "YandexMusicAPI"),
+                .target(name: "YandexMusicLogin")
+            ]
+        ),
 		.target(
 			name: "VKMusicAPI",
 			dependencies: [

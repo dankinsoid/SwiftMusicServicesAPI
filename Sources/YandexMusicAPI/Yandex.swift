@@ -40,7 +40,7 @@ public extension Yandex.Music {
 		}
 
 		public func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
-			HttpRequestEncoder(encoder: VDJSONEncoder())
+			HttpRequestEncoder(encoder: JSONEncoder())
 		}
 
 		public func decoder<T: Decodable>() -> HttpResponseDecoder<T> {

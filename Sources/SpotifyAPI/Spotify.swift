@@ -38,7 +38,7 @@ public enum Spotify {
 
 		public nonisolated func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
 			HttpRequestEncoder(
-				encoder: VDJSONEncoder()
+				encoder: JSONEncoder()
 			)
 		}
 
