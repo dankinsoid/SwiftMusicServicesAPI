@@ -2,6 +2,7 @@ import Foundation
 import SwiftHttp
 
 public extension Spotify.API {
+
 	/// https://developer.spotify.com/documentation/web-api/reference/playlists/get-a-list-of-current-users-playlists/
 	func playlists(
 		limit: Int? = nil,
@@ -9,12 +10,11 @@ public extension Spotify.API {
 	) throws -> AsyncThrowingStream<[SPPlaylistSimplified], Error> {
 		try pagingRequest(
 			output: SPPaging<SPPlaylistSimplified>.self,
-			executor: dataTask,
 			url: v1BaseURL.path("me", "playlists").query(from: PlaylistsInput(limit: limit ?? 50, offset: offset)),
 			method: .get,
 			parameters: (),
 			headers: headers(),
-            limit: limit
+			limit: limit
 		)
 	}
 
@@ -37,12 +37,11 @@ public extension Spotify.API {
 	) throws -> AsyncThrowingStream<[SPPlaylistTrack], Error> {
 		try pagingRequest(
 			output: SPPaging<SPPlaylistTrack>.self,
-			executor: dataTask,
 			url: v1BaseURL.path("playlists", id, "tracks").query(from: SavedInput(limit: limit ?? 100, offset: offset, market: market)),
 			method: .get,
 			parameters: (),
 			headers: headers(),
-            limit: limit
+			limit: limit
 		)
 	}
 
@@ -51,7 +50,6 @@ public extension Spotify.API {
 		input: PlaylistInput
 	) async throws -> SPPlaylist {
 		try await decodableRequest(
-			executor: dataTask,
 			url: v1BaseURL.path("playlists", id).query(from: input),
 			method: .get,
 			headers: headers()
@@ -77,7 +75,6 @@ public extension Spotify.API {
 		input: AddPlaylistInput
 	) async throws -> AddPlaylistOutput {
 		try await codableRequest(
-			executor: dataTask,
 			url: v1BaseURL.path("playlists", id, "tracks"),
 			method: .post,
 			headers: headers(),
@@ -106,7 +103,6 @@ public extension Spotify.API {
 		input: CreatePlaylistInput
 	) async throws -> SPPlaylist {
 		try await codableRequest(
-			executor: dataTask,
 			url: v1BaseURL.path("users", userId, "playlists"),
 			method: .post,
 			headers: headers(with: [.contentType: "application/json"]),
@@ -115,6 +111,7 @@ public extension Spotify.API {
 	}
 
 	struct CreatePlaylistInput: Encodable {
+
 		/// Required. The name for the new playlist, for example "Your Coolest Playlist" . This name does not need to be unique; a user may have several playlists with the same name.
 		public var name: String
 		/// Optional. Defaults to true . If true the playlist will be public, if false it will be private. To be able to create private playlists, the user must have granted the playlist-modify-private scope .

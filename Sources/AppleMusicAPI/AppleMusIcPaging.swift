@@ -1,5 +1,6 @@
 import Foundation
 import SwiftHttp
+import SwiftMusicServicesApi
 
 public extension AppleMusic.API {
 	func dataRequest<T: Decodable>(
@@ -7,7 +8,7 @@ public extension AppleMusic.API {
 		method: HttpMethod = .get,
 		body: some Encodable,
 		headers: [HttpHeaderKey: String] = [:],
-        limit: Int? = nil,
+		limit: Int? = nil,
 		auth: Bool = true,
 		validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 	) -> AsyncThrowingStream<[T], Error> {
@@ -15,10 +16,9 @@ public extension AppleMusic.API {
 			self.executeNext(
 				output: T.self,
 				url: url,
-                limit: limit,
+				limit: limit,
 				request: {
 					try await self.codableRequest(
-						executor: self.client.dataTask,
 						url: url,
 						method: method,
 						headers: self.headers(with: headers, auth: auth),
@@ -39,17 +39,16 @@ public extension AppleMusic.API {
 		body: Data? = nil,
 		headers: [HttpHeaderKey: String] = [:],
 		auth: Bool = true,
-        limit: Int? = nil,
+		limit: Int? = nil,
 		validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 	) -> AsyncThrowingStream<[T], Error> {
 		AsyncThrowingStream { cont in
 			self.executeNext(
 				output: T.self,
 				url: url,
-                limit: limit,
+				limit: limit,
 				request: {
 					try await self.decodableRequest(
-						executor: self.client.dataTask,
 						url: url,
 						method: method,
 						body: body,
@@ -67,7 +66,7 @@ public extension AppleMusic.API {
 	private func executeNext<Output: Decodable>(
 		output: Output.Type,
 		url: HttpUrl,
-        limit: Int? = nil,
+		limit: Int? = nil,
 		request: @escaping () async throws -> AppleMusic.Objects.Response<Output>,
 		observer: AsyncThrowingStream<[Output], Error>.Continuation,
 		auth: Bool,
@@ -77,19 +76,18 @@ public extension AppleMusic.API {
 			do {
 				let result = try await request()
 				observer.yield(result.data)
-                let newLimit = limit.map { $0 - result.data.count }
+				let newLimit = limit.map { $0 - result.data.count }
 
-                if let next = result.next, (newLimit ?? .max) > 0 {
-                    var newUrl = HttpUrl(string: [baseURL.url.absoluteString, next].map { $0.trimmingCharacters(in: ["/"]) }.joined(separator: "/")) ?? url
-                    newUrl.query.merge(url.query) { new, old in new }
+				if let next = result.next, (newLimit ?? .max) > 0 {
+					var newUrl = HttpUrl(string: [baseURL.url.absoluteString, next].map { $0.trimmingCharacters(in: ["/"]) }.joined(separator: "/")) ?? url
+					newUrl.query.merge(url.query) { new, _ in new }
 
 					self.executeNext(
 						output: output,
 						url: newUrl,
-                        limit: newLimit,
+						limit: newLimit,
 						request: {
 							try await self.decodableRequest(
-								executor: self.client.dataTask,
 								url: url,
 								method: .get,
 								headers: self.headers(auth: auth),

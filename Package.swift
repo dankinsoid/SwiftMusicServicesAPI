@@ -76,13 +76,13 @@ let package = Package(
 			name: "YandexMusicLogin",
 			dependencies: [.target(name: "YandexMusicAPI")]
 		),
-        .testTarget(
-            name: "YandexMusicTests",
-            dependencies: [
-                .target(name: "YandexMusicAPI"),
-                .target(name: "YandexMusicLogin")
-            ]
-        ),
+		.testTarget(
+			name: "YandexMusicTests",
+			dependencies: [
+				.target(name: "YandexMusicAPI"),
+				.target(name: "YandexMusicLogin"),
+			]
+		),
 		.target(
 			name: "VKMusicAPI",
 			dependencies: [
@@ -95,13 +95,13 @@ let package = Package(
 			name: "VKLogin",
 			dependencies: [.target(name: "VKMusicAPI")]
 		),
-        .testTarget(
-            name: "VKMusicAPITests",
-            dependencies: [
-                .target(name: "VKMusicAPI"),
-                .target(name: "VKLogin")
-            ]
-        ),
+		.testTarget(
+			name: "VKMusicAPITests",
+			dependencies: [
+				.target(name: "VKMusicAPI"),
+				.target(name: "VKLogin"),
+			]
+		),
 		.target(
 			name: "AppleMusicAPI",
 			dependencies: [

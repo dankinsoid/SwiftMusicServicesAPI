@@ -3,15 +3,15 @@ import SwiftHttp
 import VDCodable
 
 public extension Yandex.Music.API {
-    
+
 	enum Import {
-        
+
 		public static var baseURL = HttpUrl(host: "music.yandex.ru")
 	}
 }
 
 public extension Yandex.Music.API {
-    
+
 	func importSearch(_ tracks: [E3U.Line]) async throws -> [YMO.Track] {
 		let e3u = E3U(lines: tracks)
 		let code = try await importFile(e3u: e3u).importCode
@@ -28,10 +28,9 @@ public extension Yandex.Music.API {
 }
 
 public extension Yandex.Music.API {
-    
+
 	func importFile(e3u: E3U) async throws -> ImportFileOutput {
 		let response = try await encodableRequest(
-			executor: client.dataTask,
 			url: Yandex.Music.API.Import.baseURL.path("handlers").resource("import-file.jsx"),
 			method: .post,
 			headers: [
@@ -49,10 +48,9 @@ public extension Yandex.Music.API {
 }
 
 public extension Yandex.Music.API {
-    
+
 	func importCode(_ code: String) async throws -> ImportCodeOutput {
 		let response = try await rawRequest(
-			executor: client.dataTask,
 			url: Yandex.Music.API.Import.baseURL
 				.path("handlers").resource("import.jsx")
 				.query("code", code),
@@ -62,29 +60,29 @@ public extension Yandex.Music.API {
 	}
 
 	struct ImportCodeOutput: Codable {
-        
+
 		public var status: RawEnum<Status>
 		public var tracks: [YMO.Track]?
 
 		public enum Status: String, Codable, CaseIterable {
 			case done, inProgress = "in-progress", failure, unknown
-            
-            public init(from decoder: Decoder) throws {
-                self = try Self(rawValue: String(from: decoder)) ?? .unknown
-            }
+
+			public init(from decoder: Decoder) throws {
+				self = try Self(rawValue: String(from: decoder)) ?? .unknown
+			}
 		}
 	}
 }
 
 public extension Yandex.Music.Objects {
-    
+
 	struct ImportResult<T: Codable>: Codable {
-        
+
 		public let success: Bool
 		public var object: T
 
 		public enum CodingKeys: String, CodingKey, CaseIterable {
-            
+
 			case success
 		}
 

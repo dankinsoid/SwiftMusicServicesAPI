@@ -5,7 +5,6 @@ public extension Spotify.API {
 
 	func tracks(ids: [String], market: String? = nil) async throws -> [SPTrack] {
 		let output: TracksOutput = try await decodableRequest(
-			executor: dataTask,
 			url: v1BaseURL.path("tracks").query(from: TracksInput(ids: ids, market: market)),
 			method: .get,
 			headers: headers()
@@ -30,12 +29,11 @@ public extension Spotify.API {
 	func myTracks(limit: Int? = nil, offset: Int? = nil, market: String? = nil) throws -> AsyncThrowingStream<[SPSavedTrack], Error> {
 		try pagingRequest(
 			output: SPPaging<SPSavedTrack>.self,
-			executor: dataTask,
 			url: v1BaseURL.path("me", "tracks").query(from: SavedInput(limit: limit ?? 50, offset: offset, market: market)),
 			method: .get,
 			parameters: (),
 			headers: headers(),
-            limit: limit
+			limit: limit
 		)
 	}
 

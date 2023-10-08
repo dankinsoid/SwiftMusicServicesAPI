@@ -1,9 +1,9 @@
 #if canImport(SwiftUI) && canImport(UIKit)
 	import Foundation
+	import Logging
 	import SwiftHttp
 	import SwiftUI
 	import VKMusicAPI
-    import Logging
 
 	public struct VKLoginView: UIViewControllerRepresentable {
 		public var client: VK.API

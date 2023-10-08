@@ -46,13 +46,13 @@ private struct DecodingReadableError: LocalizedError {
 
 	var errorDescription: String? {
 		switch error {
-		case .dataCorrupted(let context):
+		case let .dataCorrupted(context):
 			return "Data corrupted at \(path(for: context))\(body)"
-		case .keyNotFound(let key, let context):
+		case let .keyNotFound(key, context):
 			return "Key \(key.stringValue) not found at \(path(for: context))\(body)"
-		case .typeMismatch(let type, let context):
+		case let .typeMismatch(type, context):
 			return "Type \(type) mismatch at \(path(for: context))\(body)"
-		case .valueNotFound(let type, let context):
+		case let .valueNotFound(type, context):
 			return "Value of \(type) not found at \(path(for: context))\(body)"
 		@unknown default:
 			return error.localizedDescription

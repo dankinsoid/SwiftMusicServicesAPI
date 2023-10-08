@@ -1,42 +1,28 @@
-// Copyright (c) 2017 Spotify AB.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 #if canImport(SafariServices) && canImport(UIKit)
 	import Foundation
 	import SafariServices
+	import SpotifyAPI
 	import UIKit
-    import SpotifyAPI
 
 	/// Use the login presenter to manually present the login authentication screen.
 	public class SpotifyLoginPresenter {
-        
-        public static var isSpotifyInstalled: Bool {
-            UIApplication.shared.canOpenURL(
-                URL(string: AuthenticationURLType.app.rawValue)!
-            )
-        }
-        
+
+		public static var isSpotifyInstalled: Bool {
+			UIApplication.shared.canOpenURL(
+				URL(string: AuthenticationURLType.app.rawValue)!
+			)
+		}
+
 		/// Trigger log in flow.
 		///
 		/// - Parameters:
 		///   - scopes: A list of requested scopes and permissions.
 		@discardableResult
-        public class func login(
-            scopes: [Scope],
-            completion: @escaping (Result<SPTokenResponse, LoginError>) -> Void = { _ in }
-        ) -> UIViewController? {
-            SpotifyLogin.shared.onLogin = completion
+		public class func login(
+			scopes: [Scope],
+			completion: @escaping (Result<SPTokenResponse, LoginError>) -> Void = { _ in }
+		) -> UIViewController? {
+			SpotifyLogin.shared.onLogin = completion
 			let urlBuilder = SpotifyLogin.shared.urlBuilder
 			if let appAuthenticationURL = urlBuilder?.authenticationURL(type: .app, scopes: scopes),
 			   UIApplication.shared.canOpenURL(appAuthenticationURL)

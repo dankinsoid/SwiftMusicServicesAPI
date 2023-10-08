@@ -49,17 +49,16 @@ extension VK.API.AudioFirstPageRequestOutput: HTMLStringInitable {
 }
 
 public extension VK.API {
-    
+
 	func audioPageRequest(act: String, offset: Int, from: String? = nil) async throws -> [VKAudio] {
 		let input = AudioPageRequestInput(act: act, offset: offset, from: from)
 		let output: AudioPageRequestOutput = try await decodableRequest(
-			executor: client.dataTask,
 			url: baseURL.path("audio").query(from: input),
 			method: .post,
 			body: multipartData(AudioPageRequestBody()),
 			headers: headers(multipart: true)
 		)
-        return output.data.flatMap(\.list)
+		return output.data.flatMap(\.list)
 	}
 
 	struct AudioPageRequestInput: Codable {
@@ -72,30 +71,30 @@ public extension VK.API {
 		public var _ajax = 1
 	}
 
-    struct AudioPageRequestOutput: Decodable {
-        
-        public var data: [AudioData]
-        
-        public enum AudioData: Decodable {
-            case unknown
-            case plist([VKAudio])
-            
-            public var list: [VKAudio] {
-                switch self {
-                case .unknown: return []
-                case let .plist(list): return list
-                }
-            }
-            
-            public init(from decoder: Decoder) throws {
-                do {
-                    let list = try [VKAudio].init(from: decoder)
-                    self = .plist(list)
-                } catch {
-                    self = .unknown
-                }
-            }
-        }
+	struct AudioPageRequestOutput: Decodable {
+
+		public var data: [AudioData]
+
+		public enum AudioData: Decodable {
+			case unknown
+			case plist([VKAudio])
+
+			public var list: [VKAudio] {
+				switch self {
+				case .unknown: return []
+				case let .plist(list): return list
+				}
+			}
+
+			public init(from decoder: Decoder) throws {
+				do {
+					let list = try [VKAudio].init(from: decoder)
+					self = .plist(list)
+				} catch {
+					self = .unknown
+				}
+			}
+		}
 	}
 }
 

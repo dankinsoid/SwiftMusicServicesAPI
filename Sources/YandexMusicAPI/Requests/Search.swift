@@ -3,7 +3,7 @@ import SwiftHttp
 import VDCodable
 
 public extension Yandex.Music.API {
-    
+
 	func search(text: String, nocorrect: Bool = false, type: YMO.SearchType = .track, page: Int, playlistInBest: Bool = false) async throws -> SearchOutput {
 		try await request(
 			url: baseURL.path("search").query(
@@ -15,7 +15,7 @@ public extension Yandex.Music.API {
 	}
 
 	struct SearchInput: Encodable {
-        
+
 		public var text: String
 		public var nocorrect = false
 		public var type: Yandex.Music.Objects.SearchType = .track
@@ -36,7 +36,7 @@ public extension Yandex.Music.API {
 	}
 
 	struct SearchOutput: Decodable {
-        
+
 		public var misspellCorrected: Bool?
 		public var nocorrect: Bool?
 		public var searchRequestId: String?

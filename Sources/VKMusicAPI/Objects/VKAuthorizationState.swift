@@ -1,11 +1,11 @@
 import Foundation
 
 public enum VKAuthorizationState: Equatable, Codable, HTMLStringInitable {
-    
+
 	case authorized(user: VKUser), preAuthorized(VKPreAuthorizeParameters), none
 
 	private struct Coding: Codable {
-        
+
 		var user: VKUser?
 		var parameters: VKPreAuthorizeParameters?
 	}
@@ -71,7 +71,7 @@ public enum VKAuthorizationState: Equatable, Codable, HTMLStringInitable {
 }
 
 extension String {
-    
+
 	func getParameter(_ par: String) -> String? {
 		let ps = components(separatedBy: par + "=")
 		if ps.count > 1 {

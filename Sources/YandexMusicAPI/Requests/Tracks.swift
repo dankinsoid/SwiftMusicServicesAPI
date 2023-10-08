@@ -4,7 +4,7 @@ import SwiftHttp
 import VDCodable
 
 public extension Yandex.Music.API {
-    
+
 	func tracks(ids: [Int], withPositions: Bool = true) async throws -> [YMO.Track] {
 		try await request(
 			url: baseURL.path("tracks").query(
@@ -16,12 +16,12 @@ public extension Yandex.Music.API {
 	}
 
 	struct TracksInput: Encodable {
-        
+
 		public var ids: [Int]
 		public var withPositions = true
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
-            
+
 			case ids = "track-ids", withPositions = "with-positions"
 		}
 
@@ -33,7 +33,7 @@ public extension Yandex.Music.API {
 }
 
 public extension Yandex.Music.API {
-    
+
 	func tracksDownloadInfo(id: Int) async throws -> [YMO.DownloadInfo] {
 		try await request(
 			url: baseURL.path("tracks", "\(id)", "download-info"),
@@ -43,11 +43,10 @@ public extension Yandex.Music.API {
 }
 
 extension Yandex.Music.API {
-    
+
 	public func fileURL(xmlURL: URL, codec: YMO.Codec, trackId: Int, uid: Int) async throws -> URL {
 		guard let url = HttpUrl(url: xmlURL) else { throw InvalidUrl() }
 		let response = try await rawRequest(
-			executor: client.dataTask,
 			url: url,
 			method: .get,
 			headers: headers()

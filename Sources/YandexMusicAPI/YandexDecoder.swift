@@ -1,7 +1,7 @@
 import Foundation
+import SimpleCoders
 import SwiftHttp
 import VDCodable
-import SimpleCoders
 
 struct YandexDecoder: HttpDataDecoder {
 	let decoder: VDJSONDecoder

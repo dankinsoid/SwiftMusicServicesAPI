@@ -11,9 +11,9 @@ public enum SPDisallows: String, Codable, CaseIterable {
 	case toggling_shuffle
 	case toggling_repeat_track
 	case transferring_playback
-    case unknown
-    
-    public init(from decoder: Decoder) throws {
-        self = try Self(rawValue: String(from: decoder)) ?? .unknown
-    }
+	case unknown
+
+	public init(from decoder: Decoder) throws {
+		self = try Self(rawValue: String(from: decoder)) ?? .unknown
+	}
 }

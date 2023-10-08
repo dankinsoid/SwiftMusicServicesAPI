@@ -1,8 +1,8 @@
 #if canImport(SafariServices) && canImport(UIKit) && canImport(SwiftUI)
 	import Combine
 	import Foundation
+	import SpotifyAPI
 	import SwiftUI
-    import SpotifyAPI
 
 	public struct SpotifyLoginView: View {
 		public var scopes: [Scope]
@@ -33,7 +33,7 @@
 
 	public extension View {
 		func onSpotifyLogin(_ success: @escaping () -> Void) -> some View {
-            onReceive(NotificationCenter.default.publisher(for: .spotifyLoginSuccessful)) { _ in
+			onReceive(NotificationCenter.default.publisher(for: .spotifyLoginSuccessful)) { _ in
 				success()
 			}
 		}

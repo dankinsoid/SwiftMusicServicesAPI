@@ -4,10 +4,10 @@ import VDCodable
 public extension Yandex.Music.Objects {
 	enum SearchType: String, Codable, CaseIterable {
 		case all, track, playlist, album, artist, unknown // (трек, плейлист, альбом, исполнитель)
-        
-        public init(from decoder: Decoder) throws {
-            self = try Self(rawValue: String(from: decoder)) ?? .unknown
-        }
+
+		public init(from decoder: Decoder) throws {
+			self = try Self(rawValue: String(from: decoder)) ?? .unknown
+		}
 	}
 
 	// MARK: - Best
@@ -178,23 +178,23 @@ public extension Yandex.Music.Objects {
 	}
 
 	struct Region: Codable {
-        
-        public static let russia = Region("RUSSIA")
-        public static let russiaPremium = Region("RUSSIA_PREMIUM")
-        
-        public var rawValue: String
-        
-        public init(_ value: String) {
-            self.rawValue = value
-        }
-        
-        public init(from decoder: Decoder) throws {
-            self = try Self(String(from: decoder))
-        }
-        
-        public func encode(to encoder: Encoder) throws {
-            try rawValue.encode(to: encoder)
-        }
+
+		public static let russia = Region("RUSSIA")
+		public static let russiaPremium = Region("RUSSIA_PREMIUM")
+
+		public var rawValue: String
+
+		public init(_ value: String) {
+			rawValue = value
+		}
+
+		public init(from decoder: Decoder) throws {
+			self = try Self(String(from: decoder))
+		}
+
+		public func encode(to encoder: Encoder) throws {
+			try rawValue.encode(to: encoder)
+		}
 	}
 
 	struct Tag: Codable {
@@ -212,9 +212,9 @@ public extension Yandex.Music.Objects {
 
 	enum Codec: String, Codable, CaseIterable {
 		case mp3, aac, unknown
-        
-        public init(from decoder: Decoder) throws {
-            self = try Self(rawValue: String(from: decoder)) ?? .unknown
-        }
+
+		public init(from decoder: Decoder) throws {
+			self = try Self(rawValue: String(from: decoder)) ?? .unknown
+		}
 	}
 }

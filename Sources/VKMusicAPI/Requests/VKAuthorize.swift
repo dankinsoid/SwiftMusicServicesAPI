@@ -3,9 +3,9 @@ import SwiftHttp
 
 public extension VK.API {
 	func authorize(_ parameters: VKAuthorizeParameters) async throws {
-		let input = VKAuthorizeAllParameters(ip_h: parameters.pre.ip, lg_h: parameters.pre.lg, email: parameters.login, pass: parameters.password)
+		let extractedExpr = VKAuthorizeAllParameters(ip_h: parameters.pre.ip, lg_h: parameters.pre.lg, email: parameters.login, pass: parameters.password)
+		let input = extractedExpr
 		_ = try await rawRequest(
-			executor: client.dataTask,
 			url: HttpUrl(host: "login.vk.com").query(from: input),
 			method: .post,
 			headers: headers(minimum: true)
@@ -23,7 +23,7 @@ public extension VK.API {
 
 	func checkAuthorize() async throws -> VKAuthorizationState {
 		try await request(
-            url: baseURL.path("feed"),
+			url: baseURL.path("feed"),
 			method: .get,
 			minimum: false
 		)

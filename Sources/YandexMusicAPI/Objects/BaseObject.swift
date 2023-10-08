@@ -40,7 +40,7 @@ public extension Yandex.Music.Objects {
 	}
 
 	struct InvocationInfo: Codable {
-        
+
 		public init(hostname: String? = nil, requestId: String? = nil, execDurationMillis: String? = nil) {
 			self.hostname = hostname
 			self.requestId = requestId
@@ -50,31 +50,31 @@ public extension Yandex.Music.Objects {
 		public var hostname: String?
 		public var requestId: String?
 //		private var execDurationMillis: String?
-        
+
 //		public var executionDurationInMilliseconds: Int? {
 //			guard let str = execDurationMillis else { return nil }
 //			return Int(str)
 //		}
 
 		public enum CodingKeys: String, CodingKey, CaseIterable {
-			case hostname, requestId = "req-id"//, execDurationMillis = "exec-duration-millis"
+			case hostname, requestId = "req-id" // , execDurationMillis = "exec-duration-millis"
 		}
 	}
 
 	enum Visibility: String, Codable, CaseIterable {
 		case `public`, unknown
-        
-        public init(from decoder: Decoder) throws {
-            self = try Self(rawValue: String(from: decoder)) ?? .unknown
-        }
+
+		public init(from decoder: Decoder) throws {
+			self = try Self(rawValue: String(from: decoder)) ?? .unknown
+		}
 	}
 
 	enum Operation: String, Codable, CaseIterable {
 		case insert, delete, unknown
-        
-        public init(from decoder: Decoder) throws {
-            self = try Self(rawValue: String(from: decoder)) ?? .unknown
-        }
+
+		public init(from decoder: Decoder) throws {
+			self = try Self(rawValue: String(from: decoder)) ?? .unknown
+		}
 	}
 }
 

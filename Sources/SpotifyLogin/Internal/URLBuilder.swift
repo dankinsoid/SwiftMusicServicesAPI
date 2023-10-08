@@ -1,17 +1,3 @@
-// Copyright (c) 2017 Spotify AB.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 import Foundation
 import SpotifyAPI
 
@@ -23,7 +9,7 @@ final class URLBuilder {
 
 	// MARK: Lifecycle
 
-    init(clientID: String, clientSecret: String, redirectURL: URL) {
+	init(clientID: String, clientSecret: String, redirectURL: URL) {
 		self.clientID = clientID
 		self.clientSecret = clientSecret
 		self.redirectURL = redirectURL
@@ -31,7 +17,7 @@ final class URLBuilder {
 
 	// MARK: URL functions
 
-    func authenticationURL(type: AuthenticationURLType, scopes: [Scope]) -> URL? {
+	func authenticationURL(type: AuthenticationURLType, scopes: [Scope]) -> URL? {
 
 		let endpoint = type.rawValue
 		let scopeStrings = scopes.map { $0.rawValue }
@@ -45,7 +31,7 @@ final class URLBuilder {
 			"nolinks": "true",
 			"utm_source": Constants.AuthUTMSourceQueryValue,
 			"utm_medium": Constants.AuthUTMMediumCampaignQueryValue,
-			"utm_campaign": Constants.AuthUTMMediumCampaignQueryValue
+			"utm_campaign": Constants.AuthUTMMediumCampaignQueryValue,
 		]
 
 		if scopeStrings.count > 0 {
@@ -60,7 +46,7 @@ final class URLBuilder {
 		return URL(string: loginPageURLString)
 	}
 
-    func parse(url: URL) -> (code: String?, error: Bool) {
+	func parse(url: URL) -> (code: String?, error: Bool) {
 		var code: String?
 		var error = false
 		let components = URLComponents(string: url.absoluteString)
@@ -80,7 +66,7 @@ final class URLBuilder {
 		return (code: code, error: error)
 	}
 
-    func canHandleURL(_ url: URL) -> Bool {
+	func canHandleURL(_ url: URL) -> Bool {
 		let redirectURLString = redirectURL.absoluteString
 		return url.absoluteString.hasPrefix(redirectURLString)
 	}

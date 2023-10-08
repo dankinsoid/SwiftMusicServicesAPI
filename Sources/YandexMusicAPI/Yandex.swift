@@ -13,7 +13,7 @@ public enum Yandex {
 public extension Yandex.Music {
 	enum Objects {}
 
-	final class API: HttpCodablePipelineCollection {
+	final class API {
 		public static let clientID = "23cabbbdc6cd418abb4b39c32c41195d"
 		public static let clientSecret = "53bc75238f0c4d08a118e51fe9203300"
 
@@ -29,6 +29,8 @@ public extension Yandex.Music {
 		public var queryEncoder: URLQueryEncoder
 		public var baseURL: HttpUrl
 
+		private let pipeline = Pipeline()
+
 		public init(client: HttpClient, token: String? = nil, baseURL: HttpUrl = API.baseURL) {
 			self.client = client.rateLimit()
 			self.token = token
@@ -37,14 +39,6 @@ public extension Yandex.Music {
 			encoder.nestedEncodingStrategy = .json
 			encoder.trimmingSquareBrackets = true
 			queryEncoder = encoder
-		}
-
-		public func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
-			HttpRequestEncoder(encoder: JSONEncoder())
-		}
-
-		public func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
-			HttpResponseDecoder(decoder: YandexDecoder())
 		}
 
 		///
@@ -69,26 +63,28 @@ public extension Yandex.Music {
 			headers: [HttpHeaderKey: String] = [:],
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
-			if auth {
-				let result: YMO.Result<U> = try await decodableRequest(
-					executor: client.dataTask,
-					url: url,
-					method: method,
-					body: body,
-					headers: self.headers(with: headers, auth: auth),
-					validators: validators
-				)
-				return result.result
-			} else {
-				let result: U = try await decodableRequest(
-					executor: client.dataTask,
-					url: url,
-					method: method,
-					body: body,
-					headers: self.headers(with: headers, auth: auth),
-					validators: validators
-				)
-				return result
+			try await APIFailure.wrap(url: url, method: method) {
+				if auth {
+					let result: YMO.Result<U> = try await pipeline.decodableRequest(
+						executor: client.dataTask,
+						url: url,
+						method: method,
+						body: body,
+						headers: self.headers(with: headers, auth: auth),
+						validators: validators
+					)
+					return result.result
+				} else {
+					let result: U = try await pipeline.decodableRequest(
+						executor: client.dataTask,
+						url: url,
+						method: method,
+						body: body,
+						headers: self.headers(with: headers, auth: auth),
+						validators: validators
+					)
+					return result
+				}
 			}
 		}
 
@@ -114,26 +110,28 @@ public extension Yandex.Music {
 			headers: [HttpHeaderKey: String] = [:],
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
-			if auth {
-				let result: YMO.Result<U> = try await codableRequest(
-					executor: client.dataTask,
-					url: url,
-					method: method,
-					headers: self.headers(with: headers, auth: auth),
-					body: body,
-					validators: validators
-				)
-				return result.result
-			} else {
-				let result: U = try await codableRequest(
-					executor: client.dataTask,
-					url: url,
-					method: method,
-					headers: self.headers(with: headers, auth: auth),
-					body: body,
-					validators: validators
-				)
-				return result
+			try await APIFailure.wrap(url: url, method: method) {
+				if auth {
+					let result: YMO.Result<U> = try await pipeline.codableRequest(
+						executor: client.dataTask,
+						url: url,
+						method: method,
+						headers: self.headers(with: headers, auth: auth),
+						body: body,
+						validators: validators
+					)
+					return result.result
+				} else {
+					let result: U = try await pipeline.codableRequest(
+						executor: client.dataTask,
+						url: url,
+						method: method,
+						headers: self.headers(with: headers, auth: auth),
+						body: body,
+						validators: validators
+					)
+					return result
+				}
 			}
 		}
 
@@ -155,6 +153,65 @@ public extension Yandex.Music {
 				return nil
 			}
 			return HttpUrl(string: "https://" + uri.replacingOccurrences(of: "%%", with: "200x200"))
+		}
+
+		public func rawRequest(
+			url: HttpUrl,
+			method: HttpMethod,
+			headers: [HttpHeaderKey: String] = [:],
+			body: Data? = nil,
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+		) async throws -> HttpResponse {
+			try await APIFailure.wrap(url: url, method: method) {
+				try await pipeline.rawRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+			}
+		}
+
+		public func encodableRequest(
+			url: HttpUrl,
+			method: HttpMethod,
+			headers: [HttpHeaderKey: String] = [:],
+			body: some Encodable,
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+		) async throws -> HttpResponse {
+			try await APIFailure.wrap(url: url, method: method) {
+				try await pipeline.encodableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+			}
+		}
+
+		public func decodableRequest<U: Decodable>(
+			url: HttpUrl,
+			method: HttpMethod,
+			body: Data? = nil,
+			headers: [HttpHeaderKey: String] = [:],
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+		) async throws -> U {
+			try await APIFailure.wrap(url: url, method: method) {
+				try await pipeline.decodableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+			}
+		}
+
+		public func codableRequest<U: Decodable>(
+			url: HttpUrl,
+			method: HttpMethod,
+			headers: [HttpHeaderKey: String] = [:],
+			body: some Encodable,
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+		) async throws -> U {
+			try await APIFailure.wrap(url: url, method: method) {
+				try await pipeline.codableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+			}
+		}
+
+		private struct Pipeline: HttpCodablePipelineCollection {
+
+			func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
+				HttpRequestEncoder(encoder: JSONEncoder())
+			}
+
+			func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
+				HttpResponseDecoder(decoder: YandexDecoder())
+			}
 		}
 	}
 }

@@ -1,12 +1,12 @@
 #if canImport(UIKit)
+	import Logging
 	import SwiftHttp
 	import UIKit
 	import VKMusicAPI
 	import WebKit
-    import Logging
 
 	open class VKLoginController: UIViewController, WKNavigationDelegate {
-        open var client: VK.API = .init(client: UrlSessionHttpClient(logLevel: .debug))
+		open var client: VK.API = .init(client: UrlSessionHttpClient(logLevel: .debug))
 		open var hideOnLogin = false
 		public private(set) lazy var webView = WKWebView()
 		var successLogin: (VKUser, _ webCookies: [String: String]) -> Void = { _, _ in }

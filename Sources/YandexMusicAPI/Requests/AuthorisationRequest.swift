@@ -1,25 +1,25 @@
 import Foundation
-import SwiftHttp
 import SimpleCoders
+import SwiftHttp
 import VDCodable
 
 public extension Yandex.Music.API {
-    
+
 	func token(input: TokenInput) async throws -> TokenOutput {
 		try await request(
 			url: Yandex.Music.API.authURL.path("token"),
 			method: .post,
 			auth: false,
 			body: Data(
-                URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase())
-                    .encodePath(input)
-                    .utf8
-            )
+				URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase())
+					.encodePath(input)
+					.utf8
+			)
 		)
 	}
 
 	struct TokenInput: Codable {
-        
+
 		public var clientId: String
 		public var clientSecret: String
 		public var username: String
@@ -36,7 +36,7 @@ public extension Yandex.Music.API {
 	}
 
 	struct TokenOutput: Decodable {
-        
+
 		public let tokenType: String? // "bearer"
 		public let accessToken: String
 		public let expiresIn: Int?
@@ -44,11 +44,11 @@ public extension Yandex.Music.API {
 	}
 
 	enum GrantType: String, Codable, CaseIterable {
-        
+
 		case password, authorization_code, sessionid, x_token = "x-token", unknown
-        
-        public init(from decoder: Decoder) throws {
-            self = try Self(rawValue: String(from: decoder)) ?? .unknown
-        }
+
+		public init(from decoder: Decoder) throws {
+			self = try Self(rawValue: String(from: decoder)) ?? .unknown
+		}
 	}
 }

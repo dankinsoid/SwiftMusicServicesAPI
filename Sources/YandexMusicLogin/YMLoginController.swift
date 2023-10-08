@@ -1,13 +1,13 @@
 #if canImport(UIKit)
+	import Logging
 	import SwiftHttp
 	import UIKit
 	import VDCodable
 	import WebKit
 	import YandexMusicAPI
-    import Logging
 
 	open class YMLoginController: UIViewController, WKNavigationDelegate {
-        open var api = YM.API(client: UrlSessionHttpClient(logLevel: .debug))
+		open var api = YM.API(client: UrlSessionHttpClient(logLevel: .debug))
 		open var clientId = YM.API.clientID
 		open var clientSecret = YM.API.clientSecret
 		open var info = YMLoginInfo()

@@ -5,7 +5,6 @@ public extension Spotify.API {
 		url: HttpUrl
 	) async throws -> Output {
 		try await decodableRequest(
-			executor: dataTask,
 			url: url,
 			method: .get,
 			headers: headers()

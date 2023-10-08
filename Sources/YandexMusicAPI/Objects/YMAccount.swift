@@ -1,9 +1,9 @@
 import Foundation
 
 public extension YMO {
-    
+
 	struct AccountStatus: Codable {
-        
+
 		public var subeditorLevel: Int?
 		public var account: Account
 		public var permissions: Permissions?
@@ -21,7 +21,7 @@ public extension YMO {
 	}
 
 	struct Account: Codable {
-        
+
 		public var displayName: String
 		public var birthday: String?
 		public var secondName: String?

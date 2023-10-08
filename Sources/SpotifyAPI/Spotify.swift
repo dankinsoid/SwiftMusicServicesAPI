@@ -7,10 +7,10 @@ public enum Spotify {
 
 	/// https://developer.spotify.com/documentation/web-api/
 	/// https://developer.spotify.com/documentation/ios/quick-start/
-	public final actor API: HttpCodablePipelineCollection {
+	public final actor API {
 
 		public static var apiBaseURL = HttpUrl(host: "accounts.spotify.com", path: ["api"])
-		public static var v1BaseURL =  HttpUrl(host: "api.spotify.com", path: ["v1"])
+		public static var v1BaseURL = HttpUrl(host: "api.spotify.com", path: ["v1"])
 
 		var client: HttpClient
 		public nonisolated var apiBaseURL: HttpUrl { API.apiBaseURL }
@@ -19,6 +19,7 @@ public enum Spotify {
 		public var refreshToken: String?
 		public nonisolated let clientID: String
 		public nonisolated let clientSecret: String
+		private let pipeline = Pipeline()
 
 		private var refreshTokenTask: Task<Void, Error>?
 
@@ -36,21 +37,6 @@ public enum Spotify {
 			self.refreshToken = refreshToken
 		}
 
-		public nonisolated func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
-			HttpRequestEncoder(
-				encoder: JSONEncoder()
-			)
-		}
-
-		public nonisolated func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
-			let decoder = JSONDecoder()
-			decoder.keyDecodingStrategy = .convertFromSnakeCase
-			decoder.dateDecodingStrategy = .iso8601
-			return HttpResponseDecoder(
-				decoder: decoder.decodeError(SPError.self)
-			)
-		}
-
 		public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: AuthHeadersType? = .token) throws -> [HttpHeaderKey: String] {
 			switch auth {
 			case .token:
@@ -61,8 +47,8 @@ public enum Spotify {
 			case .clientBase64:
 				guard
 					let authString = "\(clientID):\(clientSecret)"
-						.data(using: .ascii)?
-						.base64EncodedString(options: .endLineWithLineFeed)
+					.data(using: .ascii)?
+					.base64EncodedString(options: .endLineWithLineFeed)
 				else {
 					throw SPError(status: 401, message: "ClientID or ClientSecret is invalid")
 				}
@@ -78,7 +64,43 @@ public enum Spotify {
 			self.refreshToken = refreshToken
 		}
 
-		func dataTask(_ req: HttpRequest) async throws -> HttpResponse {
+		public func encodableRequest(
+			url: HttpUrl,
+			method: HttpMethod,
+			headers: [HttpHeaderKey: String] = [:],
+			body: some Encodable,
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+		) async throws -> HttpResponse {
+			try await APIFailure.wrap(url: url, method: method) {
+				try await pipeline.encodableRequest(executor: dataTask, url: url, method: method, body: body, validators: validators)
+			}
+		}
+
+		public func decodableRequest<U: Decodable>(
+			url: HttpUrl,
+			method: HttpMethod,
+			body: Data? = nil,
+			headers: [HttpHeaderKey: String] = [:],
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+		) async throws -> U {
+			try await APIFailure.wrap(url: url, method: method) {
+				try await pipeline.decodableRequest(executor: dataTask, url: url, method: method, body: body, validators: validators)
+			}
+		}
+
+		public func codableRequest<U: Decodable>(
+			url: HttpUrl,
+			method: HttpMethod,
+			headers: [HttpHeaderKey: String] = [:],
+			body: some Encodable,
+			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+		) async throws -> U {
+			try await APIFailure.wrap(url: url, method: method) {
+				try await pipeline.codableRequest(executor: dataTask, url: url, method: method, body: body, validators: validators)
+			}
+		}
+
+		private func dataTask(_ req: HttpRequest) async throws -> HttpResponse {
 			try await refreshTokenTask?.value
 			var response = try await client.dataTask(req)
 			if response.statusCode == .unauthorized {
@@ -95,13 +117,29 @@ public enum Spotify {
 			}
 			return response
 		}
+
+		private struct Pipeline: HttpCodablePipelineCollection {
+
+			func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
+				HttpRequestEncoder(encoder: JSONEncoder())
+			}
+
+			func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
+				let decoder = JSONDecoder()
+				decoder.keyDecodingStrategy = .convertFromSnakeCase
+				decoder.dateDecodingStrategy = .iso8601
+				return HttpResponseDecoder(
+					decoder: decoder.decodeError(SPError.self)
+				)
+			}
+		}
 	}
 }
 
-extension Spotify.API {
+public extension Spotify.API {
 
-	public enum AuthHeadersType: String, Codable {
-		
+	enum AuthHeadersType: String, Codable {
+
 		case token, clientBase64
 	}
 }

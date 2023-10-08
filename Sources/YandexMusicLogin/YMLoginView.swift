@@ -1,9 +1,9 @@
 #if canImport(SwiftUI) && canImport(UIKit)
 	import Foundation
+	import Logging
 	import SwiftHttp
 	import SwiftUI
 	import YandexMusicAPI
-    import Logging
 
 	public struct YMLoginView: UIViewControllerRepresentable {
 		public var api = YM.API(client: UrlSessionHttpClient(logLevel: .debug))
