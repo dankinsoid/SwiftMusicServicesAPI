@@ -22,7 +22,7 @@ public extension YMO {
 
 	struct Account: Codable {
 
-		public var displayName: String
+		public var displayName: String?
 		public var birthday: String?
 		public var secondName: String?
 		public var fullName: String?
@@ -37,6 +37,7 @@ public extension YMO {
 		public var login: String?
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
+            
 			case displayName, birthday, secondName, fullName, region, registeredAt, serviceAvailable, firstName, now
 			case passportPhones = "passport-phones"
 			case hostedUser, uid, login

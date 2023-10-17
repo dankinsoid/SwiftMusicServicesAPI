@@ -1,7 +1,7 @@
 import Foundation
-import YandexMusicAPI
-import XCTest
 import SwiftHttp
+import XCTest
+import YandexMusicAPI
 
 final class YandexMusicTests: XCTestCase {
     
