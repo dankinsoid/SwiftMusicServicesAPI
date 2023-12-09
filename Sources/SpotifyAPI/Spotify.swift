@@ -87,7 +87,7 @@ public enum Spotify {
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.decodableRequest(executor: dataTask, url: url, method: method, body: body, validators: validators)
+				try await pipeline.decodableRequest(executor: dataTask, url: url, method: method, body: body, headers: headers, validators: validators)
 			}
 		}
 

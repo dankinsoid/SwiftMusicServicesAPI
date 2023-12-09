@@ -26,7 +26,7 @@ public extension Spotify.API {
             headers: headers(
                 with: [
                     .contentType: "application/x-www-form-urlencoded",
-                    .accept: "application/json"
+                    .accept: ""
                 ],
                 auth: .basic
             )
@@ -56,7 +56,7 @@ public extension Spotify.API {
             headers: headers(
                 with: [
                     .contentType: "application/x-www-form-urlencoded",
-                    .accept: "application/json"
+                    .accept: ""
                 ],
                 auth: .basic
             )
