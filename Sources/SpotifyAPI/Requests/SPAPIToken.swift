@@ -13,20 +13,21 @@ public extension Spotify.API {
         let result: SPTokenResponse = try await decodableRequest(
             url: apiBaseURL.path("token"),
             method: .post,
-            body: Data(
-                [
-                    "grant_type": "authorization_code",
-                    "code": code,
-                    "redirect_uri": redirectURI,
-                    "code_verifier": codeVerifier,
-                ]
-                    .compactMapValues { $0 }
-                    .map { "\($0.key)=\($0.value)" }
-                    .joined(separator: "&")
-                    .utf8
-            ),
+            body: [
+                "grant_type": "authorization_code",
+                "code": code,
+                "redirect_uri": redirectURI,
+                "code_verifier": codeVerifier,
+            ]
+                .compactMapValues { $0?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) }
+                .map { "\($0.key)=\($0.value)" }
+                .joined(separator: "&")
+                .data(using: .utf8),
             headers: headers(
-                with: [.contentType: "application/x-www-form-urlencoded"],
+                with: [
+                    .contentType: "application/x-www-form-urlencoded",
+                    .accept: "application/json"
+                ],
                 auth: .basic
             )
         )
@@ -37,30 +38,32 @@ public extension Spotify.API {
 
 	/// https://developer.spotify.com/documentation/general/guides/authorization/code-flow/
 	@discardableResult
-	func refreshToken() async throws -> SPTokenResponse {
-		guard let refreshToken else {
-			throw SPError(status: 401, message: "No refresh token")
-		}
-		let result: SPTokenResponse = try await decodableRequest(
-			url: apiBaseURL.path("token"),
-			method: .post,
-            body: Data(
-                [
-                    "grant_type": "refresh_token",
-                    "refresh_token": refreshToken,
-                ]
-                    .map { "\($0.key)=\($0.value)" }
-                    .joined(separator: "&")
-                    .utf8
-            ),
-			headers: headers(
-				with: [.contentType: "application/x-www-form-urlencoded"],
+    func refreshToken() async throws -> SPTokenResponse {
+        guard let refreshToken else {
+            throw SPError(status: 401, message: "No refresh token")
+        }
+        let result: SPTokenResponse = try await decodableRequest(
+            url: apiBaseURL.path("token"),
+            method: .post,
+            body: [
+                "grant_type": "refresh_token",
+                "refresh_token": refreshToken,
+            ]
+                .compactMapValues { $0.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) }
+                .map { "\($0.key)=\($0.value)" }
+                .joined(separator: "&")
+                .data(using: .utf8),
+            headers: headers(
+                with: [
+                    .contentType: "application/x-www-form-urlencoded",
+                    .accept: "application/json"
+                ],
                 auth: .basic
-			)
-		)
-		token = result.accessToken
-		return result
-	}
+            )
+        )
+        token = result.accessToken
+        return result
+    }
 
 	nonisolated func authenticationURL(
 		redirectURI: String,
