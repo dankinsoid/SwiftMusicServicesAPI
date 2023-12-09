@@ -63,6 +63,8 @@ public extension Spotify.API {
 
 	nonisolated func authenticationURL(
 		redirectURI: String,
+        showDialog: Bool = true,
+        state: String? = nil,
 		scope: [Scope]
 	) -> HttpUrl {
 		var url = HttpUrl(
@@ -72,13 +74,9 @@ public extension Spotify.API {
 				"client_id": clientID,
 				"redirect_uri": redirectURI,
 				"response_type": "code",
-				"show_dialog": "true",
-				"nosignup": "true",
-				"nolinks": "true",
-				"utm_source": "spotify-sdk",
-				"utm_medium": "spotifylogin",
-				"utm_campaign": "spotifylogin",
-			]
+				"show_dialog": "\(showDialog)",
+                "state": state
+            ].compactMapValues { $0 }
 		)
 		if !scope.isEmpty {
 			url.query["scope"] = scope.map(\.rawValue).joined(separator: " ")

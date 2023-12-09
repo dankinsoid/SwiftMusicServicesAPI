@@ -6,7 +6,8 @@ import YandexMusicAPI
 final class YandexMusicTests: XCTestCase {
     
     let api = YM.API(
-        client: UrlSessionHttpClient(logLevel: .info)
+        client: UrlSessionHttpClient(logLevel: .info),
+        token: "y0_AgAAAABxPv2SAAG8XgAAAADuauuluK5hApIrTzCuHqnwNE7d_1p8SzQ"
     )
     
     func testUser() async throws {
@@ -16,6 +17,7 @@ final class YandexMusicTests: XCTestCase {
     
     func testPlaylists() async throws {
         let account = try await api.account()
+        print(account.account.uid)
         let list = try await api.playlistsList(userID: account.account.uid)
         print(list.count)
         let playlist = try await api.playlists(userID: account.account.uid, playlistsKinds: [list[0].kind])[0]
