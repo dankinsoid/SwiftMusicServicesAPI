@@ -53,6 +53,9 @@ public enum Spotify {
 					throw SPError(status: 401, message: "ClientID or ClientSecret is invalid")
 				}
 				return additionalHeaders.merging([.authorization: "Bearer \(authString)"]) { _, s in s }
+            case .basic:
+                let basic = "Basic \(Data("\(clientID):\(clientSecret)".utf8).base64EncodedString())"
+                return additionalHeaders.merging([.authorization: basic]) { _, s in s }
 			case .none:
 				return additionalHeaders
 			}
@@ -140,6 +143,6 @@ public extension Spotify.API {
 
 	enum AuthHeadersType: String, Codable {
 
-		case token, clientBase64
+		case token, clientBase64, basic
 	}
 }

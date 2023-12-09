@@ -9,30 +9,31 @@ public extension Spotify.API {
 		code: String,
 		redirectURI: String,
 		codeVerifier: String? = nil
-	) async throws -> SPTokenResponse {
-		let result: SPTokenResponse = try await decodableRequest(
-			url: apiBaseURL.path("token").query(
-				[
-					"grant_type": "authorization_code",
-					"code": code,
-					"redirect_uri": redirectURI,
-					"client_id": clientID,
-					"client_secret": clientSecret,
-					"code_verifier": codeVerifier,
-				]
-			),
-			method: .post,
-			headers: headers(
-				with: [
-					.contentType: "application/x-www-form-urlencoded",
-				],
-				auth: nil
-			)
-		)
-		refreshToken = result.refreshToken ?? refreshToken
-		token = result.accessToken
-		return result
-	}
+    ) async throws -> SPTokenResponse {
+        let result: SPTokenResponse = try await decodableRequest(
+            url: apiBaseURL.path("token"),
+            method: .post,
+            body: Data(
+                [
+                    "grant_type": "authorization_code",
+                    "code": code,
+                    "redirect_uri": redirectURI,
+                    "code_verifier": codeVerifier,
+                ]
+                    .compactMapValues { $0 }
+                    .map { "\($0.key)=\($0.value)" }
+                    .joined(separator: "&")
+                    .utf8
+            ),
+            headers: headers(
+                with: [.contentType: "application/x-www-form-urlencoded"],
+                auth: .basic
+            )
+        )
+        refreshToken = result.refreshToken ?? refreshToken
+        token = result.accessToken
+        return result
+    }
 
 	/// https://developer.spotify.com/documentation/general/guides/authorization/code-flow/
 	@discardableResult
@@ -41,20 +42,20 @@ public extension Spotify.API {
 			throw SPError(status: 401, message: "No refresh token")
 		}
 		let result: SPTokenResponse = try await decodableRequest(
-			url: apiBaseURL.path("token").query(
-				[
-					"grant_type": "refresh_token",
-					"refresh_token": refreshToken,
-					"client_id": clientID,
-					"client_secret": clientSecret,
-				]
-			),
+			url: apiBaseURL.path("token"),
 			method: .post,
+            body: Data(
+                [
+                    "grant_type": "refresh_token",
+                    "refresh_token": refreshToken,
+                ]
+                    .map { "\($0.key)=\($0.value)" }
+                    .joined(separator: "&")
+                    .utf8
+            ),
 			headers: headers(
-				with: [
-					.contentType: "application/x-www-form-urlencoded",
-				],
-				auth: nil
+				with: [.contentType: "application/x-www-form-urlencoded"],
+                auth: .basic
 			)
 		)
 		token = result.accessToken
