@@ -65,16 +65,33 @@ public extension Yandex.Music.API {
 	func playlistsChange(userID id: Int, input: PlaylistsChangeInput) async throws -> YMO.Playlist<YMO.TrackShort> {
 		let encoder = URLQueryEncoder()
 		encoder.nestedEncodingStrategy = .json
-		encoder.trimmingSquareBrackets = true
+		encoder.trimmingSquareBrackets = false
 
 		return try await request(
-			url: baseURL.path("users", "\(id)", "playlists", "\(input.kind)", "change").query(from: input, encoder: encoder),
-			method: .post
+			url: baseURL.path("users", "\(id)", "playlists", "\(input.kind)", "change-relative"),
+			method: .post,
+            body: encoder.encodePath(input).data(using: .utf8),
+            headers: [.contentType: "application/x-www-form-urlencoded"]
 		)
 	}
 
 	func playlistsAdd(userID id: Int, playlistKind pid: Int?, revision: Int, tracks: [YMO.TrackShort]) async throws -> YMO.Playlist<YMO.TrackShort> {
-		let input = PlaylistsChangeInput(kind: pid ?? 0, revision: revision, diff: [.init(at: 0, tracks: tracks.map { .init(id: "\($0.id)", albumId: $0.albumId.map { "\($0)" }) })])
+		let input = PlaylistsChangeInput(
+            kind: pid ?? 0,
+            revision: revision,
+            diff: [
+                YM.API.PlaylistsChangeInput.Diff(
+                    at: 0,
+                    tracks: tracks.map {
+                        YM.API.PlaylistsChangeInput.Diff.Track(
+                            id: "\($0.id)",
+                            albumId: $0.albumId.map { "\($0)" }
+                        )
+                    }
+                )
+            ],
+            mixed: true
+        )
 		return try await playlistsChange(userID: id, input: input)
 	}
 

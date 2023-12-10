@@ -7,7 +7,7 @@ final class YandexMusicTests: XCTestCase {
     
     let api = YM.API(
         client: UrlSessionHttpClient(logLevel: .info),
-        token: "y0_AgAAAABxPv2SAAG8XgAAAADuauuluK5hApIrTzCuHqnwNE7d_1p8SzQ"
+        token: ""
     )
     
     func testUser() async throws {
@@ -33,6 +33,19 @@ final class YandexMusicTests: XCTestCase {
     
     func testSearch() async throws {
         let result = try await api.search(text: "Blindfold Derek Pope", page: 0)
-        dump(result)
+        dump(result.tracks?.results.first?.short)
+    }
+    
+    func testAdd() async throws {
+        let result = try await api.search(text: "Blindfold Derek Pope", page: 0)
+        guard let toAdd = result.tracks?.results.first?.short else {
+            throw HttpError.invalidResponse
+        }
+        try await api.playlistsAdd(
+            userID: 43474620,
+            playlistKind: 1244,
+            revision: 1,
+            tracks: [toAdd]
+        )
     }
 }
