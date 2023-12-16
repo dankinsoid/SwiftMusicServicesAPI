@@ -37,7 +37,7 @@ public extension YMO {
 		public var login: String?
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
-            
+
 			case displayName, birthday, secondName, fullName, region, registeredAt, serviceAvailable, firstName, now
 			case passportPhones = "passport-phones"
 			case hostedUser, uid, login
@@ -79,7 +79,9 @@ public extension YMO {
 	// MARK: - Subscription
 
 	struct Subscription: Codable {
-		public var canStartTrial: Bool
+
+		public var canStartTrial: Bool?
+		public var hadAnySubscription: Bool?
 		public var nonAutoRenewableRemainder: NonAutoRenewableRemainder?
 		public var mcdonalds: Bool?
 		public var autoRenewable: [AutoRenewable]?
@@ -88,6 +90,7 @@ public extension YMO {
 	// MARK: - AutoRenewable
 
 	struct AutoRenewable: Codable {
+
 		public var productId: String
 		public var expires: Date?
 		public var finished: Bool?
