@@ -70,12 +70,12 @@ public enum Spotify {
 		public func encodableRequest(
 			url: HttpUrl,
 			method: HttpMethod,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			body: some Encodable,
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> HttpResponse {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.encodableRequest(executor: dataTask, url: url, method: method, body: body, validators: validators)
+				try await pipeline.encodableRequest(executor: dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
 			}
 		}
 
@@ -83,7 +83,7 @@ public enum Spotify {
 			url: HttpUrl,
 			method: HttpMethod,
 			body: Data? = nil,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
@@ -94,12 +94,12 @@ public enum Spotify {
 		public func codableRequest<U: Decodable>(
 			url: HttpUrl,
 			method: HttpMethod,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			body: some Encodable,
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.codableRequest(executor: dataTask, url: url, method: method, body: body, validators: validators)
+				try await pipeline.codableRequest(executor: dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
 			}
 		}
 

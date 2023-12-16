@@ -33,8 +33,8 @@ public struct VK {
 				defaultHeaders.merge([
 					.accept: "*/*",
 					"Origin": baseURL.url.absoluteString,
-					.acceptLanguage: "ru-RU;q=1.0, en-RU;q=0.9",
-					.userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",
+					.acceptLanguage: "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+					.userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 OPR/105.0.0.0",
 					.xRequestedWith: "XMLHttpRequest",
 				]) { _, s in
 					s
@@ -89,6 +89,11 @@ public struct VK {
 			}
 		}
 
+        public func urlEncoded(_ body: some Encodable) throws -> Data {
+            let params = try URLQueryEncoder().encodeParameters(body)
+            return params.map { "\($0.key)=\($0.value)" }.joined(separator: "&").data(using: .utf8) ?? Data()
+        }
+        
 		public func multipartData(_ body: some Encodable) throws -> Data {
 			let params = try URLQueryEncoder().encodeParameters(body)
 			return try MultipartFormData.Builder.build(
@@ -107,24 +112,24 @@ public struct VK {
 		public func rawRequest(
 			url: HttpUrl,
 			method: HttpMethod,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			body: Data? = nil,
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> HttpResponse {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.rawRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+                try await pipeline.rawRequest(executor: client.dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
 			}
 		}
 
 		public func encodableRequest(
 			url: HttpUrl,
 			method: HttpMethod,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			body: some Encodable,
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> HttpResponse {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.encodableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+                try await pipeline.encodableRequest(executor: client.dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
 			}
 		}
 
@@ -132,23 +137,23 @@ public struct VK {
 			url: HttpUrl,
 			method: HttpMethod,
 			body: Data? = nil,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.decodableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+                try await pipeline.decodableRequest(executor: client.dataTask, url: url, method: method, body: body, headers: headers, validators: validators)
 			}
 		}
 
 		public func codableRequest<U: Decodable>(
 			url: HttpUrl,
 			method: HttpMethod,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			body: some Encodable,
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.codableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+				try await pipeline.codableRequest(executor: client.dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
 			}
 		}
 

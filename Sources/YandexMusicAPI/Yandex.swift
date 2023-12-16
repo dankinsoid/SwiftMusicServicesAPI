@@ -60,7 +60,7 @@ public extension Yandex.Music {
 			method: HttpMethod,
 			auth: Bool = true,
 			body: Data? = nil,
-			headers: [HttpHeaderKey: String] = [:],
+            headers: [HttpHeaderKey: String] = [:],
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
@@ -107,7 +107,7 @@ public extension Yandex.Music {
 			method: HttpMethod = .post,
 			auth: Bool = true,
 			body: some Encodable,
-			headers: [HttpHeaderKey: String] = [:],
+            headers: [HttpHeaderKey: String] = [:],
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
@@ -163,7 +163,7 @@ public extension Yandex.Music {
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> HttpResponse {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.rawRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+				try await pipeline.rawRequest(executor: client.dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
 			}
 		}
 
@@ -175,7 +175,7 @@ public extension Yandex.Music {
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> HttpResponse {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.encodableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+				try await pipeline.encodableRequest(executor: client.dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
 			}
 		}
 
@@ -187,7 +187,7 @@ public extension Yandex.Music {
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.decodableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+				try await pipeline.decodableRequest(executor: client.dataTask, url: url, method: method, body: body, headers: headers, validators: validators)
 			}
 		}
 
@@ -199,7 +199,7 @@ public extension Yandex.Music {
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.codableRequest(executor: client.dataTask, url: url, method: method, body: body, validators: validators)
+				try await pipeline.codableRequest(executor: client.dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
 			}
 		}
 

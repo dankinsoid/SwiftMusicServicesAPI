@@ -10,8 +10,8 @@ public extension VK.API {
 		let response = try await rawRequest(
 			url: baseURL.path("audio").query(from: input),
 			method: .post,
-			headers: headers(multipart: true),
-			body: multipartData(MyTracksPageRequestInputBody())
+			headers: headers(multipart: false),
+			body: urlEncoded(MyTracksPageRequestInputBody())
 		)
 		var string = String(data: response.data, encoding: .utf8) ?? ""
 		string = string

@@ -68,6 +68,12 @@ let package = Package(
 			name: "SpotifyLogin",
 			dependencies: [.target(name: "SpotifyAPI")]
 		),
+        .testTarget(
+            name: "SpotifyAPITests",
+            dependencies: [
+                .target(name: "SpotifyAPI"),
+            ]
+        ),
 		.target(
 			name: "YandexMusicAPI",
 			dependencies: [.target(name: "SwiftMusicServicesApi")]

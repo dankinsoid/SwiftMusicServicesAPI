@@ -31,7 +31,7 @@ public enum AppleMusic {
 		func encodableRequest(
 			url: HttpUrl,
 			method: HttpMethod,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			body: some Encodable,
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> HttpResponse {
@@ -40,6 +40,7 @@ public enum AppleMusic {
 					executor: client.dataTask,
 					url: url,
 					method: method,
+                    headers: headers,
 					body: body,
 					validators: validators
 				)
@@ -50,7 +51,7 @@ public enum AppleMusic {
 			url: HttpUrl,
 			method: HttpMethod,
 			body: Data? = nil,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
 			try await APIFailure.wrap(url: url, method: method) {
@@ -59,6 +60,7 @@ public enum AppleMusic {
 					url: url,
 					method: method,
 					body: body,
+                    headers: headers,
 					validators: validators
 				)
 			}
@@ -67,7 +69,7 @@ public enum AppleMusic {
 		public func codableRequest<U: Decodable>(
 			url: HttpUrl,
 			method: HttpMethod,
-			headers: [HttpHeaderKey: String] = [:],
+			headers: [HttpHeaderKey: String],
 			body: some Encodable,
 			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
 		) async throws -> U {
@@ -76,6 +78,7 @@ public enum AppleMusic {
 					executor: client.dataTask,
 					url: url,
 					method: method,
+                    headers: headers,
 					body: body,
 					validators: validators
 				)
