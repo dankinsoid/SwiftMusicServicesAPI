@@ -22,11 +22,14 @@ extension VK.API.AudioBlock: HTMLStringInitable {
 	public init(htmlString html: String) throws {
 		let regex = #"href=\\?"\\?(\/audio\?[a-z_=?A-Z0-9&%]*block[^\\"]+)"#
 		guard let href = html.firstGroup(of: regex) else {
-			throw DecodingError.keyNotFound(PlainCodingKey("href"), DecodingError.Context(codingPath: [], debugDescription: "", underlyingError: nil))
+			throw DecodingError.keyNotFound(
+				PlainCodingKey("href"),
+				DecodingError.Context(codingPath: [], debugDescription: html, underlyingError: nil)
+			)
 		}
 		self.href = href
 		guard let block = href.firstGroup(of: "block=([^&]+)") else {
-			throw DecodingError.keyNotFound(PlainCodingKey("block"), DecodingError.Context(codingPath: [], debugDescription: "", underlyingError: nil))
+			throw DecodingError.keyNotFound(PlainCodingKey("block"), DecodingError.Context(codingPath: [], debugDescription: html, underlyingError: nil))
 		}
 		self.block = block
 	}
