@@ -7,20 +7,21 @@ public extension VK.API {
 
 	func myTracksPageRequest(start_from: String, block: String) async throws -> VKAudioListSection {
 		let input = MyTracksPageRequestInput(act: .block, block: block, start_from: start_from)
-		let response = try await rawRequest(
+		return try await request(
 			url: baseURL.path("audio").query(from: input),
 			method: .post,
 			headers: headers(multipart: false),
 			body: urlEncoded(MyTracksPageRequestInputBody())
-		)
-		var string = String(data: response.data, encoding: .utf8) ?? ""
-		string = string
-			.components(separatedBy: "\"playlist\"")
-			.dropFirst()
-			.joined(separator: "\"playlist\"")
-		string = "{\"data\":[{\"playlist\"\(string)"
-		let data = Data(string.utf8)
-		return try JSONDecoder().decode(MyTracksPageRequestInputOutput.self, from: data).playlist
+		) { data in
+			var string = String(data: data, encoding: .utf8) ?? ""
+			string = string
+				.components(separatedBy: "\"playlist\"")
+				.dropFirst()
+				.joined(separator: "\"playlist\"")
+			string = "{\"data\":[{\"playlist\"\(string)"
+			let data = Data(string.utf8)
+			return try JSONDecoder().decode(MyTracksPageRequestInputOutput.self, from: data).playlist
+		}
 	}
 
 	struct MyTracksPageRequestInput: Codable {

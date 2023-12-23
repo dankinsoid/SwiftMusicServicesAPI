@@ -5,7 +5,7 @@ public extension VK.API {
 
 	func playlistPageRequest<Output: HTMLStringInitable>(id: String, section: VKAudioPageInput.Section? = nil, block: VKAudioPageInput.Block? = nil, z: String? = nil) async throws -> Output {
 		let input = VKAudioPageInput(section: section, block: block, z: z)
-		return try await request(
+		return try await htmlRequest(
 			url: baseURL.path("audios\(id)").query(from: input),
 			method: .get
 		)

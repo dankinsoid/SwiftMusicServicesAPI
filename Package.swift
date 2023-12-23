@@ -46,7 +46,7 @@ let package = Package(
 		),
 	],
 	dependencies: [
-		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
+		.package(url: "https://github.com/dankinsoid/swift-http.git", from: "1.2.6"),
 		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.13.0"),
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
 		.package(url: "https://github.com/dankinsoid/MultipartFormDataKit.git", from: "1.0.2"),
@@ -68,12 +68,12 @@ let package = Package(
 			name: "SpotifyLogin",
 			dependencies: [.target(name: "SpotifyAPI")]
 		),
-        .testTarget(
-            name: "SpotifyAPITests",
-            dependencies: [
-                .target(name: "SpotifyAPI"),
-            ]
-        ),
+		.testTarget(
+			name: "SpotifyAPITests",
+			dependencies: [
+				.target(name: "SpotifyAPI"),
+			]
+		),
 		.target(
 			name: "YandexMusicAPI",
 			dependencies: [.target(name: "SwiftMusicServicesApi")]

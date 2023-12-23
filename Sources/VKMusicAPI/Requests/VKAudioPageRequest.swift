@@ -6,7 +6,7 @@ import VDCodable
 
 public extension VK.API {
 	func audioFirstPageRequest(href: String) async throws -> AudioFirstPageRequestOutput {
-		try await request(
+		try await htmlRequest(
 			url: baseURL
 				.path(href.components(separatedBy: "?").first?.trimmingCharacters(in: CharacterSet(charactersIn: "/")) ?? "")
 				.query(
@@ -35,6 +35,7 @@ extension VK.API.AudioFirstPageRequestOutput: HTMLStringInitable {
 	public init(htmlString html: String) throws {
 		let document = try SwiftSoup.parse(html.trimmingCharacters(in: .whitespaces))
 		let div = try document.getElementsByAttributeValueStarting("class", "AudioPlaylistRoot").first()?.children() ?? Elements()
+		print(html)
 		tracks = try div.map { try VKAudio(xml: $0) }
 		do {
 			next = try document.getElementsByClass("show_more AudioSection__showMore--my_audios_block")
@@ -52,12 +53,14 @@ public extension VK.API {
 
 	func audioPageRequest(act: String, offset: Int, from: String? = nil) async throws -> [VKAudio] {
 		let input = AudioPageRequestInput(act: act, offset: offset, from: from)
-		let output: AudioPageRequestOutput = try await decodableRequest(
+		let output: AudioPageRequestOutput = try await request(
 			url: baseURL.path("audio").query(from: input),
 			method: .post,
-			body: multipartData(AudioPageRequestBody()),
-			headers: headers(multipart: true)
-		)
+			headers: headers(multipart: true),
+			body: multipartData(AudioPageRequestBody())
+		) {
+			try decoder().decode($0)
+		}
 		return output.data.flatMap(\.list)
 	}
 
@@ -102,14 +105,18 @@ public extension VK.API {
 	func list(tracks: [VKAudio] = [], block: String? = nil, next: String? = nil) async throws -> [VKAudio] {
 		if let block {
 			if let next, !next.isEmpty {
+				print(next)
 				let tr = try await myTracksPageRequest(start_from: next, block: block)
+				print(tr.list.count)
 				return try await list(tracks: tracks + tr.list, block: block, next: next == tr.nextOffset ? nil : tr.nextOffset)
 			} else {
 				return tracks
 			}
 		} else {
 			let bl = try await audioBlock()
+			print(bl)
 			let tr = try await audioFirstPageRequest(href: bl.href)
+			print(tr.tracks.count)
 			return try await list(tracks: tracks + tr.tracks, block: bl.block, next: tr.next)
 		}
 	}
