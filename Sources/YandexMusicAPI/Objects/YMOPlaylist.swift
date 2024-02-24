@@ -108,6 +108,7 @@ public extension YMO.Playlist {
 
 	func copy<R: Codable>(tracks: [R]) -> YMO.Playlist<R> {
 		YMO.Playlist<R>(
+			playlistUuid: playlistUuid,
 			uid: uid,
 			kind: kind,
 			trackCount: trackCount,
