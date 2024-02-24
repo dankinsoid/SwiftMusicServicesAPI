@@ -5,6 +5,7 @@ public extension Yandex.Music.Objects {
 
 	struct Playlist<T: Codable>: Codable {
 
+		public let playlistUuid: String
 		public let uid: Int
 		public let kind: Int
 		public let trackCount: Int?
@@ -27,7 +28,31 @@ public extension Yandex.Music.Objects {
 		public let isPremiere: Bool?
 		public var tracks: [T]?
 
-		public init(uid: Int, kind: Int, trackCount: Int? = nil, title: String, owner: Yandex.Music.Objects.Owner? = nil, cover: Yandex.Music.Objects.Cover? = nil, tags: [Yandex.Music.Objects.Tag]? = nil, regions: [String]? = nil, snapshot: Int? = nil, ogImage: String? = nil, revision: Int? = nil, durationMs: Int? = nil, collective: Bool? = nil, available: Bool? = nil, modified: Date? = nil, created: Date? = nil, visibility: RawEnum<Yandex.Music.Objects.Visibility>? = nil, isBanner: Bool? = nil, prerolls: [Yandex.Music.Objects.Preroll]? = nil, isPremiere: Bool? = nil, tracks: [T]? = nil) {
+		public init(
+			playlistUuid: String,
+			uid: Int,
+			kind: Int,
+			trackCount: Int? = nil,
+			title: String,
+			owner: Yandex.Music.Objects.Owner? = nil,
+			cover: Yandex.Music.Objects.Cover? = nil,
+			tags: [Yandex.Music.Objects.Tag]? = nil,
+			regions: [String]? = nil,
+			snapshot: Int? = nil,
+			ogImage: String? = nil,
+			revision: Int? = nil,
+			durationMs: Int? = nil,
+			collective: Bool? = nil,
+			available: Bool? = nil,
+			modified: Date? = nil,
+			created: Date? = nil,
+			visibility: RawEnum<Yandex.Music.Objects.Visibility>? = nil,
+			isBanner: Bool? = nil,
+			prerolls: [Yandex.Music.Objects.Preroll]? = nil,
+			isPremiere: Bool? = nil,
+			tracks: [T]? = nil
+		) {
+			self.playlistUuid = playlistUuid
 			self.uid = uid
 			self.kind = kind
 			self.trackCount = trackCount
@@ -82,6 +107,28 @@ public extension Yandex.Music.Objects {
 public extension YMO.Playlist {
 
 	func copy<R: Codable>(tracks: [R]) -> YMO.Playlist<R> {
-		YMO.Playlist<R>(uid: uid, kind: kind, trackCount: trackCount, title: title, owner: owner, cover: cover, tags: tags, regions: regions, snapshot: snapshot, ogImage: ogImage, revision: revision, durationMs: durationMs, collective: collective, available: available, modified: modified, created: created, visibility: visibility, isBanner: isBanner, prerolls: prerolls, isPremiere: isPremiere, tracks: tracks)
+		YMO.Playlist<R>(
+			uid: uid,
+			kind: kind,
+			trackCount: trackCount,
+			title: title,
+			owner: owner,
+			cover: cover,
+			tags: tags,
+			regions: regions,
+			snapshot: snapshot,
+			ogImage: ogImage,
+			revision: revision,
+			durationMs: durationMs,
+			collective: collective,
+			available: available,
+			modified: modified,
+			created: created,
+			visibility: visibility,
+			isBanner: isBanner,
+			prerolls: prerolls,
+			isPremiere: isPremiere,
+			tracks: tracks
+		)
 	}
 }
