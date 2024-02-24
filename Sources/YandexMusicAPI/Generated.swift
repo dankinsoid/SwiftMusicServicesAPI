@@ -564,6 +564,7 @@ public extension Yandex.Music.Objects.Permissions {
 
 public extension Yandex.Music.Objects.Playlist {
 	static func publicInit(
+		playlistUuid: String,
 		uid: Int,
 		kind: Int,
 		trackCount: Int? = nil,
@@ -587,6 +588,7 @@ public extension Yandex.Music.Objects.Playlist {
 		tracks: [T]? = nil
 	) -> Self {
 		.init(
+			playlistUuid: playlistUuid,
 			uid: uid,
 			kind: kind,
 			trackCount: trackCount,
