@@ -7,7 +7,7 @@ final class YandexMusicTests: XCTestCase {
     
     let api = YM.API(
         client: UrlSessionHttpClient(logLevel: .info),
-        token: "y0_AgAAAAACl168AAG8XgAAAADiuaz_z9jbEVQOQguPkYrLkSg90-khb_U"
+        token: ""
     )
     
     func testUser() async throws {
