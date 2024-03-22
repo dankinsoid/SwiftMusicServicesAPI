@@ -24,6 +24,7 @@ struct YandexDecoder: HttpDataDecoder {
 	/// - Returns: The decoded object
 	///
 	func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
+//        try? print(JSON(from: data))
 		do {
 			return try decoder.decode(type, from: data)
 		} catch {

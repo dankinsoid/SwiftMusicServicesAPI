@@ -7,7 +7,10 @@ final class VKMusicAPITests: XCTestCase {
 
 	let api = VK.API(
 		client: UrlSessionHttpClient(logLevel: .trace),
-        webCookies: [:]
+        webCookies: [
+            "remixsid":"1_MRjkOy4xYx8nnecEWXOo396fX4eoPl8S3K26XCrOgYW4HZdgQXiQ1G30uoqjnZip3vKookk0UjNZk6TNZ0Mjng",
+            "remixnsid":"vk1.a.RdlTH-yPCBtTvX0AL4Vp_hExBnV5n7vHzQ-JI5BDv0XgBsdhU75qej1GDPE3Cdbu3EopobY1V4Z9dDfHyhhkHDz6KRi718gMZK6OhNaIJFqFLoptAvEk_WOrJkT0Jrwsg6Hm_57jjDML8EMHiYoRA-PCoo_sG43k4I49FAw2NMiurjWEdK2ePUrgpwSyz-3s"
+        ]
 	)
 
 	func testList() async throws {
