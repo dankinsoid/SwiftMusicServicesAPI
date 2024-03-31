@@ -49,7 +49,7 @@ let package = Package(
 		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
 		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.13.0"),
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
-		.package(url: "https://github.com/Kuniwak/MultipartFormDataKit.git", branch: "master"),
+		.package(url: "https://github.com/Kuniwak/MultipartFormDataKit.git", revision: "666c1715f6e70f4589d11ae2936eb16bf018ccd4"),
 		.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
 	],
 	targets: [
