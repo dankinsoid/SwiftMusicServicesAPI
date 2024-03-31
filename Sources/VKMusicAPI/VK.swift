@@ -1,6 +1,6 @@
 import Foundation
-import MultipartFormDataKit
 import SwiftHttp
+import SwiftAPIClient
 @_exported import SwiftMusicServicesApi
 import VDCodable
 
@@ -12,7 +12,7 @@ public struct VK {
 		public var client: HttpClient
 		public var baseURL: HttpUrl
 		public var webCookies: [String: String] = [:]
-		public var boundary = "boundary." + RandomBoundaryGenerator.generate()
+        public var encoder = MultipartFormDataEncoder()
 		private let pipeline = Pipeline()
 
 		public init(client: HttpClient, baseURL: HttpUrl = API.baseURL, webCookies: [String: String] = [:]) {
@@ -27,7 +27,7 @@ public struct VK {
 
 		public func headers(with additional: [HttpHeaderKey: String] = [:], multipart: Bool = false, minimum: Bool = false, cookie: Bool = true) -> [HttpHeaderKey: String] {
 			var defaultHeaders: [HttpHeaderKey: String] = [
-				.contentType: multipart ? "multipart/form-data; boundary=\(boundary)" : "application/x-www-form-urlencoded",
+                .contentType: multipart ? encoder.contentType.rawValue : "application/x-www-form-urlencoded",
 			]
 			if !minimum {
 				defaultHeaders.merge([
@@ -95,18 +95,7 @@ public struct VK {
         }
         
 		public func multipartData(_ body: some Encodable) throws -> Data {
-			let params = try URLQueryEncoder().encodeParameters(body)
-			return try MultipartFormData.Builder.build(
-				with: params.map {
-					(
-						name: $0.key,
-						filename: nil,
-						mimeType: nil,
-						data: $0.value.data(using: .utf8) ?? Data()
-					)
-				},
-				willSeparateBy: boundary
-			).body
+            try encoder.encode(body)
 		}
 
 		public func rawRequest(
