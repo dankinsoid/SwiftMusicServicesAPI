@@ -13,16 +13,14 @@ public extension Spotify.API {
         let result: SPTokenResponse = try await decodableRequest(
             url: apiBaseURL.path("token"),
             method: .post,
-            body: [
-                "grant_type": "authorization_code",
-                "code": code,
-                "redirect_uri": redirectURI,
-                "code_verifier": codeVerifier,
-            ]
-                .compactMapValues { $0?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) }
-                .map { "\($0.key)=\($0.value)" }
-                .joined(separator: "&")
-                .data(using: .utf8),
+            body: Data.formURL(
+                params: [
+                    "grant_type": "authorization_code",
+                    "code": code,
+                    "redirect_uri": redirectURI,
+                    "code_verifier": codeVerifier,
+                ]
+            ),
             headers: headers(
                 with: [
                     .contentType: "application/x-www-form-urlencoded",
@@ -45,14 +43,12 @@ public extension Spotify.API {
         let result: SPTokenResponse = try await decodableRequest(
             url: apiBaseURL.path("token"),
             method: .post,
-            body: [
-                "grant_type": "refresh_token",
-                "refresh_token": refreshToken,
-            ]
-                .compactMapValues { $0.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) }
-                .map { "\($0.key)=\($0.value)" }
-                .joined(separator: "&")
-                .data(using: .utf8),
+            body: Data.formURL(
+                params: [
+                    "grant_type": "refresh_token",
+                    "refresh_token": refreshToken,
+                ]
+            ),
             headers: headers(
                 with: [
                     .contentType: "application/x-www-form-urlencoded",

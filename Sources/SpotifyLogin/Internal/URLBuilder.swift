@@ -1,5 +1,6 @@
 import Foundation
 import SpotifyAPI
+import SwiftMusicServicesApi
 
 final class URLBuilder {
 
@@ -37,12 +38,8 @@ final class URLBuilder {
 		if scopeStrings.count > 0 {
 			params["scope"] = scopeStrings.joined(separator: " ")
 		}
-
-		let pairs = params.map { "\($0)=\($1)" }
-		let pairsString = pairs.joined(separator: "&")
-			.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? String()
-
-		let loginPageURLString = "\(endpoint)authorize?\(pairsString)"
+    
+        let loginPageURLString = "\(endpoint)authorize?\(String.query(params: params))"
 		return URL(string: loginPageURLString)
 	}
 
