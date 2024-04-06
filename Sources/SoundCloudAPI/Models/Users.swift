@@ -1,7 +1,7 @@
 import Foundation
 import SwiftAPIClient
 
-public struct Users: Codable, Equatable {
+public struct Users: Codable, Equatable, Pagination {
 
 	public var collection: [User]?
 	public var nextHref: String?

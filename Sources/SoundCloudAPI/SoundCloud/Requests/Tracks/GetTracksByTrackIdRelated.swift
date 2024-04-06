@@ -10,7 +10,7 @@ public extension SoundCloud.API.Tracks {
 
 	 **GET** /tracks/{track_id}/related
 	 */
-	func getByTrackIdRelated(trackId track_id: Int, access: [Access]? = nil, limit: Int? = nil, offset: Int? = nil, linkedPartitioning: Bool? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> Status200 {
+	func getByTrackIdRelated(trackId track_id: Int, access: [Access]? = nil, limit: Int? = nil, offset: Int? = nil, linkedPartitioning: Bool? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> OneOf<Tracks, TracksList> {
 		try await client
 			.path("/tracks/\(track_id)/related")
 			.method(.get)

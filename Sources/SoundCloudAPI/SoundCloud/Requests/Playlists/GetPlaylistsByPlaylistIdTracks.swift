@@ -10,7 +10,7 @@ public extension SoundCloud.API.Playlists {
 
 	 **GET** /playlists/{playlist_id}/tracks
 	 */
-	func getByPlaylistIdTracks(playlistId playlist_id: Int, secretToken: String? = nil, access: [Access]? = nil, linkedPartitioning: Bool? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> Status200 {
+	func getByPlaylistIdTracks(playlistId playlist_id: Int, secretToken: String? = nil, access: [Access]? = nil, linkedPartitioning: Bool? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> OneOf<Tracks, TracksList> {
 		try await client
 			.path("/playlists/\(playlist_id)/tracks")
 			.method(.get)

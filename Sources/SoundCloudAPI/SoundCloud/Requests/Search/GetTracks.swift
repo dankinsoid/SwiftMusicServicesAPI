@@ -10,7 +10,7 @@ public extension SoundCloud.API.Search {
 
 	 **GET** /tracks
 	 */
-	func getTracks(q: String? = nil, ids: String? = nil, genres: String? = nil, tags: String? = nil, bpm: Bpm? = nil, duration: Duration? = nil, createdAt: CreatedAt? = nil, access: [Access]? = nil, limit: Int? = nil, offset: Int? = nil, linkedPartitioning: Bool? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> Status200 {
+    func getTracks(q: String? = nil, ids: String? = nil, genres: String? = nil, tags: String? = nil, bpm: GetTracks.Bpm? = nil, duration: GetTracks.Duration? = nil, createdAt: GetTracks.CreatedAt? = nil, access: [Access]? = nil, limit: Int? = nil, offset: Int? = nil, linkedPartitioning: Bool? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> OneOf<Tracks, TracksList> {
 		try await client
 			.path("/tracks")
 			.method(.get)

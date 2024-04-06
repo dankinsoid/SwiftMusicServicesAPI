@@ -82,7 +82,7 @@ public struct {{ type }}: {% if options.modelProtocol %}{{ options.modelProtocol
         {% for property in allProperties %}
         {% if not property.raw.deprecated %}
         {% call propertyName property %}: {% call propertyType property %}{% if property.optional or property.raw.nullable %} = nil{% endif %}{% ifnot forloop.last %},{% endif %}
-        {% endif %}    
+        {% endif %}
         {% endfor %}
     ) {
         {% for property in allProperties %}

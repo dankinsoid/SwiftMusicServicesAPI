@@ -10,7 +10,7 @@ public extension SoundCloud.API.Me {
 
 	 **GET** /me/likes/playlists
 	 */
-	func getLikesPlaylists(limit: Int? = nil, linkedPartitioning: Bool? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> Status200 {
+	func getLikesPlaylists(limit: Int? = nil, linkedPartitioning: Bool? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> OneOf<Playlists, PlaylistsArray> {
 		try await client
 			.path("/me/likes/playlists")
 			.method(.get)

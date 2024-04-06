@@ -1,7 +1,7 @@
 import Foundation
 import SwiftAPIClient
 
-public struct Tracks: Codable, Equatable {
+public struct Tracks: Codable, Equatable, Pagination {
 
 	public var collection: [Track]?
 	public var nextHref: String?

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftAPIClient
 
-public struct Playlists: Codable, Equatable {
+public struct Playlists: Codable, Equatable, Pagination {
 
 	public var collection: [Playlist]?
 	public var nextHref: String?

@@ -2,7 +2,7 @@ import Foundation
 import SwiftAPIClient
 
 /** User's activities. */
-public struct Activities: Codable, Equatable {
+public struct Activities: Codable, Equatable, Pagination {
 
 	public var collection: [Collection]?
 	public var futureHref: String?

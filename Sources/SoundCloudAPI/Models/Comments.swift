@@ -1,7 +1,7 @@
 import Foundation
 import SwiftAPIClient
 
-public struct Comments: Codable, Equatable {
+public struct Comments: Codable, Equatable, Pagination {
 
 	public var collection: [Comment]?
 	public var nextHref: String?
