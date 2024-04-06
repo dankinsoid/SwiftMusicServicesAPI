@@ -10,3 +10,5 @@ DerivedData/
 .swiftpm
 .idea
 Package.resolved
+downloaded_script.js
+extracted.json
