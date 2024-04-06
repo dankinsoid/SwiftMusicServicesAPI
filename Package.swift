@@ -44,6 +44,10 @@ let package = Package(
 			name: "AppleMusicLogin",
 			targets: ["AppleMusicLogin"]
 		),
+        .library(
+            name: "QQMusicAPI",
+            targets: ["QQMusicAPI"]
+        ),
 	],
 	dependencies: [
 		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
@@ -121,5 +125,12 @@ let package = Package(
 				.product(name: "JWTKit", package: "jwt-kit"),
 			]
 		),
+        .target(
+            name: "QQMusicAPI",
+            dependencies: [
+                .target(name: "SwiftMusicServicesApi"),
+                .product(name: "SwiftAPIClient", package: "swift-api-client")
+            ]
+        ),
 	]
 )
