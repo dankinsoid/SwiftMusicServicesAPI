@@ -48,6 +48,10 @@ let package = Package(
 			name: "AmazonMusicAPI",
 			targets: ["AmazonMusicAPI"]
 		),
+    .library(
+      name: "YouTubeMusicAPI",
+      targets: ["YouTubeMusicAPI"]
+    ),
 	],
 	dependencies: [
 		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
