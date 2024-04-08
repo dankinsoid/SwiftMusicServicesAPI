@@ -31,7 +31,7 @@ extension QQMusic {
         public let appKey: String
         public let appPrivateKey: String?
         public let client: APIClient
-        
+
         public init(
             baseURL: BaseURL,
             appID: String,
@@ -39,9 +39,43 @@ extension QQMusic {
             appPrivateKey: String?
         ) {
             self.client = APIClient(baseURL: baseURL.url)
+                .bodyDecoder(.json(dateDecodingStrategy: .qq))
+                .errorDecoder(.decodable(QQResponseCommon.self))
+                .path("rpc_proxy", "fcgi-bin", "music_open_api.fcg")
+                .httpResponseValidator(.qq)
+            
             self.appID = appID
             self.appKey = appKey
             self.appPrivateKey = appPrivateKey
         }
     }
 }
+
+private extension JSONDecoder.DateDecodingStrategy {
+
+    static var qq: Self {
+        .custom { decoder in
+            do {
+                let double = try Double(from: decoder)
+                return Date(timeIntervalSince1970: double)
+            } catch {
+                let string = try String(from: decoder)
+                guard let date = qqDateFormatter.date(from: string) else {
+                    throw DecodingError.dataCorrupted(
+                        DecodingError.Context(
+                            codingPath: decoder.codingPath,
+                            debugDescription: "Expected date string to be in yyyy-MM-dd format, but it was \(string)"
+                        )
+                    )
+                }
+                return date
+            }
+        }
+    }
+}
+
+private let qqDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd"
+    return formatter
+}()
