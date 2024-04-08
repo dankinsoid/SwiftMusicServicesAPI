@@ -31,7 +31,7 @@ extension QQMusic.API {
     ///  - pageSize: Number of songs per page. Maximum 30.
     public func playlistSongs(
         id: Int,
-        page: Int = 0,
+        page: Int,
         pageSize: Int = 30
     ) async throws -> QQPlaylist {
         try await client(for: "fcg_music_custom_get_songlist_detail.fcg")
@@ -49,9 +49,9 @@ extension QQMusic.API {
     ///  - id: Playlist ID. If the login state is valid, id=0 is supported to obtain the content of the user's "I Like Playlist"
     ///  - page: Page number, starting from 0
     ///  - pageSize: Number of songs per page. Maximum 30.
-    public func playlistSongsPages(
+    public func playlistAllSongs(
         id: Int,
-        page: Int = 0,
+        startFrom page: Int = 0,
         pageSize: Int = 30
     ) throws -> AnyAsyncSequence<QQPlaylist> {
         AsyncThrowingStream { continuation in
