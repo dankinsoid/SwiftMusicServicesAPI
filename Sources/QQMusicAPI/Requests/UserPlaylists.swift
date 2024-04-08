@@ -5,9 +5,7 @@ extension QQMusic.API {
 
     /// Get personal playlist directory.
     public func userPlaylists() async throws -> QQPlaylistsLists {
-        try await client
-            .query("opi_cmd", "fcg_music_custom_get_songlist_self.fcg")
-            .call()
+        try await client(for: "fcg_music_custom_get_songlist_self.fcg").call()
     }
 
     /// Create a playlist.
@@ -24,7 +22,7 @@ extension QQMusic.API {
             .query("diss_id", id)
             .call()
     }
-    
+
     /// Get the list of songs in the playlist.
     ///
     /// - Parameters:
@@ -36,10 +34,42 @@ extension QQMusic.API {
         page: Int = 0,
         pageSize: Int = 30
     ) async throws -> QQPlaylist {
-        try await client
-            .query("opi_cmd", "fcg_music_custom_get_songlist_detail.fcg")
-            .query("dissid", id)
+        try await client(for: "fcg_music_custom_get_songlist_detail.fcg")
+            .query([
+                "dissid": id,
+                "page": page,
+                "page_size": pageSize
+            ])
             .call()
+    }
+
+    /// Get the list of songs in the playlist.
+    ///
+    /// - Parameters:
+    ///  - id: Playlist ID. If the login state is valid, id=0 is supported to obtain the content of the user's "I Like Playlist"
+    ///  - page: Page number, starting from 0
+    ///  - pageSize: Number of songs per page. Maximum 30.
+    public func playlistSongsPages(
+        id: Int,
+        page: Int = 0,
+        pageSize: Int = 30
+    ) throws -> AnyAsyncSequence<QQPlaylist> {
+        AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    var songs = try await playlistSongs(id: id, page: page, pageSize: pageSize)
+                    continuation.yield(songs)
+                    while songs.songList?.count == pageSize {
+                        songs = try await playlistSongs(id: id, page: page + 1, pageSize: pageSize)
+                        continuation.yield(songs)
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+        .eraseToAnyAsyncSequence()
     }
 }
 
@@ -69,11 +99,17 @@ extension QQStatusCode {
     public static let exceptionInGettingSongList: QQStatusCode = 100433
 }
 
+extension AnyAsyncSequence where Element == QQPlaylist {
+
+    public func collect() async throws -> [QQSong] {
+        try await reduce(into: []) { $0 += $1.songList ?? [] }
+    }
+}
+
 private extension QQMusic.API {
 
     func createDeleteClient(cmd: String) -> APIClient {
-        client
-            .query("opi_cmd", "fcg_music_custom_oper_songlist.fcg")
+        client(for: "fcg_music_custom_oper_songlist.fcg")
             .query("cmd", cmd)
     }
     

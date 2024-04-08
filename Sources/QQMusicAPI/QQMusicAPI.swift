@@ -48,6 +48,10 @@ extension QQMusic {
             self.appKey = appKey
             self.appPrivateKey = appPrivateKey
         }
+        
+        public func client(for cmd: String) -> APIClient {
+            client.query("opi_cmd", cmd)
+        }
     }
 }
 
