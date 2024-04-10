@@ -1,102 +1,52 @@
 import Foundation
 import SwiftHttp
 import SwiftMusicServicesApi
+import SwiftAPIClient
 
 public extension AppleMusic.API {
-	func dataRequest<T: Decodable>(
-		url: HttpUrl,
-		method: HttpMethod = .get,
-		body: some Encodable,
-		headers: [HttpHeaderKey: String] = [:],
-		limit: Int? = nil,
-		auth: Bool = true,
-		validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
-	) -> AsyncThrowingStream<[T], Error> {
-		AsyncThrowingStream { cont in
-			self.executeNext(
-				output: T.self,
-				url: url,
-				limit: limit,
-				request: {
-					try await self.codableRequest(
-						url: url,
-						method: method,
-						headers: self.headers(with: headers, auth: auth),
-						body: body,
-						validators: validators
-					)
-				},
-				observer: cont,
-				auth: auth,
-				validators: validators
-			)
-		}
-	}
+    
+    func pages<T: Decodable>(
+        limit: Int? = nil,
+        request: @escaping @Sendable (APIClient) async throws -> AppleMusic.Objects.Response<T>
+    ) -> AsyncThrowingStream<[T], Error> {
+        AsyncThrowingStream { cont in
+            self.executeNext(
+                output: T.self,
+                limit: limit,
+                request: request,
+                observer: cont
+            )
+        }
+    }
+}
 
-	func dataRequest<T: Decodable>(
-		url: HttpUrl,
-		method: HttpMethod = .get,
-		body: Data? = nil,
-		headers: [HttpHeaderKey: String] = [:],
-		auth: Bool = true,
-		limit: Int? = nil,
-		validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
-	) -> AsyncThrowingStream<[T], Error> {
-		AsyncThrowingStream { cont in
-			self.executeNext(
-				output: T.self,
-				url: url,
-				limit: limit,
-				request: {
-					try await self.decodableRequest(
-						url: url,
-						method: method,
-						body: body,
-						headers: self.headers(with: headers, auth: auth),
-						validators: validators
-					)
-				},
-				observer: cont,
-				auth: auth,
-				validators: validators
-			)
-		}
-	}
+extension AppleMusic.API {
 
 	private func executeNext<Output: Decodable>(
 		output: Output.Type,
-		url: HttpUrl,
 		limit: Int? = nil,
-		request: @escaping () async throws -> AppleMusic.Objects.Response<Output>,
-		observer: AsyncThrowingStream<[Output], Error>.Continuation,
-		auth: Bool,
-		validators: [HttpResponseValidator]
+        path: String? = nil,
+		request: @escaping @Sendable (APIClient) async throws -> AppleMusic.Objects.Response<Output>,
+		observer: AsyncThrowingStream<[Output], Error>.Continuation
 	) {
 		Task {
 			do {
-				let result = try await request()
+                let result: AppleMusic.Objects.Response<Output>
+                if let path {
+                    result = try await request(client.path(path))
+                } else {
+                    result = try await request(client)
+                }
 				observer.yield(result.data)
 				let newLimit = limit.map { $0 - result.data.count }
 
 				if let next = result.next, (newLimit ?? .max) > 0 {
-					var newUrl = HttpUrl(string: [baseURL.url.absoluteString, next].map { $0.trimmingCharacters(in: ["/"]) }.joined(separator: "/")) ?? url
-					newUrl.query.merge(url.query) { new, _ in new }
-
 					self.executeNext(
 						output: output,
-						url: newUrl,
 						limit: newLimit,
-						request: {
-							try await self.decodableRequest(
-								url: url,
-								method: .get,
-								headers: self.headers(auth: auth),
-								validators: validators
-							)
-						},
-						observer: observer,
-						auth: auth,
-						validators: validators
+                        path: next,
+						request: request,
+						observer: observer
 					)
 				} else {
 					observer.finish()

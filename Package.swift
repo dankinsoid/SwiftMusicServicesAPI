@@ -63,7 +63,9 @@ let package = Package(
 		),
 		.target(
 			name: "SpotifyAPI",
-			dependencies: [.target(name: "SwiftMusicServicesApi")]
+			dependencies: [
+                .target(name: "SwiftMusicServicesApi")
+            ]
 		),
 		.target(
 			name: "SpotifyLogin",
@@ -94,13 +96,14 @@ let package = Package(
 			name: "VKMusicAPI",
 			dependencies: [
 				.target(name: "SwiftMusicServicesApi"),
-				"SwiftSoup",
-                .product(name: "SwiftAPIClient", package: "swift-api-client"),
+				"SwiftSoup"
 			]
 		),
 		.target(
 			name: "VKLogin",
-			dependencies: [.target(name: "VKMusicAPI")]
+			dependencies: [
+                .target(name: "VKMusicAPI")
+            ]
 		),
 		.testTarget(
 			name: "VKMusicAPITests",

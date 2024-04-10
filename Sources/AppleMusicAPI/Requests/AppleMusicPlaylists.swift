@@ -7,6 +7,9 @@ public extension AppleMusic.API {
 	}
 
 	func addPlaylist(input: AddPlaylistInput) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
+        pages { client in
+            try await client.path("v1", "me", "library", "playlists")
+        }
 		dataRequest(
 			url: baseURL.path("v1", "me", "library", "playlists"),
 			method: .post,
