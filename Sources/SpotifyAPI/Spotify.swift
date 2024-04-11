@@ -17,12 +17,10 @@ public enum Spotify {
 		public var v1BaseURL: URL { API.v1BaseURL }
 		public let clientID: String
 		public let clientSecret: String
-        public let redirectURI: String
 
 		public init(
 			client: APIClient,
 			clientID: String,
-            redirectURI: String,
 			clientSecret: String,
 			token: String? = nil,
 			refreshToken: String? = nil
@@ -36,7 +34,6 @@ public enum Spotify {
                 .httpResponseValidator(.statusCode)
 			self.clientID = clientID
 			self.clientSecret = clientSecret
-            self.redirectURI = redirectURI
 		}
 
         public var client: APIClient {
