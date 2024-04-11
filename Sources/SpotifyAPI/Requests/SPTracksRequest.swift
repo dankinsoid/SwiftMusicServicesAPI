@@ -1,5 +1,5 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 
 public extension Spotify.API {
 
