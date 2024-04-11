@@ -1,19 +1,20 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 
 public protocol SpotifyPaging {
 	associatedtype NextParameter
 	associatedtype Item
 	var items: [Item] { get }
-	func nextURL(parameters: NextParameter) -> HttpUrl?
+	func nextURL(parameters: NextParameter) -> URL?
 }
 
 extension SPPaging: SpotifyPaging {
-	public func nextURL(parameters _: Void) -> HttpUrl? {
-		next.flatMap { HttpUrl(string: $0) }
+
+	public func nextURL(parameters _: Void) -> URL? {
+		next.flatMap { URL(string: $0) }
 	}
 
-	public func nextURL() -> HttpUrl? {
+	public func nextURL() -> URL? {
 		nextURL(parameters: ())
 	}
 }
@@ -21,40 +22,28 @@ extension SPPaging: SpotifyPaging {
 extension Spotify.API {
 
 	public func pagingRequest<Output: SpotifyPaging & Decodable>(
-		output: Output.Type,
-		url: HttpUrl,
-		method: HttpMethod,
-		body: Data? = nil,
+		of output: Output.Type,
 		parameters: Output.NextParameter,
-		headers: [HttpHeaderKey: String],
 		limit: Int? = nil,
-		validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
+        request: @escaping @Sendable () async throws -> Output
 	) -> AsyncThrowingStream<[Output.Item], Error> {
 		AsyncThrowingStream { cont in
 			self.executeNext(
-				output: output,
-				request: {
-					try await self.decodableRequest(
-						url: url,
-						method: method,
-						body: body,
-						headers: headers,
-						validators: validators
-					)
-				},
+                Output.self,
 				limit: limit,
 				observer: cont,
-				parameters: parameters
-			)
+				parameters: parameters,
+                request: request
+            )
 		}
 	}
 
 	private func executeNext<Output: SpotifyPaging & Decodable>(
-		output: Output.Type,
-		request: @escaping () async throws -> Output,
+        _ type: Output.Type,
 		limit: Int? = nil,
 		observer: AsyncThrowingStream<[Output.Item], Error>.Continuation,
-		parameters: Output.NextParameter
+		parameters: Output.NextParameter,
+        request: @escaping @Sendable () async throws -> Output
 	) {
 		Task {
 			do {
@@ -63,12 +52,13 @@ extension Spotify.API {
 				let newLimit = limit.map { $0 - result.items.count }
 				if let url = result.nextURL(parameters: parameters), (newLimit ?? .max) > 0 {
 					self.executeNext(
-						output: output,
-						request: { try await self.next(url: url) },
+                        type,
 						limit: newLimit,
 						observer: observer,
 						parameters: parameters
-					)
+                    ){
+                        try await client.url(url).get()
+                    }
 				} else {
 					observer.finish()
 				}

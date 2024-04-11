@@ -1,5 +1,5 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 
 public extension Spotify.API {
 
@@ -10,77 +10,35 @@ public extension Spotify.API {
 		redirectURI: String,
 		codeVerifier: String? = nil
     ) async throws -> SPTokenResponse {
-        let result: SPTokenResponse = try await decodableRequest(
-            url: apiBaseURL.path("token"),
-            method: .post,
-            body: Data.formURL(
-                params: [
-                    "grant_type": "authorization_code",
-                    "code": code,
-                    "redirect_uri": redirectURI,
-                    "code_verifier": codeVerifier,
-                ]
-            ),
-            headers: headers(
-                with: [
-                    .contentType: "application/x-www-form-urlencoded",
-                    .accept: ""
-                ],
-                auth: .basic
-            )
-        )
-        refreshToken = result.refreshToken ?? refreshToken
-        token = result.accessToken
-        return result
-    }
-
-	/// https://developer.spotify.com/documentation/general/guides/authorization/code-flow/
-	@discardableResult
-    func refreshToken() async throws -> SPTokenResponse {
-        guard let refreshToken else {
-            throw SPError(status: 401, message: "No refresh token")
+        let result: SPTokenResponse = try await clientWithoutTokenRefresher
+            .url(apiBaseURL)
+            .path("token")
+            .bodyEncoder(.formURL)
+            .body([
+                "grant_type": "authorization_code",
+                "code": code,
+                "redirect_uri": redirectURI,
+                "code_verifier": codeVerifier,
+            ])
+            .headers(.accept(""), removeCurrent: true)
+            .auth(basicAuth)
+            .post()
+        if let refreshToken = result.refreshToken {
+            try? await Self.cache.save(refreshToken, for: .refreshToken)
         }
-        let result: SPTokenResponse = try await decodableRequest(
-            url: apiBaseURL.path("token"),
-            method: .post,
-            body: Data.formURL(
-                params: [
-                    "grant_type": "refresh_token",
-                    "refresh_token": refreshToken,
-                ]
-            ),
-            headers: headers(
-                with: [
-                    .contentType: "application/x-www-form-urlencoded",
-                    .accept: ""
-                ],
-                auth: .basic
-            )
-        )
-        token = result.accessToken
+        try? await Self.cache.save(result.accessToken, for: .accessToken)
+        try? await Self.cache.save(Date(timeIntervalSinceNow: result.expiresIn), for: .expiryDate)
         return result
     }
 
-	nonisolated func authenticationURL(
+    func authenticationURL(
 		redirectURI: String,
         showDialog: Bool = true,
         state: String? = nil,
 		scope: [Scope]
-	) -> HttpUrl {
-		var url = HttpUrl(
-			host: "accounts.spotify.com",
-			path: ["authorize"],
-			query: [
-				"client_id": clientID,
-				"redirect_uri": redirectURI,
-				"response_type": "code",
-				"show_dialog": "\(showDialog)",
-                "state": state
-            ].compactMapValues { $0 }
-		)
-		if !scope.isEmpty {
-			url.query["scope"] = scope.map(\.rawValue).joined(separator: " ")
-		}
-		return url
+    ) -> URL {
+        URL(
+            string: "https://accounts.spotify.com/authorize/?client_id=\(clientID)&redirect_uri=\(redirectURI)&response_type=code&show_dialog=\(showDialog)&state=\(state ?? "")\(scope.isEmpty ? "" : "&scope=\(scope.map(\.rawValue).joined(separator: " "))")"
+        )!
 	}
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 /// User scopes, specifying exactly what types of data the application wants to access.
-public enum Scope: String, CaseIterable {
+public enum Scope: String, CaseIterable, Codable {
 	/// Read access to user's private playlists.
 	case playlistReadPrivate = "playlist-read-private"
 	/// Include collaborative playlists when requesting a user's playlists.

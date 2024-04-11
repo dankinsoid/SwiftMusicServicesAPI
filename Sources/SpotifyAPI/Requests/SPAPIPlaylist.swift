@@ -1,5 +1,5 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 
 public extension Spotify.API {
 
@@ -8,14 +8,15 @@ public extension Spotify.API {
 		limit: Int? = nil,
 		offset: Int? = 0
 	) throws -> AsyncThrowingStream<[SPPlaylistSimplified], Error> {
-		try pagingRequest(
-			output: SPPaging<SPPlaylistSimplified>.self,
-			url: v1BaseURL.path("me", "playlists").query(from: PlaylistsInput(limit: limit ?? 50, offset: offset)),
-			method: .get,
+        pagingRequest(
+			of: SPPaging<SPPlaylistSimplified>.self,
 			parameters: (),
-			headers: headers(),
 			limit: limit
-		)
+        ) {
+            try await client("me", "playlists")
+                .query(PlaylistsInput(limit: limit ?? 50, offset: offset))
+                .get()
+        }
 	}
 
 	struct PlaylistsInput: Encodable {
@@ -35,25 +36,22 @@ public extension Spotify.API {
 		offset: Int? = 0,
 		market: String? = nil
 	) throws -> AsyncThrowingStream<[SPPlaylistTrack], Error> {
-		try pagingRequest(
-			output: SPPaging<SPPlaylistTrack>.self,
-			url: v1BaseURL.path("playlists", id, "tracks").query(from: SavedInput(limit: limit ?? 100, offset: offset, market: market)),
-			method: .get,
+        pagingRequest(
+			of: SPPaging<SPPlaylistTrack>.self,
 			parameters: (),
-			headers: headers(),
 			limit: limit
-		)
+        ) {
+            try await client("playlists", id, "tracks")
+                .query(SavedInput(limit: limit ?? 100, offset: offset, market: market))
+                .get()
+        }
 	}
 
 	func playlist(
 		id: String,
 		input: PlaylistInput
 	) async throws -> SPPlaylist {
-		try await decodableRequest(
-			url: v1BaseURL.path("playlists", id).query(from: input),
-			method: .get,
-			headers: headers()
-		)
+        try await client("playlists", id).query(input).get()
 	}
 
 	struct PlaylistInput: Encodable {
@@ -74,12 +72,7 @@ public extension Spotify.API {
 		id: String,
 		input: AddPlaylistInput
 	) async throws -> AddPlaylistOutput {
-		try await codableRequest(
-			url: v1BaseURL.path("playlists", id, "tracks"),
-			method: .post,
-			headers: headers(),
-			body: input
-		)
+        try await client("playlists", id, "tracks").body(input).post()
 	}
 
 	struct AddPlaylistInput: Encodable {
@@ -102,12 +95,7 @@ public extension Spotify.API {
 		userId: String,
 		input: CreatePlaylistInput
 	) async throws -> SPPlaylist {
-		try await codableRequest(
-			url: v1BaseURL.path("users", userId, "playlists"),
-			method: .post,
-			headers: headers(with: [.contentType: "application/json"]),
-			body: input
-		)
+        try await client("users", userId, "playlists").body(input).post()
 	}
 
 	struct CreatePlaylistInput: Encodable {

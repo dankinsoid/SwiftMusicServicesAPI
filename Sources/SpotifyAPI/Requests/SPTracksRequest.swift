@@ -4,12 +4,10 @@ import SwiftHttp
 public extension Spotify.API {
 
 	func tracks(ids: [String], market: String? = nil) async throws -> [SPTrack] {
-		let output: TracksOutput = try await decodableRequest(
-			url: v1BaseURL.path("tracks").query(from: TracksInput(ids: ids, market: market)),
-			method: .get,
-			headers: headers()
-		)
-		return output.tracks
+		try await client("tracks")
+            .query(TracksInput(ids: ids, market: market))
+            .call(.http, as: .decodable(TracksOutput.self))
+            .tracks
 	}
 
 	struct TracksInput: Encodable {
@@ -27,14 +25,15 @@ public extension Spotify.API {
 	}
 
 	func myTracks(limit: Int? = nil, offset: Int? = nil, market: String? = nil) throws -> AsyncThrowingStream<[SPSavedTrack], Error> {
-		try pagingRequest(
-			output: SPPaging<SPSavedTrack>.self,
-			url: v1BaseURL.path("me", "tracks").query(from: SavedInput(limit: limit ?? 50, offset: offset, market: market)),
-			method: .get,
+        pagingRequest(
+			of: SPPaging<SPSavedTrack>.self,
 			parameters: (),
-			headers: headers(),
 			limit: limit
-		)
+        ) {
+            try await client.path("me", "tracks")
+                .query(SavedInput(limit: limit ?? 50, offset: offset, market: market))
+                .get()
+        }
 	}
 
 	struct SavedInput: Encodable {

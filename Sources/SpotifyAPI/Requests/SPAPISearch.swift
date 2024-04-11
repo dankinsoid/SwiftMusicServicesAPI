@@ -1,7 +1,8 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 
 public extension Spotify.API {
+
 	/// https://developer.spotify.com/documentation/web-api/reference/search/search/
 	func search(
 		q: SPQuery,
@@ -11,13 +12,11 @@ public extension Spotify.API {
 		offset: Int? = nil,
 		includeExternal: SearchInput.External? = nil
 	) async throws -> SearchOutput {
-		try await decodableRequest(
-			url: v1BaseURL.path("search").query(
-				from: SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)
-			),
-			method: .get,
-			headers: headers()
-		)
+        try await client("search")
+            .query(
+                SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)
+            )
+            .get()
 	}
 
 	func searchQuery(
@@ -28,15 +27,15 @@ public extension Spotify.API {
 		offset: Int? = nil,
 		includeExternal: SearchInput.External? = nil
 	) throws -> AsyncThrowingStream<[SearchOutput], Error> {
-		try pagingRequest(
-			output: SearchOutput.self,
-			url: v1BaseURL.path("search").query(
-				from: SearchInput(q: q, type: [type], market: market, limit: limit, offset: offset, includeExternal: includeExternal)
-			),
-			method: .get,
-			parameters: type,
-			headers: headers()
-		)
+        pagingRequest(
+			of: SearchOutput.self,
+			parameters: type
+        ) {
+            try await client("search")
+                .query(
+                    SearchInput(q: q, type: [type], market: market, limit: limit, offset: offset, includeExternal: includeExternal)
+                ).get()
+        }
 	}
 
 	struct SearchInput: Encodable {
@@ -136,7 +135,7 @@ extension Spotify.API.SearchOutput: SpotifyPaging {
 
 	public var items: [Spotify.API.SearchOutput] { [self] }
 
-	public func nextURL(parameters: SPContentType) -> HttpUrl? {
+	public func nextURL(parameters: SPContentType) -> URL? {
 		switch parameters {
 		case .album: return albums?.nextURL()
 		case .artist: return artists?.nextURL()

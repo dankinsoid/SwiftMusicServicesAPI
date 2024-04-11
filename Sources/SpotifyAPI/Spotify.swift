@@ -1,148 +1,111 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 @_exported import SwiftMusicServicesApi
-import VDCodable
 
 public enum Spotify {
 
 	/// https://developer.spotify.com/documentation/web-api/
 	/// https://developer.spotify.com/documentation/ios/quick-start/
-	public final actor API {
+	public struct API {
 
-		public static var apiBaseURL = HttpUrl(host: "accounts.spotify.com", path: ["api"])
-		public static var v1BaseURL = HttpUrl(host: "api.spotify.com", path: ["v1"])
+		public static var apiBaseURL = URL(string: "https://accounts.spotify.com/api")!
+		public static var v1BaseURL = URL(string: "https://api.spotify.com/v1")!
+        static let cache = MockSecureCacheService()
 
-		var client: HttpClient
-		public nonisolated var apiBaseURL: HttpUrl { API.apiBaseURL }
-		public nonisolated var v1BaseURL: HttpUrl { API.v1BaseURL }
-		public var token: String?
-		public var refreshToken: String?
-		public nonisolated let clientID: String
-		public nonisolated let clientSecret: String
-		private let pipeline = Pipeline()
-
-		private var refreshTokenTask: Task<Void, Error>?
+        public let clientWithoutTokenRefresher: APIClient
+		public var apiBaseURL: URL { API.apiBaseURL }
+		public var v1BaseURL: URL { API.v1BaseURL }
+		public let clientID: String
+		public let clientSecret: String
+        public let redirectURI: String
 
 		public init(
-			client: HttpClient,
+			client: APIClient,
 			clientID: String,
+            redirectURI: String,
 			clientSecret: String,
 			token: String? = nil,
 			refreshToken: String? = nil
 		) {
-			self.client = client.rateLimit(timeout: 30)
+            clientWithoutTokenRefresher = client
+                .url(Self.v1BaseURL)
+                .bodyDecoder(.json(dateDecodingStrategy: .iso8601, keyDecodingStrategy: .convertFromSnakeCase))
+                .errorDecoder(.decodable(SPError.self))
+                .waitIfRateLimitExceeded(maxRepeatCount: 10)
+                .auth(enabled: true)
+                .httpResponseValidator(.statusCode)
 			self.clientID = clientID
 			self.clientSecret = clientSecret
-			self.token = token
-			self.refreshToken = refreshToken
+            self.redirectURI = redirectURI
 		}
 
-		public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: AuthHeadersType? = .token) throws -> [HttpHeaderKey: String] {
-			switch auth {
-			case .token:
-				guard let token else {
-					throw SPError(status: 401, message: "Token is missed")
-				}
-				return additionalHeaders.merging([.authorization: "Bearer \(token)"]) { _, s in s }
-			case .clientBase64:
-				guard
-					let authString = "\(clientID):\(clientSecret)"
-					.data(using: .ascii)?
-					.base64EncodedString(options: .endLineWithLineFeed)
-				else {
-					throw SPError(status: 401, message: "ClientID or ClientSecret is invalid")
-				}
-				return additionalHeaders.merging([.authorization: "Bearer \(authString)"]) { _, s in s }
-            case .basic:
-                let basic = "Basic \(Data("\(clientID):\(clientSecret)".utf8).base64EncodedString())"
-                return additionalHeaders.merging([.authorization: basic]) { _, s in s }
-			case .none:
-				return additionalHeaders
-			}
-		}
+        public var client: APIClient {
+            clientWithoutTokenRefresher
+                .tokenRefresher(cacheService: Self.cache) { refreshToken, client, _ in
+                    try await Self.refreshToken(
+                        client: client,
+                        refreshToken: refreshToken,
+                        clientID: clientID,
+                        clientSecret: clientSecret
+                    )
+                } auth: {
+                    .bearer(token: $0)
+                }
+        }
 
-		public func update(accessToken: String, refreshToken: String) async {
-			try? await refreshTokenTask?.value
-			token = accessToken
-			self.refreshToken = refreshToken
-		}
+        public var base64Auth: AuthModifier {
+            AuthModifier { [clientID, clientSecret] req, _ in
+                guard
+                    let authString = "\(clientID):\(clientSecret)"
+                        .data(using: .ascii)?
+                        .base64EncodedString(options: .endLineWithLineFeed)
+                else {
+                    throw SPError(status: 401, message: "ClientID or ClientSecret is invalid")
+                }
+                req.headers.append(.authorization(bearerToken: authString))
+            }
+        }
 
-		public func encodableRequest(
-			url: HttpUrl,
-			method: HttpMethod,
-			headers: [HttpHeaderKey: String],
-			body: some Encodable,
-			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
-		) async throws -> HttpResponse {
-			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.encodableRequest(executor: dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
-			}
-		}
+        public var basicAuth: AuthModifier {
+            .basic(username: clientID, password: clientSecret)
+        }
 
-		public func decodableRequest<U: Decodable>(
-			url: HttpUrl,
-			method: HttpMethod,
-			body: Data? = nil,
-			headers: [HttpHeaderKey: String],
-			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
-		) async throws -> U {
-			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.decodableRequest(executor: dataTask, url: url, method: method, body: body, headers: headers, validators: validators)
-			}
-		}
-
-		public func codableRequest<U: Decodable>(
-			url: HttpUrl,
-			method: HttpMethod,
-			headers: [HttpHeaderKey: String],
-			body: some Encodable,
-			validators: [HttpResponseValidator] = [HttpStatusCodeValidator()]
-		) async throws -> U {
-			try await APIFailure.wrap(url: url, method: method) {
-				try await pipeline.codableRequest(executor: dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
-			}
-		}
-
-		private func dataTask(_ req: HttpRequest) async throws -> HttpResponse {
-			try await refreshTokenTask?.value
-			var response = try await client.dataTask(req)
-			if response.statusCode == .unauthorized {
-				do {
-					refreshTokenTask = Task { [weak self] in
-						try await self?.refreshToken()
-					}
-					try await refreshTokenTask?.value
-					refreshTokenTask = nil
-				} catch {
-					throw SPError(status: response.statusCode.rawValue, message: "Token is invalid")
-				}
-				response = try await client.dataTask(req)
-			}
-			return response
-		}
-
-		private struct Pipeline: HttpCodablePipelineCollection {
-
-			func encoder<T: Encodable>() -> HttpRequestEncoder<T> {
-				HttpRequestEncoder(encoder: JSONEncoder())
-			}
-
-			func decoder<T: Decodable>() -> HttpResponseDecoder<T> {
-				let decoder = JSONDecoder()
-				decoder.keyDecodingStrategy = .convertFromSnakeCase
-				decoder.dateDecodingStrategy = .iso8601
-				return HttpResponseDecoder(
-					decoder: decoder.decodeError(SPError.self)
-				)
-			}
+        public nonmutating func update(accessToken: String, refreshToken: String, expiresIn: Double?) async {
+            try? await Self.cache.save(accessToken, for: .accessToken)
+            try? await Self.cache.save(refreshToken, for: .refreshToken)
+            try? await Self.cache.save(expiresIn.map { Date(timeIntervalSinceNow: $0) }, for: .expiryDate)
 		}
 	}
 }
 
-public extension Spotify.API {
+private extension SecureCacheServiceKey {
+    
+    static let code: Self = "code"
+}
 
-	enum AuthHeadersType: String, Codable {
+private extension Spotify.API {
 
-		case token, clientBase64, basic
-	}
+    /// https://developer.spotify.com/documentation/general/guides/authorization/code-flow/
+    static func refreshToken(
+        client: APIClient,
+        refreshToken: String?,
+        clientID: String,
+        clientSecret: String
+    ) async throws -> (accessToken: String, refreshToken: String?, expiryDate: Date?) {
+        guard let refreshToken else {
+            throw SPError(status: 401, message: "No refresh token")
+        }
+        let response: SPTokenResponse = try await client
+            .url(apiBaseURL)
+            .path("token")
+            .bodyEncoder(.formURL)
+            .body([
+                "grant_type": "refresh_token",
+                "refresh_token": refreshToken,
+            ])
+            .headers(.accept(""), removeCurrent: true)
+            .auth(.basic(username: clientID, password: clientSecret))
+            .post()
+        return (response.accessToken, response.refreshToken, Date(timeIntervalSinceNow: response.expiresIn))
+    }
 }
