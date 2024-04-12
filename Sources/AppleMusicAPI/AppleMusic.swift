@@ -33,7 +33,6 @@ public enum AppleMusic {
         ) {
 			_client = client
                 .url(baseURL)
-                .rateLimit(errorCodes: [.tooManyRequests, .forbidden])
                 .httpResponseValidator(.statusCode)
 			self.token = token
 		}
