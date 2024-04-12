@@ -24,7 +24,7 @@ public extension Spotify.API {
 		public var tracks: [SPTrack]
 	}
 
-	func myTracks(limit: Int? = nil, offset: Int? = nil, market: String? = nil) throws -> AsyncThrowingStream<[SPSavedTrack], Error> {
+	func myTracks(limit: Int? = nil, offset: Int? = nil, market: String? = nil) -> AsyncThrowingStream<[SPSavedTrack], Error> {
         pagingRequest(
 			of: SPPaging<SPSavedTrack>.self,
 			parameters: (),

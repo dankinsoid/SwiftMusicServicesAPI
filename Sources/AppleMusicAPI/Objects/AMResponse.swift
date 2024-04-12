@@ -1,12 +1,13 @@
 import Foundation
 
-public protocol AppleMusicPageResponse {
+public protocol AppleMusicPageResponse<Item> {
 	associatedtype Item
 	var data: [Item] { get }
 	var next: String? { get }
 }
 
 public extension AppleMusic.Objects {
+
 	struct Response<T: Decodable>: Decodable, AppleMusicPageResponse {
 		public init(data: [T], next: String? = nil) {
 			self.data = data

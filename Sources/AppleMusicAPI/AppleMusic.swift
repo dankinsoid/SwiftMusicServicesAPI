@@ -7,7 +7,6 @@ public enum AppleMusic {
 	public final class API {
 
 		public static var baseURL = URL(string: "https://api.music.apple.com")!
-		public var baseURL: URL
 		public var token: AppleMusic.Objects.Tokens?
 		public var userToken: String?
         private let _client: APIClient
@@ -27,15 +26,15 @@ public enum AppleMusic {
         }
 
 		public init(
-            client: HTTPClient,
+            client: APIClient,
             baseURL: URL = API.baseURL,
-            token: AppleMusic.Objects.Tokens? = nil
+            token: AppleMusic.Objects.Tokens? = nil,
+            userToken: String? = nil
         ) {
-			_client = APIClient(baseURL: baseURL)
-                .httpClient(client)
+			_client = client
+                .url(baseURL)
                 .rateLimit(errorCodes: [.tooManyRequests, .forbidden])
                 .httpResponseValidator(.statusCode)
-			self.baseURL = baseURL
 			self.token = token
 		}
 	}

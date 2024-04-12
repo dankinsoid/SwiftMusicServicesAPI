@@ -7,7 +7,7 @@ public extension Spotify.API {
 	func playlists(
 		limit: Int? = nil,
 		offset: Int? = 0
-	) throws -> AsyncThrowingStream<[SPPlaylistSimplified], Error> {
+	) -> AsyncThrowingStream<[SPPlaylistSimplified], Error> {
         pagingRequest(
 			of: SPPaging<SPPlaylistSimplified>.self,
 			parameters: (),
@@ -35,7 +35,7 @@ public extension Spotify.API {
 		limit: Int? = nil,
 		offset: Int? = 0,
 		market: String? = nil
-	) throws -> AsyncThrowingStream<[SPPlaylistTrack], Error> {
+	) -> AsyncThrowingStream<[SPPlaylistTrack], Error> {
         pagingRequest(
 			of: SPPaging<SPPlaylistTrack>.self,
 			parameters: (),

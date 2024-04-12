@@ -18,7 +18,24 @@ public enum Spotify {
 		public let clientSecret: String
         public let cache: SecureCacheService
 
-		public init(
+        public init(
+            client: APIClient,
+            clientID: String,
+            clientSecret: String,
+            cache: SecureCacheService
+        ) {
+            clientWithoutTokenRefresher = client
+                .url(Self.v1BaseURL)
+                .bodyDecoder(.json(dateDecodingStrategy: .iso8601, keyDecodingStrategy: .convertFromSnakeCase))
+                .errorDecoder(.decodable(SPError.self))
+                .auth(enabled: true)
+                .httpResponseValidator(.statusCode)
+            self.cache = cache
+            self.clientID = clientID
+            self.clientSecret = clientSecret
+        }
+    
+		public convenience init(
 			client: APIClient,
 			clientID: String,
 			clientSecret: String,
@@ -26,19 +43,17 @@ public enum Spotify {
 			refreshToken: String? = nil,
             expiryIn: Double? = nil
 		) {
-            clientWithoutTokenRefresher = client
-                .url(Self.v1BaseURL)
-                .bodyDecoder(.json(dateDecodingStrategy: .iso8601, keyDecodingStrategy: .convertFromSnakeCase))
-                .errorDecoder(.decodable(SPError.self))
-                .auth(enabled: true)
-                .httpResponseValidator(.statusCode)
-            self.cache = MockSecureCacheService([
+            let cache = MockSecureCacheService([
                 .accessToken: token,
                 .refreshToken: refreshToken,
             ].compactMapValues { $0 })
-			self.clientID = clientID
-			self.clientSecret = clientSecret
-            
+    
+            self.init(
+                client: client,
+                clientID: clientID,
+                clientSecret: clientSecret,
+                cache: cache
+            )
             if let expiryIn {
                 Task {
                     try await self.cache.save(Date(timeIntervalSinceNow: expiryIn), for: .expiryDate)

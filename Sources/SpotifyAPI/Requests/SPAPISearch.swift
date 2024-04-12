@@ -26,7 +26,7 @@ public extension Spotify.API {
 		limit: Int? = nil,
 		offset: Int? = nil,
 		includeExternal: SearchInput.External? = nil
-	) throws -> AsyncThrowingStream<[SearchOutput], Error> {
+	) -> AsyncThrowingStream<[SearchOutput], Error> {
         pagingRequest(
 			of: SearchOutput.self,
 			parameters: type

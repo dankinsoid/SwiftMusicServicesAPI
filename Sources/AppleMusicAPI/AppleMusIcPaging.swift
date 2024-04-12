@@ -1,5 +1,4 @@
 import Foundation
-import SwiftHttp
 import SwiftMusicServicesApi
 import SwiftAPIClient
 
@@ -7,7 +6,7 @@ public extension AppleMusic.API {
     
     func pages<T: Decodable>(
         limit: Int? = nil,
-        request: @escaping @Sendable (APIClient) async throws -> AppleMusic.Objects.Response<T>
+        request: @escaping @Sendable () async throws -> AppleMusic.Objects.Response<T>
     ) -> AsyncThrowingStream<[T], Error> {
         AsyncThrowingStream { cont in
             self.executeNext(
@@ -25,18 +24,12 @@ extension AppleMusic.API {
 	private func executeNext<Output: Decodable>(
 		output: Output.Type,
 		limit: Int? = nil,
-        path: String? = nil,
-		request: @escaping @Sendable (APIClient) async throws -> AppleMusic.Objects.Response<Output>,
+		request: @escaping @Sendable () async throws -> AppleMusic.Objects.Response<Output>,
 		observer: AsyncThrowingStream<[Output], Error>.Continuation
 	) {
-		Task {
+		Task { [client] in
 			do {
-                let result: AppleMusic.Objects.Response<Output>
-                if let path {
-                    result = try await request(client.path(path))
-                } else {
-                    result = try await request(client)
-                }
+                let result = try await request()
 				observer.yield(result.data)
 				let newLimit = limit.map { $0 - result.data.count }
 
@@ -44,8 +37,7 @@ extension AppleMusic.API {
 					self.executeNext(
 						output: output,
 						limit: newLimit,
-                        path: next,
-						request: request,
+                        request: { try await client.path(next).get() },
 						observer: observer
 					)
 				} else {
@@ -56,4 +48,11 @@ extension AppleMusic.API {
 			}
 		}
 	}
+}
+
+extension AsyncSequence where Element: AppleMusicPageResponse {
+    
+    public func collect() async throws -> [Element.Item] {
+        try await reduce(into: []) { $0 += $1.data }
+    }
 }
