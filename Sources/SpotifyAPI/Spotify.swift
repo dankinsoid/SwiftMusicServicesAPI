@@ -16,14 +16,15 @@ public enum Spotify {
 		public var v1BaseURL: URL { API.v1BaseURL }
 		public let clientID: String
 		public let clientSecret: String
-        public let cache = MockSecureCacheService()
+        public let cache: SecureCacheService
 
 		public init(
 			client: APIClient,
 			clientID: String,
 			clientSecret: String,
 			token: String? = nil,
-			refreshToken: String? = nil
+			refreshToken: String? = nil,
+            expiryIn: Double? = nil
 		) {
             clientWithoutTokenRefresher = client
                 .url(Self.v1BaseURL)
@@ -31,8 +32,18 @@ public enum Spotify {
                 .errorDecoder(.decodable(SPError.self))
                 .auth(enabled: true)
                 .httpResponseValidator(.statusCode)
+            self.cache = MockSecureCacheService([
+                .accessToken: token,
+                .refreshToken: refreshToken,
+            ].compactMapValues { $0 })
 			self.clientID = clientID
 			self.clientSecret = clientSecret
+            
+            if let expiryIn {
+                Task {
+                    try await self.cache.save(Date(timeIntervalSinceNow: expiryIn), for: .expiryDate)
+                }
+            }
 		}
 
         public var client: APIClient {
