@@ -6,17 +6,17 @@ public enum Spotify {
 
 	/// https://developer.spotify.com/documentation/web-api/
 	/// https://developer.spotify.com/documentation/ios/quick-start/
-	public struct API {
+	public final class API {
 
 		public static var apiBaseURL = URL(string: "https://accounts.spotify.com/api")!
 		public static var v1BaseURL = URL(string: "https://api.spotify.com/v1")!
-        static let cache = MockSecureCacheService()
 
         public let clientWithoutTokenRefresher: APIClient
 		public var apiBaseURL: URL { API.apiBaseURL }
 		public var v1BaseURL: URL { API.v1BaseURL }
 		public let clientID: String
 		public let clientSecret: String
+        public let cache = MockSecureCacheService()
 
 		public init(
 			client: APIClient,
@@ -38,7 +38,7 @@ public enum Spotify {
 
         public var client: APIClient {
             clientWithoutTokenRefresher
-                .tokenRefresher(cacheService: Self.cache) { refreshToken, client, _ in
+                .tokenRefresher(cacheService: cache) { [clientID, clientSecret] refreshToken, client, _ in
                     try await Self.refreshToken(
                         client: client,
                         refreshToken: refreshToken,
@@ -67,10 +67,10 @@ public enum Spotify {
             .basic(username: clientID, password: clientSecret)
         }
 
-        public nonmutating func update(accessToken: String, refreshToken: String, expiresIn: Double?) async {
-            try? await Self.cache.save(accessToken, for: .accessToken)
-            try? await Self.cache.save(refreshToken, for: .refreshToken)
-            try? await Self.cache.save(expiresIn.map { Date(timeIntervalSinceNow: $0) }, for: .expiryDate)
+        public func update(accessToken: String, refreshToken: String, expiresIn: Double?) async {
+            try? await cache.save(accessToken, for: .accessToken)
+            try? await cache.save(refreshToken, for: .refreshToken)
+            try? await cache.save(expiresIn.map { Date(timeIntervalSinceNow: $0) }, for: .expiryDate)
 		}
 	}
 }

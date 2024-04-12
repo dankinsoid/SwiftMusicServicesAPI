@@ -30,7 +30,7 @@ public extension Spotify.API {
         pagingRequest(
 			of: SearchOutput.self,
 			parameters: type
-        ) {
+        ) { [client] in
             try await client("search")
                 .query(
                     SearchInput(q: q, type: [type], market: market, limit: limit, offset: offset, includeExternal: includeExternal)

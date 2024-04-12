@@ -29,7 +29,7 @@ public extension Spotify.API {
 			of: SPPaging<SPSavedTrack>.self,
 			parameters: (),
 			limit: limit
-        ) {
+        ) { [client] in
             try await client.path("me", "tracks")
                 .query(SavedInput(limit: limit ?? 50, offset: offset, market: market))
                 .get()

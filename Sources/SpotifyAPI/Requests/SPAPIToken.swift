@@ -24,10 +24,10 @@ public extension Spotify.API {
             .auth(basicAuth)
             .post()
         if let refreshToken = result.refreshToken {
-            try? await Self.cache.save(refreshToken, for: .refreshToken)
+            try? await cache.save(refreshToken, for: .refreshToken)
         }
-        try? await Self.cache.save(result.accessToken, for: .accessToken)
-        try? await Self.cache.save(Date(timeIntervalSinceNow: result.expiresIn), for: .expiryDate)
+        try? await cache.save(result.accessToken, for: .accessToken)
+        try? await cache.save(Date(timeIntervalSinceNow: result.expiresIn), for: .expiryDate)
         return result
     }
 

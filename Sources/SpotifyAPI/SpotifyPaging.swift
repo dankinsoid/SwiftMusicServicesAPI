@@ -45,7 +45,7 @@ extension Spotify.API {
 		parameters: Output.NextParameter,
         request: @escaping @Sendable () async throws -> Output
 	) {
-		Task {
+		Task { [client] in
 			do {
 				let result = try await request()
 				observer.yield(result.items)

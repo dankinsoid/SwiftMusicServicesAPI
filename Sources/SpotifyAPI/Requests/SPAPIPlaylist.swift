@@ -12,7 +12,7 @@ public extension Spotify.API {
 			of: SPPaging<SPPlaylistSimplified>.self,
 			parameters: (),
 			limit: limit
-        ) {
+        ) { [client] in
             try await client("me", "playlists")
                 .query(PlaylistsInput(limit: limit ?? 50, offset: offset))
                 .get()
@@ -40,7 +40,7 @@ public extension Spotify.API {
 			of: SPPaging<SPPlaylistTrack>.self,
 			parameters: (),
 			limit: limit
-        ) {
+        ) { [client] in
             try await client("playlists", id, "tracks")
                 .query(SavedInput(limit: limit ?? 100, offset: offset, market: market))
                 .get()
