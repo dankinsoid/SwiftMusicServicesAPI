@@ -5,8 +5,8 @@ package extension String {
     static func query(params: [String: String?]) -> String {
         params.compactMap { key, value in
             guard 
-                let value = value?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                let key = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                let value = value?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowedRFC3986),
+                let key = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowedRFC3986)
             else {
                 return nil
             }

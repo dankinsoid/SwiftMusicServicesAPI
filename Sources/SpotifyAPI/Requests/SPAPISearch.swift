@@ -3,7 +3,7 @@ import SwiftAPIClient
 
 public extension Spotify.API {
 
-	/// https://developer.spotify.com/documentation/web-api/reference/search/search/
+	/// https://developer.spotify.com/documentation/web-api/reference/search
 	func search(
 		q: SPQuery,
 		type: [SPContentType],
