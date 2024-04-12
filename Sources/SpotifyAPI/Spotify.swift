@@ -29,7 +29,6 @@ public enum Spotify {
                 .url(Self.v1BaseURL)
                 .bodyDecoder(.json(dateDecodingStrategy: .iso8601, keyDecodingStrategy: .convertFromSnakeCase))
                 .errorDecoder(.decodable(SPError.self))
-                .waitIfRateLimitExceeded(maxRepeatCount: 10)
                 .auth(enabled: true)
                 .httpResponseValidator(.statusCode)
 			self.clientID = clientID
