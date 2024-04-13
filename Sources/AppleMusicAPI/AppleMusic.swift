@@ -34,6 +34,7 @@ public enum AppleMusic {
 			_client = client
                 .url(baseURL)
                 .httpResponseValidator(.statusCode)
+                .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator, nestedEncodingStrategy: .brackets))
 			self.token = token
 		}
 	}

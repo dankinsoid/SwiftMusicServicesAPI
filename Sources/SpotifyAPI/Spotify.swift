@@ -27,6 +27,7 @@ public enum Spotify {
             clientWithoutTokenRefresher = client
                 .url(Self.v1BaseURL)
                 .bodyDecoder(.json(dateDecodingStrategy: .iso8601, keyDecodingStrategy: .convertFromSnakeCase))
+                .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator))
                 .errorDecoder(.decodable(SPError.self))
                 .auth(enabled: true)
                 .httpResponseValidator(.statusCode)
