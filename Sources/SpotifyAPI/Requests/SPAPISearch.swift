@@ -96,7 +96,7 @@ public struct SPQuery: Encodable {
 			}
 			result += filters.map { "\($0.key.rawValue):\($0.value)" }.joined(separator: " ")
 		}
-		return result // .replacingOccurrences(of: " ", with: "%20")
+		return result.replacingOccurrences(of: " ", with: "%20")
 	}
 }
 
