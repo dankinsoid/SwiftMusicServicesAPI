@@ -44,7 +44,7 @@
 			clientID: String,
 			clientSecret: String,
 			redirectURL: URL,
-            cache: SecureCacheService = .keychain
+            cache: SecureCacheService = .keychain(service: "spotify")
 		) {
 			configure(
 				api: Spotify.API(
