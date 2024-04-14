@@ -125,5 +125,11 @@ let package = Package(
 				.product(name: "JWTKit", package: "jwt-kit"),
 			]
 		),
+        .testTarget(
+            name: "AppleMusicTests",
+            dependencies: [
+                .target(name: "AppleMusicAPI"),
+            ]
+        )
 	]
 )

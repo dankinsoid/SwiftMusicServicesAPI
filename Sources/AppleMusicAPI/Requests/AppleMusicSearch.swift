@@ -35,7 +35,7 @@ public extension AppleMusic.API {
             .path("v1", "catalog", storefront, "search")
             .query(input)
             .call(.http, as: .decodable(SearchResults.self))
-            .results.songs?.flatMap(\.data) ?? []
+            .results.songs?.data ?? []
 	}
 
 	struct SearchInput: Encodable {
@@ -50,7 +50,11 @@ public extension AppleMusic.API {
 		public var results: Songs
 
 		public struct Songs: Decodable {
-			public var songs: [AppleMusic.Objects.Response<AppleMusic.Objects.Item>]?
+			public var songs: AppleMusic.Objects.Response<AppleMusic.Objects.Item>?
+            
+            public init(songs: AppleMusic.Objects.Response<AppleMusic.Objects.Item>? = nil) {
+                self.songs = songs
+            }
 		}
 	}
 }

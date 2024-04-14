@@ -97,16 +97,6 @@ public extension AppleMusic.API.SearchResults {
 	}
 }
 
-public extension AppleMusic.API.SearchResults.Songs {
-	static func publicInit(
-		songs: [AppleMusic.Objects.Response<AppleMusic.Objects.Item>]? = nil
-	) -> Self {
-		.init(
-			songs: songs
-		)
-	}
-}
-
 public extension AppleMusic.API.SongsByISRCInput {
 	static func publicInit(
 		isrcs: [String]
