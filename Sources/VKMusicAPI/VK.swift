@@ -34,7 +34,7 @@ public struct VK {
 					.accept: "*/*",
 					"Origin": baseURL.url.absoluteString,
 					.acceptLanguage: "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-					.userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 OPR/105.0.0.0",
+					.userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 OPR/108.0.0.0",
 					.xRequestedWith: "XMLHttpRequest",
 				]) { _, s in
 					s
