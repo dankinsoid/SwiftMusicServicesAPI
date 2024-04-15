@@ -44,6 +44,10 @@ let package = Package(
 			name: "AppleMusicLogin",
 			targets: ["AppleMusicLogin"]
 		),
+        .library(
+            name: "AmazonMusicAPI",
+            targets: ["AmazonMusicAPI"]
+        ),
 	],
 	dependencies: [
 		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
@@ -130,6 +134,12 @@ let package = Package(
             dependencies: [
                 .target(name: "AppleMusicAPI"),
             ]
-        )
+        ),
+        .target(
+            name: "AmazonMusicAPI",
+            dependencies: [
+                "SwiftMusicServicesApi",
+            ]
+        ),
 	]
 )
