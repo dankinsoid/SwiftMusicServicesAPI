@@ -28,6 +28,70 @@ public extension AppleMusic.Objects {
 		}
 	}
 
+	struct ErrorResponse: Decodable, LocalizedError, CustomStringConvertible {
+
+		public var errors: [AppleMusic.Objects.ErrorObject]
+
+		public var errorDescription: String? { description }
+		public var description: String {
+			errors.map { $0.description }.joined(separator: "\n")
+		}
+		
+		public init(errors: [AppleMusic.Objects.ErrorObject]) {
+			self.errors = errors
+		}
+	}
+	
+	struct ErrorObject: Decodable, LocalizedError, Identifiable, CustomStringConvertible {
+
+		/// The code for this error.
+		public var code: String
+		/// A long, possibly localized, description of the problem.
+		public var detail: String?
+		/// A unique identifier for this occurrence of the error.
+		public var id: String
+		/// An object containing references to the source of the error.
+		public var source: Source
+		/// The HTTP status code for this problem.
+		public var status: String
+		///  A short, possibly localized, description of the problem.
+		public var title: String
+
+		public var errorDescription: String? { description }
+		public var description: String {
+			"Error: \(title) (\(status))\(detail.map { "\n\($0)" } ?? "")\nsource: \(source)"
+		}
+
+		public init(code: String, detail: String? = nil, id: String, source: Source, status: String, title: String) {
+			self.code = code
+			self.detail = detail
+			self.id = id
+			self.source = source
+			self.status = status
+			self.title = title
+		}
+
+		public struct Source: Decodable, CustomStringConvertible {
+			/// The URI query parameter that caused the error.
+			public var parameter: String?
+			/// A pointer to the associated entry in the request document.
+			public var pointer: String?
+
+			public var description: String {
+				[
+					parameter.map { "query parameter '\($0)'" },
+					pointer.map { "pointer '\($0)'" }
+				]
+					.compactMap { $0 }.joined(separator: ", ")
+			}
+
+			public init(parameter: String? = nil, pointer: String? = nil) {
+				self.parameter = parameter
+				self.pointer = pointer
+			}
+		}
+	}
+
 	struct Item: Codable {
 		public init(attributes: AppleMusic.Objects.Attributes? = nil, relationships: AppleMusic.Objects.Relationships? = nil, id: String, type: AppleMusic.TrackType, href: String? = nil) {
 			self.attributes = attributes
