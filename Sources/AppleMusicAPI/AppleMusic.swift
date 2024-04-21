@@ -35,7 +35,7 @@ public enum AppleMusic {
                 .url(baseURL)
                 .httpResponseValidator(.statusCode)
                 .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator, nestedEncodingStrategy: .brackets))
-								.errorDecoder(.decodable(AppleMusic.Objects.ErrorObject.self))
+								.errorDecoder(.decodable(AppleMusic.Objects.ErrorResponse.self))
 			self.token = token
 		}
 	}
