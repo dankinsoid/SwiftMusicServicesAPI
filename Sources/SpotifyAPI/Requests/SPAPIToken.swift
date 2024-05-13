@@ -36,9 +36,26 @@ public extension Spotify.API {
         showDialog: Bool = true,
         state: String? = nil,
 		scope: [Scope]
-    ) -> URL {
-        URL(
-            string: "https://accounts.spotify.com/authorize/?client_id=\(clientID)&redirect_uri=\(redirectURI)&response_type=code&show_dialog=\(showDialog)&state=\(state ?? "")\(scope.isEmpty ? "" : "&scope=\(scope.map(\.rawValue).joined(separator: " "))")"
-        )!
+    ) -> URL? {
+        let scopeStrings = scope.map { $0.rawValue }
+
+        var params = [
+            "client_id": clientID,
+            "redirect_uri": redirectURI,
+            "response_type": "code",
+            "show_dialog": "\(showDialog)",
+            "nosignup": "true",
+            "nolinks": "true"
+        ]
+
+        if scopeStrings.count > 0 {
+            params["scope"] = scopeStrings.joined(separator: " ")
+        }
+        if let state {
+            params["state"] = state
+        }
+
+        let loginPageURLString = "https://accounts.spotify.com/authorize?\(String.query(params: params))"
+        return URL(string: loginPageURLString)
 	}
 }
