@@ -96,7 +96,7 @@ public extension YMO {
 		public var finished: Bool?
 		public var vendorHelpUrl: String?
 		public var vendor: String?
-		public var product: Product
+		public var product: Product?
 		public var orderId: Int?
 	}
 
