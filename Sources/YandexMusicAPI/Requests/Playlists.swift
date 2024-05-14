@@ -6,7 +6,8 @@ public extension Yandex.Music.API {
 
 	func playlists(userID id: Int, playlistsKinds: [Int]) async throws -> [YM.Objects.Playlist<YMO.TrackShort>] {
 		try await request(
-			url: baseURL.path("users", "\(id)", "playlists").query(from: PlaylistsInput(kinds: playlistsKinds), encoder: queryEncoder),
+			url: baseURL.path("users", "\(id)", "playlists")
+                .query(from: PlaylistsInput(kinds: playlistsKinds), encoder: queryEncoder),
 			method: .post
 		)
 	}

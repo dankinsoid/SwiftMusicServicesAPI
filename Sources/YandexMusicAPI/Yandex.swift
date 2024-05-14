@@ -1,5 +1,6 @@
 import Foundation
 import SwiftHttp
+import SwiftAPIClient
 @_exported import SwiftMusicServicesApi
 import VDCodable
 
@@ -27,7 +28,7 @@ public extension Yandex.Music {
 
 		public var client: HttpClient
 		public var token: String?
-		public var queryEncoder: URLQueryEncoder
+        public var queryEncoder: SwiftAPIClient.URLQueryEncoder
 		public var baseURL: HttpUrl
 
 		private let pipeline = Pipeline()
@@ -36,9 +37,10 @@ public extension Yandex.Music {
 			self.client = client.rateLimit()
 			self.token = token
 			self.baseURL = baseURL
-			let encoder = URLQueryEncoder()
+            var encoder = SwiftAPIClient.URLQueryEncoder()
 			encoder.nestedEncodingStrategy = .json
-			encoder.trimmingSquareBrackets = true
+            encoder.arrayEncodingStrategy = .commaSeparator
+//			encoder.trimmingSquareBrackets = true
 			queryEncoder = encoder
 		}
 
