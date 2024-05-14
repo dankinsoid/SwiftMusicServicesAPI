@@ -16,13 +16,13 @@ public struct SPAlbum: Codable {
 	/// A link to the Web API endpoint providing full details of the album.
 	public var href: String?
 	/// The [Spotify ID](/documentation/web-api/#spotify-uris-and-ids) for the album.
-	public var id: String
+	public var id: String?
 	/// The cover art for the album in various sizes, widest first.
 	public var images: [SPImage]?
 	/// The label for the album.
 	public var label: String?
 	/// The name of the album. In case of an album takedown, the value may be an empty string.
-	public var name: String
+	public var name: String?
 	/// The popularity of the album. The value will be between 0 and 100, with 100 being the most popular. The popularity is calculated from the popularity of the album's individual tracks.
 	public var popularity: Int?
 	/// The date the album was first released, for example 1981. Depending on the precision, it might be shown as 1981-12 or 1981-12-15.
@@ -36,9 +36,9 @@ public struct SPAlbum: Codable {
 	/// The object type: "album"
 	public var type: String?
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the album.
-	public var uri: String
+	public var uri: String?
 
-	public init(albumType: String? = nil, artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, copyrights: [SPCopyright]? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, genres: [String]? = nil, href: String? = nil, id: String, images: [SPImage]? = nil, label: String? = nil, name: String, popularity: Int? = nil, releaseDate: String? = nil, releaseDatePrecision: String? = nil, restrictions: SPRestrictions? = nil, tracks: [SPTrack]? = nil, type: String? = nil, uri: String) {
+	public init(albumType: String? = nil, artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, copyrights: [SPCopyright]? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, genres: [String]? = nil, href: String? = nil, id: String? = nil, images: [SPImage]? = nil, label: String? = nil, name: String? = nil, popularity: Int? = nil, releaseDate: String? = nil, releaseDatePrecision: String? = nil, restrictions: SPRestrictions? = nil, tracks: [SPTrack]? = nil, type: String? = nil, uri: String? = nil) {
 		self.albumType = albumType
 		self.artists = artists
 		self.availableMarkets = availableMarkets
