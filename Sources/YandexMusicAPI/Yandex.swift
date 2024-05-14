@@ -21,6 +21,7 @@ public extension Yandex.Music {
 		public static let authURL = HttpUrl(host: "oauth.yandex.ru")
 		public static let passportURL = HttpUrl(host: "passport.yandex.com")
 		public static let mobileproxyPassportURL = HttpUrl(host: "mobileproxy.passport.yandex.net")
+
 		public static var uuid = UUID().uuidString.lowercased().replacingOccurrences(of: "-", with: "")
 		public static var ifv = UUID()
 
