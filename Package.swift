@@ -52,7 +52,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
 		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.13.0"),
-        .package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.9.0"),
+        .package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.10.0"),
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
 		.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
 	],
