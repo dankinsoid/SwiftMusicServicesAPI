@@ -55,7 +55,7 @@ public extension AppleMusic.Objects {
 	}
 
 	struct Attributes: Codable {
-		public init(name: String, artistName: String? = nil, genreNames: [String]? = nil, albumName: String? = nil, durationInMillis: Int? = nil, releaseDate: String? = nil, dateAdded: String? = nil, playParams: AppleMusic.Objects.PlayParams? = nil, trackNumber: Int? = nil, artwork: AppleMusic.Objects.Artwork? = nil, canEdit: Bool? = nil, hasCatalog: Bool? = nil, description: AppleMusic.Objects.Description? = nil, previews: [AppleMusic.Objects.Url]? = nil, isrc: String? = nil) {
+		public init(name: String? = nil, artistName: String? = nil, genreNames: [String]? = nil, albumName: String? = nil, durationInMillis: Int? = nil, releaseDate: String? = nil, dateAdded: String? = nil, playParams: AppleMusic.Objects.PlayParams? = nil, trackNumber: Int? = nil, artwork: AppleMusic.Objects.Artwork? = nil, canEdit: Bool? = nil, hasCatalog: Bool? = nil, description: AppleMusic.Objects.Description? = nil, previews: [AppleMusic.Objects.Url]? = nil, isrc: String? = nil) {
 			self.name = name
 			self.artistName = artistName
 			self.genreNames = genreNames
@@ -73,7 +73,7 @@ public extension AppleMusic.Objects {
 			self.isrc = isrc
 		}
 
-		public var name: String
+		public var name: String?
 		public var artistName: String?
 		public var genreNames: [String]?
 		public var albumName: String?

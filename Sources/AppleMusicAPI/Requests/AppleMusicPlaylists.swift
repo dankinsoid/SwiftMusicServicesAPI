@@ -41,8 +41,8 @@ public extension AppleMusic.API {
 		}
 
 		public struct Attributes: Encodable {
-			public var name: String
-			public var description: String
+			public var name: String?
+			public var description: String?
 		}
 	}
 }
