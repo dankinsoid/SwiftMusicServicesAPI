@@ -5,7 +5,7 @@ import VDCodable
 
 public extension Yandex.Music.API {
 
-	func tracks(ids: [Int], withPositions: Bool = true) async throws -> [YMO.Track] {
+	func tracks(ids: [String], withPositions: Bool = true) async throws -> [YMO.Track] {
         try await withThrowingTaskGroup(of: [YMO.Track].self, returning: [YMO.Track].self) { [self] group in
             var i = 0
             let maxSize = 200
@@ -28,7 +28,7 @@ public extension Yandex.Music.API {
 
 	struct TracksInput: Encodable {
 
-		public var ids: [Int]
+		public var ids: [String]
 		public var withPositions = true
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
@@ -36,7 +36,7 @@ public extension Yandex.Music.API {
 			case ids = "track-ids", withPositions = "with-positions"
 		}
 
-		public init(ids: [Int], withPositions: Bool = true) {
+		public init(ids: [String], withPositions: Bool = true) {
 			self.ids = ids
 			self.withPositions = withPositions
 		}
