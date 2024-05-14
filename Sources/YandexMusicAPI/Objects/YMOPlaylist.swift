@@ -85,14 +85,25 @@ public extension Yandex.Music.Objects {
 	struct TrackShort: Codable, Hashable {
 
 		public let timestamp: Date?
-		public let id: Int
+		public let id: String
 		public let albumId: Int?
 
-		public init(timestamp: Date? = nil, id: Int, albumId: Int? = nil) {
+		public init(timestamp: Date? = nil, id: String, albumId: Int? = nil) {
 			self.timestamp = timestamp
 			self.id = id
 			self.albumId = albumId
 		}
+
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: Yandex.Music.Objects.TrackShort.CodingKeys.self)
+            self.timestamp = try? container.decodeIfPresent(Date.self, forKey: .timestamp)
+            do {
+                self.id = try container.decode(String.self, forKey: .id)
+            } catch {
+                self.id = try "\(container.decode(Int.self, forKey: .id))"
+            }
+            self.albumId = try? container.decodeIfPresent(Int.self, forKey: .albumId)
+        }
 
 		public func hash(into hasher: inout Hasher) {
 			id.hash(into: &hasher)

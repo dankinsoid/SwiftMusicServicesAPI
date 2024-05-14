@@ -39,7 +39,7 @@ public extension Yandex.Music.Objects {
 	}
 
 	struct Track: Codable, Hashable {
-		public let id: Int
+		public let id: String
 		public let available: Bool?
 		public let availableAsRbt: Bool?
 		public let availableForPremiumUsers: Bool?
@@ -56,6 +56,47 @@ public extension Yandex.Music.Objects {
 		public let coverUri: String?
 		public var short: TrackShort { TrackShort(timestamp: nil, id: id, albumId: albums?.first?.id) }
 
+        public init(id: String, available: Bool?, availableAsRbt: Bool?, availableForPremiumUsers: Bool?, lyricsAvailable: Bool?, albums: [Album]?, storageDir: String?, durationMs: Int?, explicit: Bool?, title: String?, artists: [Artist]?, regions: [String]?, version: String?, contentWarning: String?, coverUri: String?) {
+            self.id = id
+            self.available = available
+            self.availableAsRbt = availableAsRbt
+            self.availableForPremiumUsers = availableForPremiumUsers
+            self.lyricsAvailable = lyricsAvailable
+            self.albums = albums
+            self.storageDir = storageDir
+            self.durationMs = durationMs
+            self.explicit = explicit
+            self.title = title
+            self.artists = artists
+            self.regions = regions
+            self.version = version
+            self.contentWarning = contentWarning
+            self.coverUri = coverUri
+        }
+        
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: Yandex.Music.Objects.Track.CodingKeys.self)
+            do {
+                self.id = try container.decode(String.self, forKey: .id)
+            } catch {
+                self.id = try "\(container.decode(Int.self, forKey: .id))"
+            }
+            self.available = try? container.decodeIfPresent(Bool.self, forKey: .available)
+            self.availableAsRbt = try? container.decodeIfPresent(Bool.self, forKey: .availableAsRbt)
+            self.availableForPremiumUsers = try? container.decodeIfPresent(Bool.self, forKey: .availableForPremiumUsers)
+            self.lyricsAvailable = try? container.decodeIfPresent(Bool.self, forKey: .lyricsAvailable)
+            self.albums = try? container.decodeIfPresent([Yandex.Music.Objects.Album].self, forKey: .albums)
+            self.storageDir = try? container.decodeIfPresent(String.self, forKey: .storageDir)
+            self.durationMs = try? container.decodeIfPresent(Int.self, forKey: .durationMs)
+            self.explicit = try? container.decodeIfPresent(Bool.self, forKey: .explicit)
+            self.title = try? container.decodeIfPresent(String.self, forKey: .title)
+            self.artists = try? container.decodeIfPresent([Yandex.Music.Objects.Artist].self, forKey: .artists)
+            self.regions = try? container.decodeIfPresent([String].self, forKey: .regions)
+            self.version = try? container.decodeIfPresent(String.self, forKey: .version)
+            self.contentWarning = try? container.decodeIfPresent(String.self, forKey: .contentWarning)
+            self.coverUri = try? container.decodeIfPresent(String.self, forKey: .coverUri)
+        }
+        
 		public func hash(into hasher: inout Hasher) {
 			id.hash(into: &hasher)
 		}

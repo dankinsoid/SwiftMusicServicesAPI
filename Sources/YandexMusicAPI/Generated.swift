@@ -724,44 +724,6 @@ public extension Yandex.Music.Objects.Tag {
 	}
 }
 
-public extension Yandex.Music.Objects.Track {
-	static func publicInit(
-		id: Int,
-		available: Bool? = nil,
-		availableAsRbt: Bool? = nil,
-		availableForPremiumUsers: Bool? = nil,
-		lyricsAvailable: Bool? = nil,
-		albums: [YMO.Album]? = nil,
-		storageDir: String? = nil,
-		durationMs: Int? = nil,
-		explicit: Bool? = nil,
-		title: String? = nil,
-		artists: [YMO.Artist]? = nil,
-		regions: [String]? = nil,
-		version: String? = nil,
-		contentWarning: String? = nil,
-		coverUri: String? = nil
-	) -> Self {
-		.init(
-			id: id,
-			available: available,
-			availableAsRbt: availableAsRbt,
-			availableForPremiumUsers: availableForPremiumUsers,
-			lyricsAvailable: lyricsAvailable,
-			albums: albums,
-			storageDir: storageDir,
-			durationMs: durationMs,
-			explicit: explicit,
-			title: title,
-			artists: artists,
-			regions: regions,
-			version: version,
-			contentWarning: contentWarning,
-			coverUri: coverUri
-		)
-	}
-}
-
 public extension Yandex.Music.Objects.TrackPosition {
 	static func publicInit(
 		volume: Int? = nil,
@@ -770,20 +732,6 @@ public extension Yandex.Music.Objects.TrackPosition {
 		.init(
 			volume: volume,
 			index: index
-		)
-	}
-}
-
-public extension Yandex.Music.Objects.TrackShort {
-	static func publicInit(
-		timestamp: Date? = nil,
-		id: Int,
-		albumId: Int? = nil
-	) -> Self {
-		.init(
-			timestamp: timestamp,
-			id: id,
-			albumId: albumId
 		)
 	}
 }
