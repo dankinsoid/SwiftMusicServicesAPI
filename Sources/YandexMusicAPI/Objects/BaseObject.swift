@@ -1,8 +1,9 @@
 import Foundation
+import SwiftMusicServicesApi
 
 public extension Yandex.Music.Objects {
 	struct Base<T: Encodable>: Encodable {
-		public var ids: [String]
+        public var ids: [String]
 		public var object: T
 
 		public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -36,7 +37,14 @@ public extension Yandex.Music.Objects {
 		public var total: Int
 		public var perPage: Int
 		public var order: Int
-		public var results: [T]
+		@SafeDecodeArray public var results: [T]
+        
+        public init(total: Int, perPage: Int, order: Int, results: [T]) {
+            self.total = total
+            self.perPage = perPage
+            self.order = order
+            self._results = SafeDecodeArray(results)
+        }
 	}
 
 	struct InvocationInfo: Codable {

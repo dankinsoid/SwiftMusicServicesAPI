@@ -240,78 +240,6 @@ public extension Yandex.Music.Objects.AccountStatus {
 	}
 }
 
-public extension Yandex.Music.Objects.Album {
-	static func publicInit(
-		id: Int,
-		type: String? = nil,
-		storageDir: String? = nil,
-		originalReleaseYear: Int? = nil,
-		year: Int? = nil,
-		artists: [YMO.Artist]? = nil,
-		coverUri: String? = nil,
-		trackCount: Int? = nil,
-		genre: String? = nil,
-		available: Bool? = nil,
-		availableForPremiumUsers: Bool? = nil,
-		title: String,
-		regions: [String]? = nil,
-		contentWarning: String? = nil,
-		version: String? = nil,
-		trackPosition: YMO.TrackPosition? = nil
-	) -> Self {
-		.init(
-			id: id,
-			type: type,
-			storageDir: storageDir,
-			originalReleaseYear: originalReleaseYear,
-			year: year,
-			artists: artists,
-			coverUri: coverUri,
-			trackCount: trackCount,
-			genre: genre,
-			available: available,
-			availableForPremiumUsers: availableForPremiumUsers,
-			title: title,
-			regions: regions,
-			contentWarning: contentWarning,
-			version: version,
-			trackPosition: trackPosition
-		)
-	}
-}
-
-public extension Yandex.Music.Objects.Artist {
-	static func publicInit(
-		id: Int,
-		name: String,
-		cover: YMO.Cover? = nil,
-		compose: Bool? = nil,
-		composer: Bool? = nil,
-		various: Bool? = nil,
-		counts: YMO.Counts? = nil,
-		genres: [String]? = nil,
-		ticketsAvailable: Bool? = nil,
-		regions: [String]? = nil,
-		decomposed: [JSON]? = nil,
-		popularTracks: [YMO.Track]? = nil
-	) -> Self {
-		.init(
-			id: id,
-			name: name,
-			cover: cover,
-			compose: compose,
-			composer: composer,
-			various: various,
-			counts: counts,
-			genres: genres,
-			ticketsAvailable: ticketsAvailable,
-			regions: regions,
-			decomposed: decomposed,
-			popularTracks: popularTracks
-		)
-	}
-}
-
 public extension Yandex.Music.Objects.AutoRenewable {
 	static func publicInit(
 		productId: String,
@@ -346,44 +274,6 @@ public extension Yandex.Music.Objects.BarBelow {
 			textColor: textColor,
 			text: text,
 			button: button
-		)
-	}
-}
-
-public extension Yandex.Music.Objects.Best {
-	static func publicInit(
-		id: Int,
-		available: Bool? = nil,
-		availableAsRbt: Bool? = nil,
-		availableForPremiumUsers: Bool? = nil,
-		lyricsAvailable: Bool? = nil,
-		storageDir: String? = nil,
-		durationMs: Int? = nil,
-		explicit: Bool? = nil,
-		title: String? = nil,
-		regions: [String]? = nil,
-		tracks: [YMO.Track]? = nil,
-		artists: [YMO.Artist]? = nil,
-		albums: [YMO.Album]? = nil,
-		playlists: [YMO.Playlist<YMO.TrackShort>]? = nil,
-		videos: [YMO.Video]? = nil
-	) -> Self {
-		.init(
-			id: id,
-			available: available,
-			availableAsRbt: availableAsRbt,
-			availableForPremiumUsers: availableForPremiumUsers,
-			lyricsAvailable: lyricsAvailable,
-			storageDir: storageDir,
-			durationMs: durationMs,
-			explicit: explicit,
-			title: title,
-			regions: regions,
-			tracks: tracks,
-			artists: artists,
-			albums: albums,
-			playlists: playlists,
-			videos: videos
 		)
 	}
 }
@@ -486,20 +376,6 @@ public extension Yandex.Music.Objects.Icon {
 	}
 }
 
-public extension Yandex.Music.Objects.Library {
-	static func publicInit(
-		uid: Int,
-		revision: Int? = nil,
-		tracks: [YMO.TrackShort]? = nil
-	) -> Self {
-		.init(
-			uid: uid,
-			revision: revision,
-			tracks: tracks
-		)
-	}
-}
-
 public extension Yandex.Music.Objects.LibraryContainer {
 	static func publicInit(
 		library: YMO.Library
@@ -558,58 +434,6 @@ public extension Yandex.Music.Objects.Permissions {
 			default: `default`,
 			values: values,
 			until: until
-		)
-	}
-}
-
-public extension Yandex.Music.Objects.Playlist {
-	static func publicInit(
-		playlistUuid: String,
-		uid: Int,
-		kind: Int,
-		trackCount: Int? = nil,
-		title: String,
-		owner: YMO.Owner? = nil,
-		cover: YMO.Cover? = nil,
-		tags: [YMO.Tag]? = nil,
-		regions: [String]? = nil,
-		snapshot: Int? = nil,
-		ogImage: String? = nil,
-		revision: Int? = nil,
-		durationMs: Int? = nil,
-		collective: Bool? = nil,
-		available: Bool? = nil,
-		modified: Date? = nil,
-		created: Date? = nil,
-		visibility: RawEnum<YMO.Visibility>? = nil,
-		isBanner: Bool? = nil,
-		prerolls: [YMO.Preroll]? = nil,
-		isPremiere: Bool? = nil,
-		tracks: [T]? = nil
-	) -> Self {
-		.init(
-			playlistUuid: playlistUuid,
-			uid: uid,
-			kind: kind,
-			trackCount: trackCount,
-			title: title,
-			owner: owner,
-			cover: cover,
-			tags: tags,
-			regions: regions,
-			snapshot: snapshot,
-			ogImage: ogImage,
-			revision: revision,
-			durationMs: durationMs,
-			collective: collective,
-			available: available,
-			modified: modified,
-			created: created,
-			visibility: visibility,
-			isBanner: isBanner,
-			prerolls: prerolls,
-			isPremiere: isPremiere,
-			tracks: tracks
 		)
 	}
 }
@@ -676,22 +500,6 @@ public extension Yandex.Music.Objects.Result {
 		.init(
 			result: result,
 			invocationInfo: invocationInfo
-		)
-	}
-}
-
-public extension Yandex.Music.Objects.Results {
-	static func publicInit(
-		total: Int,
-		perPage: Int,
-		order: Int,
-		results: [T]
-	) -> Self {
-		.init(
-			total: total,
-			perPage: perPage,
-			order: order,
-			results: results
 		)
 	}
 }

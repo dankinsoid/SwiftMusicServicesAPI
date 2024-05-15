@@ -1,5 +1,6 @@
 import Foundation
 import VDCodable
+import SwiftMusicServicesApi
 
 public extension Yandex.Music.Objects {
 
@@ -12,8 +13,8 @@ public extension Yandex.Music.Objects {
 		public let title: String
 		public let owner: Owner?
 		public let cover: Cover?
-		public let tags: [Tag]?
-		public let regions: [String]?
+		public let tags: [Tag]
+		public let regions: [String]
 		public let snapshot: Int?
 		public let ogImage: String?
 		public let revision: Int?
@@ -24,9 +25,9 @@ public extension Yandex.Music.Objects {
 		public let created: Date?
 		public let visibility: RawEnum<Visibility>?
 		public let isBanner: Bool?
-		public let prerolls: [Preroll]?
+		public let prerolls: [Preroll]
 		public let isPremiere: Bool?
-		public var tracks: [T]?
+		public var tracks: [T]
 
 		public init(
 			playlistUuid: String,
@@ -36,8 +37,8 @@ public extension Yandex.Music.Objects {
 			title: String,
 			owner: Yandex.Music.Objects.Owner? = nil,
 			cover: Yandex.Music.Objects.Cover? = nil,
-			tags: [Yandex.Music.Objects.Tag]? = nil,
-			regions: [String]? = nil,
+			tags: [Yandex.Music.Objects.Tag] = [],
+			regions: [String] = [],
 			snapshot: Int? = nil,
 			ogImage: String? = nil,
 			revision: Int? = nil,
@@ -48,9 +49,9 @@ public extension Yandex.Music.Objects {
 			created: Date? = nil,
 			visibility: RawEnum<Yandex.Music.Objects.Visibility>? = nil,
 			isBanner: Bool? = nil,
-			prerolls: [Yandex.Music.Objects.Preroll]? = nil,
+			prerolls: [Yandex.Music.Objects.Preroll] = [],
 			isPremiere: Bool? = nil,
-			tracks: [T]? = nil
+			tracks: [T] = []
 		) {
 			self.playlistUuid = playlistUuid
 			self.uid = uid
@@ -75,6 +76,32 @@ public extension Yandex.Music.Objects {
 			self.isPremiere = isPremiere
 			self.tracks = tracks
 		}
+        
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: Yandex.Music.Objects.Playlist<T>.CodingKeys.self)
+            self.playlistUuid = try container.decode(String.self, forKey: .playlistUuid)
+            self.uid = try container.decode(Int.self, forKey: .uid)
+            self.kind = try container.decode(Int.self, forKey: .kind)
+            self.trackCount = try container.decodeIfPresent(Int.self, forKey: .trackCount)
+            self.title = try container.decode(String.self, forKey: .title)
+            self.owner = try container.decodeIfPresent(Yandex.Music.Objects.Owner.self, forKey: .owner)
+            self.cover = try container.decodeIfPresent(Yandex.Music.Objects.Cover.self, forKey: .cover)
+            self.tags = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Tag>.self, forKey: .tags)?.array ?? []
+            self.regions = try container.decodeIfPresent(SafeDecodeArray<String>.self, forKey: .regions)?.array ?? []
+            self.snapshot = try container.decodeIfPresent(Int.self, forKey: .snapshot)
+            self.ogImage = try container.decodeIfPresent(String.self, forKey: .ogImage)
+            self.revision = try container.decodeIfPresent(Int.self, forKey: .revision)
+            self.durationMs = try container.decodeIfPresent(Int.self, forKey: .durationMs)
+            self.collective = try container.decodeIfPresent(Bool.self, forKey: .collective)
+            self.available = try container.decodeIfPresent(Bool.self, forKey: .available)
+            self.modified = try container.decodeIfPresent(Date.self, forKey: .modified)
+            self.created = try container.decodeIfPresent(Date.self, forKey: .created)
+            self.visibility = try container.decodeIfPresent(RawEnum<Yandex.Music.Objects.Visibility>.self, forKey: .visibility)
+            self.isBanner = try container.decodeIfPresent(Bool.self, forKey: .isBanner)
+            self.prerolls = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Preroll>.self, forKey: .prerolls)?.array ?? []
+            self.isPremiere = try container.decodeIfPresent(Bool.self, forKey: .isPremiere)
+            self.tracks = try container.decodeIfPresent(SafeDecodeArray<T>.self, forKey: .tracks)?.array ?? []
+        }
 	}
 
 	struct Preroll: Codable {

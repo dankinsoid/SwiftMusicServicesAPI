@@ -45,7 +45,7 @@ private extension DecodingError {
 		case let .valueNotFound(any, context):
 			return "Value of \(any) not found at \(context.humanReadable)"
 		case let .keyNotFound(codingKey, context):
-			return "Key \(context.humanReadable + codingKey.string) not found"
+			return "Key \(context.humanReadable) not found"
 		case let .dataCorrupted(context):
 			return "Data corrupted at \(context.humanReadable)"
 		@unknown default:

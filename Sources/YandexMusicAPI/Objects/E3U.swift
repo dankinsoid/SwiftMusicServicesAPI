@@ -2,7 +2,7 @@ import Foundation
 
 public struct E3U {
 
-	public var lines: [Line]
+	@SafeDecodeArray public var lines: [Line]
 
 	public struct Line {
 

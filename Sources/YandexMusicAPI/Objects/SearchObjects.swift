@@ -1,5 +1,6 @@
 import Foundation
 import VDCodable
+import SwiftMusicServicesApi
 
 public extension Yandex.Music.Objects {
 	enum SearchType: String, Codable, CaseIterable {
@@ -18,6 +19,7 @@ public extension Yandex.Music.Objects {
 	}
 
 	struct Best: Codable {
+
 		public let id: Int
 		public var available: Bool?
 		public var availableAsRbt: Bool?
@@ -29,13 +31,49 @@ public extension Yandex.Music.Objects {
 		public var explicit: Bool?
 		public var title: String?
 
-		public var regions: [String]?
-
-		public var tracks: [Track]?
-		public var artists: [Artist]?
-		public var albums: [Album]?
-		public var playlists: [Playlist<TrackShort>]?
-		public var videos: [Video]?
+		public var regions: [String]
+		public var tracks: [Track]
+		public var artists: [Artist]
+		public var albums: [Album]
+		public var playlists: [Playlist<TrackShort>]
+		public var videos: [Video]
+        
+        public init(id: Int, available: Bool? = nil, availableAsRbt: Bool? = nil, availableForPremiumUsers: Bool? = nil, lyricsAvailable: Bool? = nil, storageDir: String? = nil, durationMs: Int? = nil, explicit: Bool? = nil, title: String? = nil, regions: [String] = [], tracks: [Track] = [], artists: [Artist] = [], albums: [Album] = [], playlists: [Playlist<TrackShort>] = [], videos: [Video] = []) {
+            self.id = id
+            self.available = available
+            self.availableAsRbt = availableAsRbt
+            self.availableForPremiumUsers = availableForPremiumUsers
+            self.lyricsAvailable = lyricsAvailable
+            self.storageDir = storageDir
+            self.durationMs = durationMs
+            self.explicit = explicit
+            self.title = title
+            self.regions = regions
+            self.tracks = tracks
+            self.artists = artists
+            self.albums = albums
+            self.playlists = playlists
+            self.videos = videos
+        }
+        
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: Yandex.Music.Objects.Best.CodingKeys.self)
+            self.id = try container.decode(Int.self, forKey: .id)
+            self.available = try container.decodeIfPresent(Bool.self, forKey: .available)
+            self.availableAsRbt = try container.decodeIfPresent(Bool.self, forKey: .availableAsRbt)
+            self.availableForPremiumUsers = try container.decodeIfPresent(Bool.self, forKey: .availableForPremiumUsers)
+            self.lyricsAvailable = try container.decodeIfPresent(Bool.self, forKey: .lyricsAvailable)
+            self.storageDir = try container.decodeIfPresent(String.self, forKey: .storageDir)
+            self.durationMs = try container.decodeIfPresent(Int.self, forKey: .durationMs)
+            self.explicit = try container.decodeIfPresent(Bool.self, forKey: .explicit)
+            self.title = try container.decodeIfPresent(String.self, forKey: .title)
+            self.regions = try container.decodeIfPresent(SafeDecodeArray<String>.self, forKey: .regions)?.array ?? []
+            self.tracks = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Track>.self, forKey: .tracks)?.array ?? []
+            self.artists = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Artist>.self, forKey: .artists)?.array ?? []
+            self.albums = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Album>.self, forKey: .albums)?.array ?? []
+            self.playlists = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Playlist<Yandex.Music.Objects.TrackShort>>.self, forKey: .playlists)?.array ?? []
+            self.videos = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Video>.self, forKey: .videos)?.array ?? []
+        }
 	}
 
 	struct Track: Codable, Hashable {
@@ -44,19 +82,35 @@ public extension Yandex.Music.Objects {
 		public let availableAsRbt: Bool?
 		public let availableForPremiumUsers: Bool?
 		public let lyricsAvailable: Bool?
-		public let albums: [Album]?
+		public let albums: [Album]
 		public let storageDir: String?
 		public let durationMs: Int?
 		public let explicit: Bool?
 		public let title: String?
-		public let artists: [Artist]?
-		public let regions: [String]?
+		public let artists: [Artist]
+		public let regions: [String]
 		public let version: String?
 		public let contentWarning: String?
 		public let coverUri: String?
-		public var short: TrackShort { TrackShort(timestamp: nil, id: id, albumId: albums?.first?.id) }
+		public var short: TrackShort { TrackShort(timestamp: nil, id: id, albumId: albums.first?.id) }
 
-        public init(id: String, available: Bool?, availableAsRbt: Bool?, availableForPremiumUsers: Bool?, lyricsAvailable: Bool?, albums: [Album]?, storageDir: String?, durationMs: Int?, explicit: Bool?, title: String?, artists: [Artist]?, regions: [String]?, version: String?, contentWarning: String?, coverUri: String?) {
+        public init(
+            id: String,
+            available: Bool?,
+            availableAsRbt: Bool?,
+            availableForPremiumUsers: Bool?,
+            lyricsAvailable: Bool?,
+            albums: [Album] = [],
+            storageDir: String?,
+            durationMs: Int?,
+            explicit: Bool?,
+            title: String?,
+            artists: [Artist] = [],
+            regions: [String] = [],
+            version: String?,
+            contentWarning: String?,
+            coverUri: String?
+        ) {
             self.id = id
             self.available = available
             self.availableAsRbt = availableAsRbt
@@ -85,13 +139,13 @@ public extension Yandex.Music.Objects {
             self.availableAsRbt = try? container.decodeIfPresent(Bool.self, forKey: .availableAsRbt)
             self.availableForPremiumUsers = try? container.decodeIfPresent(Bool.self, forKey: .availableForPremiumUsers)
             self.lyricsAvailable = try? container.decodeIfPresent(Bool.self, forKey: .lyricsAvailable)
-            self.albums = try? container.decodeIfPresent([Yandex.Music.Objects.Album].self, forKey: .albums)
+            self.albums = (try? container.decodeIfPresent([Yandex.Music.Objects.Album].self, forKey: .albums)) ?? []
             self.storageDir = try? container.decodeIfPresent(String.self, forKey: .storageDir)
             self.durationMs = try? container.decodeIfPresent(Int.self, forKey: .durationMs)
             self.explicit = try? container.decodeIfPresent(Bool.self, forKey: .explicit)
             self.title = try? container.decodeIfPresent(String.self, forKey: .title)
-            self.artists = try? container.decodeIfPresent([Yandex.Music.Objects.Artist].self, forKey: .artists)
-            self.regions = try? container.decodeIfPresent([String].self, forKey: .regions)
+            self.artists = (try? container.decodeIfPresent([Yandex.Music.Objects.Artist].self, forKey: .artists)) ?? []
+            self.regions = (try? container.decodeIfPresent([String].self, forKey: .regions)) ?? []
             self.version = try? container.decodeIfPresent(String.self, forKey: .version)
             self.contentWarning = try? container.decodeIfPresent(String.self, forKey: .contentWarning)
             self.coverUri = try? container.decodeIfPresent(String.self, forKey: .coverUri)
@@ -134,11 +188,11 @@ public extension Yandex.Music.Objects {
 		public var composer: Bool?
 		public var various: Bool?
 		public var counts: Counts?
-		public var genres: [String]? // ["foreignrap"],
+		public var genres: [String] // ["foreignrap"],
 		public var ticketsAvailable: Bool?
-		public var regions: [String]?
-		public var decomposed: [JSON]?
-		public var popularTracks: [Track]?
+		public var regions: [String]
+		public var decomposed: [JSON]
+		public var popularTracks: [Track]
 
 		//        op_image=None,
 		//        no_pictures_from_search=None,
@@ -156,26 +210,97 @@ public extension Yandex.Music.Objects {
 		//        init_date=None,
 		//        end_date=None,
 		//        #warning("properties")
+        
+        public init(id: Int, name: String, cover: Cover? = nil, compose: Bool? = nil, composer: Bool? = nil, various: Bool? = nil, counts: Counts? = nil, genres: [String] = [], ticketsAvailable: Bool? = nil, regions: [String] = [], decomposed: [JSON] = [], popularTracks: [Track] = []) {
+            self.id = id
+            self.name = name
+            self.cover = cover
+            self.compose = compose
+            self.composer = composer
+            self.various = various
+            self.counts = counts
+            self.genres = genres
+            self.ticketsAvailable = ticketsAvailable
+            self.regions = regions
+            self.decomposed = decomposed
+            self.popularTracks = popularTracks
+        }
+
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: Yandex.Music.Objects.Artist.CodingKeys.self)
+            self.id = try container.decode(Int.self, forKey: .id)
+            self.name = try container.decode(String.self, forKey: .name)
+            self.cover = try container.decodeIfPresent(Yandex.Music.Objects.Cover.self, forKey: .cover)
+            self.compose = try container.decodeIfPresent(Bool.self, forKey: .compose)
+            self.composer = try container.decodeIfPresent(Bool.self, forKey: .composer)
+            self.various = try container.decodeIfPresent(Bool.self, forKey: .various)
+            self.counts = try container.decodeIfPresent(Yandex.Music.Objects.Counts.self, forKey: .counts)
+            self.genres = try container.decodeIfPresent(SafeDecodeArray<String>.self, forKey: .genres)?.array ?? []
+            self.ticketsAvailable = try container.decodeIfPresent(Bool.self, forKey: .ticketsAvailable)
+            self.regions = try container.decodeIfPresent(SafeDecodeArray<String>.self, forKey: .regions)?.array ?? []
+            self.decomposed = try container.decodeIfPresent(SafeDecodeArray<JSON>.self, forKey: .decomposed)?.array ?? []
+            self.popularTracks = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Track>.self, forKey: .popularTracks)?.array ?? []
+        }
 	}
 
-	struct Album: Codable {
-		public let id: Int
-		public var type: String?
-		public var storageDir: String?
-		public var originalReleaseYear: Int?
-		public var year: Int?
-		public var artists: [Artist]?
-		public var coverUri: String? // avatars.yandex.net/get-music-content/118603/eb22a71b.a.5331102-1/%%
-		public var trackCount: Int?
-		public var genre: String? // "foreignrap",
-		public var available: Bool?
-		public var availableForPremiumUsers: Bool?
-		public var title: String
-		public var regions: [String]?
-		public var contentWarning: String?
-		public var version: String?
-		public var trackPosition: TrackPosition?
-	}
+    struct Album: Codable {
+        public let id: Int
+        public var type: String?
+        public var storageDir: String?
+        public var originalReleaseYear: Int?
+        public var year: Int?
+        public var artists: [Artist]
+        public var coverUri: String? // avatars.yandex.net/get-music-content/118603/eb22a71b.a.5331102-1/%%
+        public var trackCount: Int?
+        public var genre: String? // "foreignrap",
+        public var available: Bool?
+        public var availableForPremiumUsers: Bool?
+        public var title: String
+        public var regions: [String]
+        public var contentWarning: String?
+        public var version: String?
+        public var trackPosition: TrackPosition?
+        
+        public init(id: Int, type: String? = nil, storageDir: String? = nil, originalReleaseYear: Int? = nil, year: Int? = nil, artists: [Artist] = [], coverUri: String? = nil, trackCount: Int? = nil, genre: String? = nil, available: Bool? = nil, availableForPremiumUsers: Bool? = nil, title: String, regions: [String] = [], contentWarning: String? = nil, version: String? = nil, trackPosition: TrackPosition? = nil) {
+            self.id = id
+            self.type = type
+            self.storageDir = storageDir
+            self.originalReleaseYear = originalReleaseYear
+            self.year = year
+            self.artists = artists
+            self.coverUri = coverUri
+            self.trackCount = trackCount
+            self.genre = genre
+            self.available = available
+            self.availableForPremiumUsers = availableForPremiumUsers
+            self.title = title
+            self.regions = regions
+            self.contentWarning = contentWarning
+            self.version = version
+            self.trackPosition = trackPosition
+        }
+        
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: Yandex.Music.Objects.Album.CodingKeys.self)
+            self.id = try container.decode(Int.self, forKey: .id)
+            self.type = try container.decodeIfPresent(String.self, forKey: .type)
+            self.storageDir = try container.decodeIfPresent(String.self, forKey: .storageDir)
+            self.originalReleaseYear = try container.decodeIfPresent(Int.self, forKey: .originalReleaseYear)
+            self.year = try container.decodeIfPresent(Int.self, forKey: .year)
+            self.artists = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Artist>.self, forKey: .artists)?.array ?? []
+            self.coverUri = try container.decodeIfPresent(String.self, forKey: .coverUri)
+            self.trackCount = try container.decodeIfPresent(Int.self, forKey: .trackCount)
+            self.genre = try container.decodeIfPresent(String.self, forKey: .genre)
+            self.available = try container.decodeIfPresent(Bool.self, forKey: .available)
+            self.availableForPremiumUsers = try container.decodeIfPresent(Bool.self, forKey: .availableForPremiumUsers)
+            self.title = try container.decode(String.self, forKey: .title)
+            self.regions = try container.decodeIfPresent(SafeDecodeArray<String>.self, forKey: .regions)?.array ?? []
+            self.contentWarning = try container.decodeIfPresent(String.self, forKey: .contentWarning)
+            self.version = try container.decodeIfPresent(String.self, forKey: .version)
+            self.trackPosition = try container.decodeIfPresent(Yandex.Music.Objects.TrackPosition.self, forKey: .trackPosition)
+        }
+    }
+        
 
 	struct Video: Codable {
 		public var youtubeUrl: String? // "http://www.youtube.com/watch?v=0OWj0CiM8WU",

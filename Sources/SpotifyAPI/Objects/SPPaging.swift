@@ -1,11 +1,12 @@
 import Foundation
+import SwiftMusicServicesApi
 
 /// The offset-based paging object is a container for a set of objects. It contains a key called items (whose value is an array of the requested objects) along with other keys like previous, next and limit that can be useful in future calls.
 public struct SPPaging<Item> {
 	/// A link to the Web API endpoint returning the full result of the request.
 	public var href: String
 	/// The requested data.
-	public var items: [Item]
+	@SafeDecodeArray public var items: [Item]
 	/// The maximum number of items in the response (as set in the query or by default).
 	public var limit: Int
 	/// URL to the next page of items.
@@ -19,7 +20,7 @@ public struct SPPaging<Item> {
 
 	public init(href: String, items: [Item], limit: Int, next: String? = nil, offset: Int, previous: String? = nil, total: Int) {
 		self.href = href
-		self.items = items
+		self._items = SafeDecodeArray(items)
 		self.limit = limit
 		self.next = next
 		self.offset = offset

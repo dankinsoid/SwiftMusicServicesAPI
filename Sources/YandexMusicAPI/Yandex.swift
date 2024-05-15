@@ -40,7 +40,6 @@ public extension Yandex.Music {
             var encoder = SwiftAPIClient.URLQueryEncoder()
 			encoder.nestedEncodingStrategy = .json
             encoder.arrayEncodingStrategy = .commaSeparator
-//			encoder.trimmingSquareBrackets = true
 			queryEncoder = encoder
 		}
 

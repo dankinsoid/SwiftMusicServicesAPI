@@ -1,5 +1,6 @@
 import Foundation
 import SwiftAPIClient
+import SwiftMusicServicesApi
 
 public extension Spotify.API {
 
@@ -21,7 +22,11 @@ public extension Spotify.API {
 	}
 
 	struct TracksOutput: Codable {
-		public var tracks: [SPTrack]
+		@SafeDecodeArray public var tracks: [SPTrack]
+
+        public init(tracks: [SPTrack]) {
+            _tracks = SafeDecodeArray(tracks)
+        }
 	}
 
 	func myTracks(limit: Int? = nil, offset: Int? = nil, market: String? = nil) -> AsyncThrowingStream<[SPSavedTrack], Error> {
