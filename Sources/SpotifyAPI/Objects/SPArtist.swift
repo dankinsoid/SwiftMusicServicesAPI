@@ -8,7 +8,7 @@ public struct SPArtist: Codable {
 	/// A link to the Web API endpoint providing full details of the artist.
 	public var href: String?
 	/// The [Spotify ID](/documentation/web-api/#spotify-uris-and-ids) for the artist.
-	public var id: String
+	public var id: String?
 	/// Images of the artist in various sizes, widest first.
 	public var images: [SPImage]?
 	/// The name of the artist.
@@ -20,7 +20,7 @@ public struct SPArtist: Codable {
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the artist.
 	public var uri: String?
 
-	public init(externalUrls: SPExternalURL? = nil, followers: SPFollowers? = nil, genres: [String]? = nil, href: String? = nil, id: String, images: [SPImage]? = nil, name: String? = nil, popularity: Int? = nil, type: String? = nil, uri: String? = nil) {
+	public init(externalUrls: SPExternalURL? = nil, followers: SPFollowers? = nil, genres: [String]? = nil, href: String? = nil, id: String? = nil, images: [SPImage]? = nil, name: String? = nil, popularity: Int? = nil, type: String? = nil, uri: String? = nil) {
 		self.externalUrls = externalUrls
 		self.followers = followers
 		self.genres = genres
