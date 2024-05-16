@@ -95,7 +95,9 @@ private func decodeArray<T: Decodable>(unkeyedContainer: () throws -> UnkeyedDec
         do {
             try array.append(container.decode(T.self))
         } catch {
-            fail = error
+            if fail == nil {
+                fail = error
+            }
         }
     }
     if array.isEmpty, count > 0, let fail {
