@@ -32,7 +32,6 @@ public extension AppleMusic.API {
 
 	func search(storefront: String, input: SearchInput) async throws -> [AppleMusic.Objects.Item] {
         try await client
-            .auth(enabled: false)
             .path("v1", "catalog", storefront, "search")
             .query(input)
             .call(.http, as: .decodable(SearchResults.self))

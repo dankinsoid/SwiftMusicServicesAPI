@@ -21,9 +21,7 @@ public enum AppleMusic {
                 .auth(
                     AuthModifier { [token] in
                         if let token, let key = HTTPFields.Key("Music-User-Token") {
-                            if let key = HTTPFields.Key("Music-User-Token") {
-                                $0.headers[key] = token.userToken
-                            }
+                            $0.headers[key] = token.userToken
                         }
                     }
                 )
