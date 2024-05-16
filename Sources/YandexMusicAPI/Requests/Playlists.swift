@@ -67,13 +67,22 @@ public extension Yandex.Music.API {
 		let encoder = URLQueryEncoder()
 		encoder.nestedEncodingStrategy = .json
 		encoder.trimmingSquareBrackets = false
+        let action: (Int) async throws -> YMO.Playlist<YMO.TrackShort> = { revision in
+            var input = input
+            input.revision = revision
+            return try await self.request(
+                url: self.baseURL.path("users", "\(id)", "playlists", "\(input.kind)", "change-relative"),
+                method: .post,
+                body: encoder.encodePath(input).data(using: .utf8),
+                headers: [.contentType: "application/x-www-form-urlencoded"]
+            )
+        }
+        return try await onRevisionError {
+            try await action(input.revision)
+        } retry: { revision in
+            try await action(revision)
+        }
 
-		return try await request(
-			url: baseURL.path("users", "\(id)", "playlists", "\(input.kind)", "change-relative"),
-			method: .post,
-            body: encoder.encodePath(input).data(using: .utf8),
-            headers: [.contentType: "application/x-www-form-urlencoded"]
-		)
 	}
 
 	func playlistsAdd(userID id: Int, playlistKind pid: Int?, revision: Int, tracks: [YMO.TrackShort]) async throws -> YMO.Playlist<YMO.TrackShort> {
