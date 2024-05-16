@@ -1,4 +1,5 @@
 import Foundation
+import SimpleCoders
 
 public var safeDecodeArrayOnError: (Error, String) -> Void = { _, _ in }
 
@@ -94,9 +95,16 @@ private func decodeArray<T: Decodable>(unkeyedContainer: () throws -> UnkeyedDec
     var count = 0
     while !container.isAtEnd {
         count += 1
+        let index = container.currentIndex
         do {
             try array.append(container.decode(T.self))
         } catch {
+            if container.currentIndex == index {
+                _ = try? container.nestedContainer(keyedBy: PlainCodingKey.self)
+                if container.currentIndex == index {
+                    throw error
+                }
+            }
             safeDecodeArrayOnError(error, error.humanReadable)
             if fail == nil {
                 fail = error
