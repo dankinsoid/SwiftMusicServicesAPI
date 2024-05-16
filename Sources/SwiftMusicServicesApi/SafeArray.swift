@@ -22,25 +22,25 @@ public struct SafeDecodeArray<Element>: RandomAccessCollection, MutableCollectio
     public init<S: Sequence>(_ elements: S) where Element == S.Element {
         array = Array(elements)
     }
-    
+
     public init() {
         array = []
     }
-    
+
     public init(arrayLiteral elements: Element...) {
         array = elements
     }
-    
+
     public subscript(position: Int) -> Element {
         get { array[position] }
         set { array[position] = newValue }
     }
-    
+
     public subscript(bounds: Range<Int>) -> Array<Element>.SubSequence {
         get { array[bounds] }
         set { array[bounds] = newValue }
     }
-    
+
     public mutating func replaceSubrange<C>(_ subrange: Range<Int>, with newElements: C) where C : Collection, Element == C.Element {
         array.replaceSubrange(subrange, with: newElements)
     }

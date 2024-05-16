@@ -13,10 +13,14 @@ public enum AppleMusic {
 
         public var client: APIClient {
             _client
+                .modifyRequest { [token] components, _ in
+                    if let token, !components.headers.contains(.authorization) {
+                        components.headers.append(.authorization(bearerToken: token.token))
+                    }
+                }
                 .auth(
                     AuthModifier { [token] in
-                        if let token {
-                            $0.headers.append(.authorization(bearerToken: token.token))
+                        if let token, let key = HTTPFields.Key("Music-User-Token") {
                             if let key = HTTPFields.Key("Music-User-Token") {
                                 $0.headers[key] = token.userToken
                             }
@@ -35,7 +39,7 @@ public enum AppleMusic {
                 .url(baseURL)
                 .httpResponseValidator(.statusCode)
                 .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator, nestedEncodingStrategy: .brackets))
-								.errorDecoder(.decodable(AppleMusic.Objects.ErrorResponse.self))
+                .errorDecoder(.decodable(AppleMusic.Objects.ErrorResponse.self))
 			self.token = token
 		}
 	}
