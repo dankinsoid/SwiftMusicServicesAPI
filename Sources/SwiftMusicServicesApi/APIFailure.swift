@@ -36,6 +36,16 @@ public struct APIFailure: LocalizedError, CustomStringConvertible {
 	}
 }
 
+extension Error {
+    
+    var humanReadable: String {
+        if let decoding = self as? DecodingError {
+            return decoding.humanReadable
+        }
+        return localizedDescription
+    }
+}
+
 private extension DecodingError {
 
 	var humanReadable: String {

@@ -1,5 +1,7 @@
 import Foundation
 
+public var safeDecodeArrayOnError: (Error, String) -> Void = { _, _ in }
+
 @propertyWrapper
 public struct SafeDecodeArray<Element>: RandomAccessCollection, MutableCollection, RangeReplaceableCollection, ExpressibleByArrayLiteral {
 
@@ -95,6 +97,7 @@ private func decodeArray<T: Decodable>(unkeyedContainer: () throws -> UnkeyedDec
         do {
             try array.append(container.decode(T.self))
         } catch {
+            safeDecodeArrayOnError(error, error.humanReadable)
             if fail == nil {
                 fail = error
             }
