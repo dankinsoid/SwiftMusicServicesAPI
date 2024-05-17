@@ -1,5 +1,6 @@
 import Foundation
 import SimpleCoders
+import VDCodable
 
 public var safeDecodeArrayOnError: (Error, String) -> Void = { _, _ in }
 
@@ -99,13 +100,23 @@ private func decodeArray<T: Decodable>(unkeyedContainer: () throws -> UnkeyedDec
         do {
             try array.append(container.decode(T.self))
         } catch {
+            var didCall = false
             if container.currentIndex == index {
-                _ = try? container.nestedContainer(keyedBy: PlainCodingKey.self)
+                if let nested = try? container.nestedContainer(keyedBy: PlainCodingKey.self) {
+                    var json: [String: JSON] = [:]
+                    for key in nested.allKeys {
+                        json[key.stringValue] = (try? nested.decode(JSON.self, forKey: key)) ?? .null
+                    }
+                    didCall = true
+                    safeDecodeArrayOnError(error, error.humanReadable + " " + JSON.object(json).utf8String)
+                }
                 if container.currentIndex == index {
                     throw error
                 }
             }
-            safeDecodeArrayOnError(error, error.humanReadable)
+            if !didCall {
+                safeDecodeArrayOnError(error, error.humanReadable)
+            }
             if fail == nil {
                 fail = error
             }
