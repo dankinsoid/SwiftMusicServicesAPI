@@ -24,9 +24,9 @@ final class YandexMusicTests: XCTestCase {
         let playlist = try await api.playlists(userID: account.account.uid, playlistsKinds: [list[0].kind])[0]
         dump(playlist)
         let plList = try await playlist.copy(
-            tracks: api.tracks(ids: (playlist.tracks?.map(\.id) ?? []))
+            tracks: api.tracks(ids: playlist.tracks.map(\.id))
         )
-        let likedTracks = try await api.likedTracks(userID: account.account.uid).library.tracks ?? []
+        let likedTracks = try await api.likedTracks(userID: account.account.uid).library.tracks
         print(likedTracks.count)
         let likes = try await api.tracks(ids: likedTracks.map(\.id))
         print(likes.count)

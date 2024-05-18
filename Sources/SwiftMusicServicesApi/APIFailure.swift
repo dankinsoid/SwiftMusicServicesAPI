@@ -30,7 +30,7 @@ public struct APIFailure: LocalizedError, CustomStringConvertible {
 		if let decoding = error as? DecodingError {
 			errorString += "\"\(decoding.humanReadable)\""
 		} else {
-			errorString += "\"\(error.localizedDescription)\""
+			errorString += "\"\(error.localizedDescription)\" \(error)"
 		}
 		return errorString
 	}

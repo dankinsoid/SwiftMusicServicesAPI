@@ -8,7 +8,6 @@ public enum AppleMusic {
 
 		public static var baseURL = URL(string: "https://api.music.apple.com")!
 		public var token: AppleMusic.Objects.Tokens?
-		public var userToken: String?
         private let _client: APIClient
 
         public var client: APIClient {
@@ -30,8 +29,7 @@ public enum AppleMusic {
 		public init(
             client: APIClient,
             baseURL: URL = API.baseURL,
-            token: AppleMusic.Objects.Tokens? = nil,
-            userToken: String? = nil
+            token: AppleMusic.Objects.Tokens? = nil
         ) {
 			_client = client
                 .url(baseURL)

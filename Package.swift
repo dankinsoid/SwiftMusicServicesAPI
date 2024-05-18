@@ -44,17 +44,18 @@ let package = Package(
 			name: "AppleMusicLogin",
 			targets: ["AppleMusicLogin"]
 		),
-        .library(
-            name: "AmazonMusicAPI",
-            targets: ["AmazonMusicAPI"]
-        ),
+		.library(
+			name: "AmazonMusicAPI",
+			targets: ["AmazonMusicAPI"]
+		),
 	],
 	dependencies: [
 		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
 		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.13.0"),
-        .package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.11.1"),
+		.package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.11.1"),
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
 		.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
+		.package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.1")
 	],
 	targets: [
 		.target(
@@ -133,6 +134,7 @@ let package = Package(
             name: "AppleMusicTests",
             dependencies: [
                 .target(name: "AppleMusicAPI"),
+								.product(name: "AsyncHTTPClient", package: "async-http-client")
             ]
         ),
         .target(
