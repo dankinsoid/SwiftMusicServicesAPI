@@ -12,10 +12,12 @@ public enum AppleMusic {
 
         public var client: APIClient {
             _client
-								.header(HTTPField.Name("Referrer-Policy")!, "origin")
                 .modifyRequest { [token] components, _ in
                     if let token, !components.headers.contains(.authorization) {
                         components.headers.append(.authorization(bearerToken: token.token))
+                    }
+                    if let key = HTTPFields.Key("Referrer-Policy"), !components.headers.contains(key) {
+                        components.headers.append(HTTPField(name: key, value: "origin"))
                     }
                 }
                 .auth(
@@ -37,6 +39,7 @@ public enum AppleMusic {
                 .httpResponseValidator(.statusCode)
                 .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator, nestedEncodingStrategy: .brackets))
                 .errorDecoder(.decodable(AppleMusic.Objects.ErrorResponse.self))
+                .auth(enabled: true)
 			self.token = token
 		}
 	}

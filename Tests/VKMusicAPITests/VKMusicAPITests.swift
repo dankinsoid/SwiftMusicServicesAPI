@@ -14,16 +14,13 @@ final class VKMusicAPITests: XCTestCase {
 	)
 
 	func testList() async throws {
-		let list = try await api.list(id: "73750576")
+		let list = try await api.list()
 		print(list.count)
 	}
 	
 	func testPlaylistsById() async throws {
-		let page: VK.API.AudioFirstPageRequestOutput = try await api.request(url: api.baseURL.path("audios73750576"))
-		print(page.tracks.count)
-	
-//		let list = try await api.playlists(id: "73750576")
-//		print("Count: \(list.count)")
+		let list = try await api.playlists(id: 73750576)
+		print("Count: \(list.count)")
 	}
 
 	func testUser() async throws {
@@ -32,7 +29,7 @@ final class VKMusicAPITests: XCTestCase {
 			XCTFail("nonuathorized")
 			return
 		}
-		let plists = try await api.myPlaylists(id: "\(id)")
+		let plists = try await api.playlists(id: id)
 		let tr = try await api.audioPageRequest(act: plists[0].act ?? "", offset: 0)
 		print(tr)
 		let plist = try await api.list(playlist: plists[0])

@@ -5,8 +5,7 @@ import SwiftAPIClient
 final class AppleMusicTests: XCTestCase {
     
     let api = AppleMusic.API(
-        client: APIClient()
-					.loggingComponents([.baseURL, .basic, .body])
+        client: APIClient().loggingComponents([.baseURL, .basic, .body])
     )
 	
     func testGetTracks() async throws {
