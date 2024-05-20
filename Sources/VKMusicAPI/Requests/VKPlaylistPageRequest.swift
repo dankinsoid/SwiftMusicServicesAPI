@@ -11,16 +11,7 @@ public extension VK.API {
 		)
 	}
 
-	@available(*, deprecated, renamed: "myPlaylists")
 	func playlists(id oid: Int) async throws -> [VKPlaylistItemHTML] {
 		try await (playlistPageRequest(id: "\(oid)", section: .my, block: .my_playlists) as VKAudioPlaylistPage).playlists
-	}
-
-	func myPlaylists(id oid: String) async throws -> [VKPlaylistItemHTML] {
-		try await (playlistPageRequest(id: oid, section: .my, block: .my_playlists) as VKAudioPlaylistPage).playlists
-	}
-
-	func playlists(id oid: String) async throws -> [VKPlaylistItemHTML] {
-		try await (playlistPageRequest(id: oid, section: nil, block: nil) as VKAudioPlaylistPage).playlists
 	}
 }

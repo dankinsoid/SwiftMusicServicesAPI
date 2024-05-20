@@ -63,7 +63,8 @@ public struct VK {
 		///
 		public func request<U: HTMLStringInitable>(
 			url: HttpUrl,
-			method: HttpMethod = .get,
+			method: HttpMethod,
+			auth _: Bool = true,
 			body: Data? = nil,
 			headers: [HttpHeaderKey: String] = [:],
 			minimum: Bool = false,

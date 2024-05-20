@@ -4,9 +4,9 @@ import SwiftHttp
 import SwiftSoup
 
 public extension VK.API {
-	func audioBlock(id: String? = nil) async throws -> AudioBlock {
+	func audioBlock() async throws -> AudioBlock {
 		try await request(
-			url: baseURL.path("audio\(id.map { "s\($0)" } ?? "")"),
+			url: baseURL.path("audio"),
 			method: .get
 		)
 	}
