@@ -1,15 +1,13 @@
 import Foundation
-import SwiftHttp
-import VDCodable
 
 public extension AppleMusic.API {
 
 	func mySongs(
-        include: [AppleMusic.Objects.Include]? = [.catalog],
+				include: [AppleMusic.Objects.Include]? = [.catalog],
         limit: Int? = nil,
         offset: Int = 0
-    ) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
-		try mySongs(input: MySongsInput(include: include, limit: limit, offset: offset))
+    ) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
+		mySongs(input: MySongsInput(include: include, limit: limit, offset: offset))
 	}
 
 	func mySongs(input: MySongsInput) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
@@ -18,6 +16,19 @@ public extension AppleMusic.API {
         return pages(limit: input.limit) { [client, input] in
             try await client.path("v1", "me", "library", "songs").query(input).get()
         }
+	}
+	
+	func equivalent(
+		of id: String,
+		for storefront: String,
+		language: String? = nil
+	) async throws -> AppleMusic.Objects.Item {
+		try await client.path("v1", "catalog", storefront, "songs")
+			.query(["filter[equivalents]": id, "l": language])
+			.call(.http, as: .decodable(AppleMusic.Objects.Response<AppleMusic.Objects.Item>.self))
+			.data
+			.first
+			.unwrap(throwing: "No equivalent song found for \(id) in \(storefront)")
 	}
 
 	struct MySongsInput: Encodable {

@@ -37,9 +37,14 @@ extension VK.API.AudioFirstPageRequestOutput: HTMLStringInitable {
 		let div = try document.getElementsByAttributeValueStarting("class", "AudioPlaylistRoot").first()?.children() ?? Elements()
 		tracks = try div.map { try VKAudio(xml: $0) }
 		do {
-			next = try document.getElementsByClass("show_more AudioSection__showMore--my_audios_block")
+			let element = try document.getElementsByClass("show_more_wrap")
 				.first()?
-				.attr("href")
+				.children()
+				.first()
+			?? document.getElementsByClass("show_more AudioSection__showMore--my_audios_block")
+				.first()
+			
+			next = try element?.attr("href")
 				.components(separatedBy: "start_from=")
 				.last
 		} catch {
@@ -99,18 +104,19 @@ public extension VK.API {
 }
 
 public extension VK.API {
-	func list(tracks: [VKAudio] = [], block: String? = nil, next: String? = nil) async throws -> [VKAudio] {
+
+	func list(id: String? = nil, tracks: [VKAudio] = [], block: String? = nil, next: String? = nil) async throws -> [VKAudio] {
 		if let block {
 			if let next, !next.isEmpty {
 				let tr = try await myTracksPageRequest(start_from: next, block: block)
-				return try await list(tracks: tracks + tr.list, block: block, next: next == tr.nextOffset ? nil : tr.nextOffset)
+				return try await list(id: id, tracks: tracks + tr.list, block: block, next: next == tr.nextOffset ? nil : tr.nextOffset)
 			} else {
 				return tracks
 			}
 		} else {
-			let bl = try await audioBlock()
+			let bl = try await audioBlock(id: id)
 			let tr = try await audioFirstPageRequest(href: bl.href)
-			return try await list(tracks: tracks + tr.tracks, block: bl.block, next: tr.next)
+			return try await list(id: id, tracks: tracks + tr.tracks, block: bl.block, next: tr.next)
 		}
 	}
 

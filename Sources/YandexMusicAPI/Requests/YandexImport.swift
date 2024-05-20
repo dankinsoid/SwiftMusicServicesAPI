@@ -17,7 +17,7 @@ public extension Yandex.Music.API {
 		let code = try await importFile(e3u: e3u).importCode
 		var result = try await importCode(code)
 		while result.status.asEnum == .inProgress {
-			sleep(2)
+			try await Task.sleep(nanoseconds: 1_000_000_000)
 			result = try await importCode(code)
 		}
 		guard result.status.asEnum == .done, let tracks = result.tracks else {

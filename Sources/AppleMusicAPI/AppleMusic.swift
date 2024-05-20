@@ -12,6 +12,7 @@ public enum AppleMusic {
 
         public var client: APIClient {
             _client
+								.header(HTTPField.Name("Referrer-Policy")!, "origin")
                 .modifyRequest { [token] components, _ in
                     if let token, !components.headers.contains(.authorization) {
                         components.headers.append(.authorization(bearerToken: token.token))

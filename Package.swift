@@ -54,8 +54,7 @@ let package = Package(
 		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.13.0"),
 		.package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.11.1"),
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
-		.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
-		.package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.1")
+		.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0")
 	],
 	targets: [
 		.target(
@@ -133,8 +132,7 @@ let package = Package(
         .testTarget(
             name: "AppleMusicTests",
             dependencies: [
-                .target(name: "AppleMusicAPI"),
-								.product(name: "AsyncHTTPClient", package: "async-http-client")
+                .target(name: "AppleMusicAPI")
             ]
         ),
         .target(

@@ -1,6 +1,4 @@
 import Foundation
-import SwiftHttp
-import VDCodable
 
 public extension AppleMusic.API {
 

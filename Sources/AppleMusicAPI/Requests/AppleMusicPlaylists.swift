@@ -1,5 +1,4 @@
 import Foundation
-import SwiftHttp
 
 public extension AppleMusic.API {
 

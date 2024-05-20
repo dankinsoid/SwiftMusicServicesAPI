@@ -2,7 +2,7 @@ import Foundation
 
 public extension AppleMusic.Objects {
 	enum ItemType: Codable {
-		case songs(Song), musicVideos(MusicVideo), librarySongs(Song), libraryMusicVideos(MusicVideo), libraryPlaylists(Playlist), playlists(Playlist)
+		case songs(Song), musicVideos(MusicVideo), librarySongs(Song), libraryMusicVideos(MusicVideo), libraryPlaylists(Playlist), playlists(Playlist), storefront(Attributes.Storefront)
 
 		public var kind: AppleMusic.TrackType {
 			switch self {
@@ -12,6 +12,7 @@ public extension AppleMusic.Objects {
 			case .libraryMusicVideos: return .libraryMusicVideos
 			case .libraryPlaylists: return .libraryPlaylists
 			case .playlists: return .playlists
+			case .storefront: return .storefronts
 			}
 		}
 
@@ -41,6 +42,9 @@ public extension AppleMusic.Objects {
 			case .playlists:
 				let song = try container.decode(Playlist.self, forKey: .attributes)
 				self = .playlists(song)
+			case .storefronts:
+				let storefront = try container.decode(Attributes.Storefront.self, forKey: .attributes)
+				self = .storefront(storefront)
 			case .unknown:
 				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "unknown track type"))
 			}
@@ -62,6 +66,8 @@ public extension AppleMusic.Objects {
 				try container.encode(libraryPlaylists, forKey: .attributes)
 			case let .playlists(playlists):
 				try container.encode(playlists, forKey: .attributes)
+			case let .storefront(storefront):
+				try container.encode(storefront, forKey: .attributes)
 			}
 		}
 
@@ -90,5 +96,21 @@ public extension AppleMusic.Objects {
 
 	struct Playlist: Codable {
 		public init() {}
+	}
+}
+
+extension AppleMusic.Objects.Attributes {
+	
+	public struct Storefront: Equatable, Codable {
+		
+		public var name: String?
+		public var supportedLanguageTags: [String]?
+		public var defaultLanguageTag: String?
+		
+		public init(name: String? = nil, supportedLanguageTags: [String]? = nil, defaultLanguageTag: String?) {
+			self.name = name
+			self.supportedLanguageTags = supportedLanguageTags
+			self.defaultLanguageTag = defaultLanguageTag
+		}
 	}
 }

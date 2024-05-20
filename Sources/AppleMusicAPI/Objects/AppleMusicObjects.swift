@@ -5,7 +5,7 @@ public extension AppleMusic {
 
 	enum TrackType: String, Codable, CaseIterable {
 
-		case songs, musicVideos = "music-videos", librarySongs = "library-songs", libraryMusicVideos = "library-music-videos", libraryPlaylists = "library-playlists", playlists, unknown
+		case songs, musicVideos = "music-videos", librarySongs = "library-songs", libraryMusicVideos = "library-music-videos", libraryPlaylists = "library-playlists", playlists, storefronts, unknown
 
 		public init(from decoder: Decoder) throws {
 			self = try TrackType(rawValue: String(from: decoder)) ?? .unknown

@@ -152,6 +152,8 @@ public extension AppleMusic.Objects {
 		public var description: Description?
 		public var previews: [Url]?
 		public var isrc: String?
+		public var supportedLanguageTags: [String]?
+		public var defaultLanguageTag: String?
 	}
 
 	struct Relationships: Codable {
