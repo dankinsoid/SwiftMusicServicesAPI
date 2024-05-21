@@ -32,6 +32,7 @@ public extension Yandex.Music {
         public var baseURL: HttpUrl
         
         private let pipeline = Pipeline()
+        private let ios = "17.\(Int.random(in: 1...4)).1"
         
         public init(client: HttpClient, token: String? = nil, baseURL: HttpUrl = API.baseURL) {
             self.client = client.rateLimit()
@@ -136,11 +137,11 @@ public extension Yandex.Music {
                 }
             }
         }
-        
+
         public func headers(with additionalHeaders: [HttpHeaderKey: String] = [:], auth: Bool = true) -> [HttpHeaderKey: String] {
             var headers: [HttpHeaderKey: String] = [
-                .userAgent: "Yandex-Music-API",
-                "X-Yandex-Music-Client": "Yandex.Music/493",
+                .userAgent: "Maple/667 (iPhone; \(ios); Scale/3.0)",
+                "X-Yandex-Music-Client": "Yandex.Music/667.151579",
             ]
             if auth, let token {
                 headers[.authorization] = "OAuth \(token)"
@@ -149,14 +150,14 @@ public extension Yandex.Music {
                 s
             }
         }
-        
+
         public static func url(coverUri: String?) -> HttpUrl? {
             guard let uri = coverUri else {
                 return nil
             }
             return HttpUrl(string: "https://" + uri.replacingOccurrences(of: "%%", with: "200x200"))
         }
-        
+
         public func rawRequest(
             url: HttpUrl,
             method: HttpMethod,
@@ -168,7 +169,7 @@ public extension Yandex.Music {
                 try await pipeline.rawRequest(executor: client.dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
             }
         }
-        
+
         public func encodableRequest(
             url: HttpUrl,
             method: HttpMethod,
@@ -180,7 +181,7 @@ public extension Yandex.Music {
                 try await pipeline.encodableRequest(executor: client.dataTask, url: url, method: method, headers: headers, body: body, validators: validators)
             }
         }
-        
+
         public func decodableRequest<U: Decodable>(
             url: HttpUrl,
             method: HttpMethod,
@@ -192,7 +193,7 @@ public extension Yandex.Music {
                 try await pipeline.decodableRequest(executor: client.dataTask, url: url, method: method, body: body, headers: headers, validators: validators)
             }
         }
-        
+
         public func codableRequest<U: Decodable>(
             url: HttpUrl,
             method: HttpMethod,
