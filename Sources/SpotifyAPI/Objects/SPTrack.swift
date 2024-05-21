@@ -18,7 +18,7 @@ public struct SPTrack: Codable {
 	/// A link to the Web API endpoint providing full details of the track.
 	public var href: String?
 	/// The [Spotify ID](/documentation/web-api/#spotify-uris-and-ids) for the track.
-	public var id: String
+	public var id: String?
 	/// Part of the response when [Track Relinking](/documentation/general/guides/track-relinking-guide/) is applied. If true , the track is playable in the given market. Otherwise false.
 	public var isPlayable: Bool?
 	/// Part of the response when [Track Relinking](/documentation/general/guides/track-relinking-guide/) is applied, and the requested track has been replaced with different track. The track in the linked_from object contains information about the originally requested track.
@@ -40,7 +40,7 @@ public struct SPTrack: Codable {
 	/// Whether or not the track is from a local file.
 	public var isLocal: Bool?
 
-	public init(album: SPAlbum? = nil, artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, discNumber: Int? = nil, durationMs: Int, explicit: Bool? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, href: String? = nil, id: String, isPlayable: Bool? = nil, linkedFrom: SPTrackLink? = nil, restrictions: SPRestrictions? = nil, name: String, popularity: Int? = nil, previewUrl: String? = nil, trackNumber: Int? = nil, type: String? = nil, uri: String, isLocal: Bool? = nil) {
+	public init(album: SPAlbum? = nil, artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, discNumber: Int? = nil, durationMs: Int, explicit: Bool? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, href: String? = nil, id: String?, isPlayable: Bool? = nil, linkedFrom: SPTrackLink? = nil, restrictions: SPRestrictions? = nil, name: String, popularity: Int? = nil, previewUrl: String? = nil, trackNumber: Int? = nil, type: String? = nil, uri: String, isLocal: Bool? = nil) {
 		self.album = album
 		self.artists = artists
 		self.availableMarkets = availableMarkets
