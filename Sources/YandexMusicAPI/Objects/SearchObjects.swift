@@ -87,6 +87,8 @@ public extension Yandex.Music.Objects {
 		public let durationMs: Int?
 		public let explicit: Bool?
 		public let title: String?
+        public let canPublish: Bool?
+        public let filename: String?
 		public let artists: [Artist]
 		public let regions: [String]
 		public let version: String?
@@ -109,7 +111,9 @@ public extension Yandex.Music.Objects {
             regions: [String] = [],
             version: String?,
             contentWarning: String?,
-            coverUri: String?
+            coverUri: String?,
+            canPublish: Bool? = nil,
+            filename: String? = nil
         ) {
             self.id = id
             self.available = available
@@ -126,6 +130,8 @@ public extension Yandex.Music.Objects {
             self.version = version
             self.contentWarning = contentWarning
             self.coverUri = coverUri
+            self.filename = filename
+            self.canPublish = canPublish
         }
         
         public init(from decoder: any Decoder) throws {
@@ -149,6 +155,8 @@ public extension Yandex.Music.Objects {
             self.version = try? container.decodeIfPresent(String.self, forKey: .version)
             self.contentWarning = try? container.decodeIfPresent(String.self, forKey: .contentWarning)
             self.coverUri = try? container.decodeIfPresent(String.self, forKey: .coverUri)
+            self.filename = try? container.decodeIfPresent(String.self, forKey: .filename)
+            self.canPublish = try? container.decodeIfPresent(Bool.self, forKey: .canPublish)
         }
         
 		public func hash(into hasher: inout Hasher) {

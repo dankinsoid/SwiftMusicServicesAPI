@@ -49,6 +49,10 @@ final class YandexMusicTests: XCTestCase {
         )
         print(tracks)
     }
+    
+    func testTrackByID() async throws {
+        try await dump(api.tracks(ids: ["f3b136c0-5f33-4cd5-8db1-48dc41465d5f", "81897915"]))
+    }
 }
 
 private struct ProxyClient: HttpClient {
