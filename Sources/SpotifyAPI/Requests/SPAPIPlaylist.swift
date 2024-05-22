@@ -1,5 +1,6 @@
 import Foundation
 import SwiftAPIClient
+import Logging
 
 public extension Spotify.API {
 
@@ -72,7 +73,14 @@ public extension Spotify.API {
 		id: String,
 		input: AddPlaylistInput
 	) async throws -> AddPlaylistOutput {
-        try await client("playlists", id, "tracks").body(input).post()
+        try await client("playlists", id, "tracks").body(input)
+            .errorHandler { error, _, context in
+                if let data = context.response, let string = String(data: data, encoding: .utf8) {
+                    Logger(label: "Spotify-API").error("\(string)")
+                }
+                throw error
+            }
+            .post()
 	}
 
 	struct AddPlaylistInput: Encodable {
@@ -95,7 +103,15 @@ public extension Spotify.API {
 		userId: String,
 		input: CreatePlaylistInput
 	) async throws -> SPPlaylist {
-        try await client("users", userId, "playlists").body(input).post()
+        try await client("users", userId, "playlists")
+            .body(input)
+            .errorHandler { error, _, context in
+                if let data = context.response, let string = String(data: data, encoding: .utf8) {
+                    Logger(label: "Spotify-API").error("\(string)")
+                }
+                throw error
+            }
+            .post()
 	}
 
 	struct CreatePlaylistInput: Encodable {
