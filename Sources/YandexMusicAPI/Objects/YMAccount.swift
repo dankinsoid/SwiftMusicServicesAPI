@@ -33,7 +33,7 @@ public extension YMO {
 		public var now: Date?
 		public var passportPhones: [PassportPhone]?
 		public var hostedUser: Bool?
-		public var uid: Int
+		public var uid: Int?
 		public var login: String?
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
