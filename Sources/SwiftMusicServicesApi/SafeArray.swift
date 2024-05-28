@@ -98,7 +98,9 @@ private func decodeArray<T: Decodable>(unkeyedContainer: () throws -> UnkeyedDec
         count += 1
         let index = container.currentIndex
         do {
-            try array.append(container.decode(T.self))
+            if let value = try container.decodeIfPresent(T.self) {
+                array.append(value)
+            }
         } catch {
             var didCall = false
             if container.currentIndex == index {
