@@ -95,7 +95,7 @@ public extension Spotify.API {
 	}
 
 	struct AddPlaylistOutput: Decodable {
-		public var snapshotId: String
+		public var snapshotId: String?
 	}
 
 	/// https://developer.spotify.com/documentation/web-api/reference/playlists/add-tracks-to-playlist/

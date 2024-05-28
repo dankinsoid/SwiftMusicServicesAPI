@@ -1,6 +1,6 @@
 public struct SPPlaylist: Codable {
 	/// Returns true if context is not search and the owner allows other users to modify the playlist. Otherwise returns false.
-	public var collaborative: Bool
+	public var collaborative: Bool?
 	/// The playlist description. _Only returned for modified, verified playlists, otherwise_ null.
 	public var description: String?
 	/// Known external URLs for this playlist.
@@ -20,15 +20,15 @@ public struct SPPlaylist: Codable {
 	/// The playlist's public/private status: true the playlist is public, false the playlist is private, null the playlist status is not relevant. For more about public/private status, see [Working with Playlists](/documentation/general/guides/working-with-playlists/).
 	public var `public`: Bool?
 	/// The version identifier for the current playlist. Can be supplied in other requests to target a specific playlist version: see [Remove tracks from a playlist](/documentation/web-api/reference/playlists/remove-tracks-playlist/)
-	public var snapshotId: String
+	public var snapshotId: String?
 	/// Information about the tracks of the playlist.
 	public var tracks: SPTracks?
 	/// The object type: "playlist"
-	public var type: String
+	public var type: String?
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the playlist.
 	public var uri: String
 
-	public init(collaborative: Bool, description: String? = nil, externalUrls: SPExternalURL? = nil, followers: SPFollowers? = nil, href: String, id: String, images: [SPImage]? = nil, name: String, owner: SPUser, snapshotId: String, tracks: SPTracks? = nil, type: String, uri: String) {
+	public init(collaborative: Bool? = nil, description: String? = nil, externalUrls: SPExternalURL? = nil, followers: SPFollowers? = nil, href: String, id: String, images: [SPImage]? = nil, name: String, owner: SPUser, snapshotId: String? = nil, tracks: SPTracks? = nil, type: String? = nil, uri: String) {
 		self.collaborative = collaborative
 		self.description = description
 		self.externalUrls = externalUrls
