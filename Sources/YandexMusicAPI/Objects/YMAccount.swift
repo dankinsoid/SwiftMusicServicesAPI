@@ -43,6 +43,43 @@ public extension YMO {
 			case hostedUser, uid, login
 		}
 	}
+    
+    struct Settings: Codable {
+
+        public var uid: Int
+        public var lastFmScrobblingEnabled: Bool?
+        public var facebookScrobblingEnabled: Bool?
+        public var shuffleEnabled: Bool?
+        public var addNewTrackOnPlaylistTop: Bool?
+        public var volumePercents: Int?
+        public var userMusicVisibility: String?
+        public var userSocialVisibility: String?
+        public var adsDisabled: Bool?
+        public var modified: Date?
+//        public var rbtDisabled: String?
+        public var theme: String?
+        public var promosDisabled: Bool?
+        public var autoPlayRadio: Bool?
+        public var syncQueueEnabled: Bool?
+        
+        public init(uid: Int, lastFmScrobblingEnabled: Bool? = nil, facebookScrobblingEnabled: Bool? = nil, shuffleEnabled: Bool? = nil, addNewTrackOnPlaylistTop: Bool? = nil, volumePercents: Int? = nil, userMusicVisibility: String? = nil, userSocialVisibility: String? = nil, adsDisabled: Bool? = nil, modified: Date? = nil, theme: String? = nil, promosDisabled: Bool? = nil, autoPlayRadio: Bool? = nil, syncQueueEnabled: Bool? = nil) {
+            self.uid = uid
+            self.lastFmScrobblingEnabled = lastFmScrobblingEnabled
+            self.facebookScrobblingEnabled = facebookScrobblingEnabled
+            self.shuffleEnabled = shuffleEnabled
+            self.addNewTrackOnPlaylistTop = addNewTrackOnPlaylistTop
+            self.volumePercents = volumePercents
+            self.userMusicVisibility = userMusicVisibility
+            self.userSocialVisibility = userSocialVisibility
+            self.adsDisabled = adsDisabled
+            self.modified = modified
+            self.theme = theme
+            self.promosDisabled = promosDisabled
+            self.autoPlayRadio = autoPlayRadio
+            self.syncQueueEnabled = syncQueueEnabled
+        }
+    }
+
 
 	struct PassportPhone: Codable {
 		public var phone: String?
