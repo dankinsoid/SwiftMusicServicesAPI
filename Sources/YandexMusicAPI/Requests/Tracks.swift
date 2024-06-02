@@ -8,7 +8,7 @@ public extension Yandex.Music.API {
 	func tracks(ids: [String], withPositions: Bool = true) async throws -> [YMO.Track] {
         try await withThrowingTaskGroup(of: [YMO.Track].self, returning: [YMO.Track].self) { [self] group in
             var i = 0
-            let maxSize = 200
+            let maxSize = 100
             while i < ids.count {
                 let chunk = Array(ids[i..<min(i + maxSize, ids.count)])
                 i += maxSize
