@@ -64,25 +64,7 @@ public extension Yandex.Music.API {
 public extension Yandex.Music.API {
 
 	func playlistsChange(userID id: Int, input: PlaylistsChangeInput) async throws -> YMO.Playlist<YMO.TrackShort> {
-		let encoder = URLQueryEncoder()
-		encoder.nestedEncodingStrategy = .json
-		encoder.trimmingSquareBrackets = false
-        let action: (Int) async throws -> YMO.Playlist<YMO.TrackShort> = { revision in
-            var input = input
-            input.revision = revision
-            return try await self.request(
-                url: self.baseURL.path("users", "\(id)", "playlists", "\(input.kind)", "change-relative"),
-                method: .post,
-                body: encoder.encodePath(input).data(using: .utf8),
-                headers: [.contentType: "application/x-www-form-urlencoded"]
-            )
-        }
-        return try await onRevisionError {
-            try await action(input.revision)
-        } retry: { revision in
-            try await action(revision)
-        }
-
+		try await playlistsChange(userID: id, input: input, counter: 4)
 	}
 
 	func playlistsAdd(userID id: Int, playlistKind pid: Int?, revision: Int, tracks: [YMO.TrackShort]) async throws -> YMO.Playlist<YMO.TrackShort> {
@@ -143,4 +125,29 @@ public extension Yandex.Music.API {
 			self.mixed = mixed
 		}
 	}
+}
+
+private extension Yandex.Music.API {
+    
+    func playlistsChange(userID id: Int, input: PlaylistsChangeInput, counter: Int) async throws -> YMO.Playlist<YMO.TrackShort> {
+        let encoder = URLQueryEncoder()
+        encoder.nestedEncodingStrategy = .json
+        encoder.trimmingSquareBrackets = false
+        return try await onRevisionError {
+            try await self.request(
+                url: self.baseURL.path("users", "\(id)", "playlists", "\(input.kind)", "change-relative"),
+                method: .post,
+                body: encoder.encodePath(input).data(using: .utf8),
+                headers: [.contentType: "application/x-www-form-urlencoded"]
+            )
+        } retry: { revision, error in
+            if counter > 0 {
+                var input = input
+                input.revision = revision
+                return try await playlistsChange(userID: id, input: input, counter: counter - 1)
+            } else {
+                throw error
+            }
+        }
+    }
 }

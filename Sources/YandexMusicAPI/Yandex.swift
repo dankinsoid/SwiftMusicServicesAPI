@@ -206,14 +206,14 @@ public extension Yandex.Music {
             }
         }
         
-        public func onRevisionError<T>(action: () async throws -> T, retry: (Int) async throws -> T) async throws -> T {
+        public func onRevisionError<T>(action: () async throws -> T, retry: (Int, Error) async throws -> T) async throws -> T {
             do {
                 return try await action()
             } catch let error as WrongRevisionError {
-                return try await retry(error.actual)
+                return try await retry(error.actual, error)
             } catch let error as APIFailure {
-                if let error = error.error as? WrongRevisionError {
-                    return try await retry(error.actual)
+                if let wrongRevisionError = error.error as? WrongRevisionError {
+                    return try await retry(wrongRevisionError.actual, error)
                 } else {
                     throw error
                 }

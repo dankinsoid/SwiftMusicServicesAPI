@@ -6,9 +6,9 @@ public struct SPUser: Codable {
 	/// Information about the followers of this user.
 	public var followers: SPFollowers?
 	/// A link to the Web API endpoint for this user.
-	public var href: String
+	public var href: String?
 	/// The [Spotify user ID](/documentation/web-api/#spotify-uris-and-ids) for this user.
-	public var id: String
+	public var id: String?
 	/// The user's profile image.
 	public var images: [SPImage]?
 	/// The object type: "user"
@@ -16,7 +16,7 @@ public struct SPUser: Codable {
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for this user.
 	public var uri: String
 
-	public init(displayName: String? = nil, externalUrls: SPExternalURL? = nil, followers: SPFollowers? = nil, href: String, id: String, images: [SPImage]? = nil, type: String, uri: String) {
+	public init(displayName: String? = nil, externalUrls: SPExternalURL? = nil, followers: SPFollowers? = nil, href: String? = nil, id: String?, images: [SPImage]? = nil, type: String, uri: String) {
 		self.displayName = displayName
 		self.externalUrls = externalUrls
 		self.followers = followers

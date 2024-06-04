@@ -10,7 +10,7 @@ public extension Yandex.Music.Objects {
 		public let uid: Int
 		public let kind: Int
 		public let trackCount: Int?
-		public let title: String
+		public let title: String?
 		public let owner: Owner?
 		public let cover: Cover?
 		public let tags: [Tag]
@@ -34,7 +34,7 @@ public extension Yandex.Music.Objects {
 			uid: Int,
 			kind: Int,
 			trackCount: Int? = nil,
-			title: String,
+			title: String?,
 			owner: Yandex.Music.Objects.Owner? = nil,
 			cover: Yandex.Music.Objects.Cover? = nil,
 			tags: [Yandex.Music.Objects.Tag] = [],
@@ -83,7 +83,7 @@ public extension Yandex.Music.Objects {
             self.uid = try container.decode(Int.self, forKey: .uid)
             self.kind = try container.decode(Int.self, forKey: .kind)
             self.trackCount = try container.decodeIfPresent(Int.self, forKey: .trackCount)
-            self.title = try container.decode(String.self, forKey: .title)
+            self.title = try container.decodeIfPresent(String.self, forKey: .title)
             self.owner = try container.decodeIfPresent(Yandex.Music.Objects.Owner.self, forKey: .owner)
             self.cover = try container.decodeIfPresent(Yandex.Music.Objects.Cover.self, forKey: .cover)
             self.tags = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Tag>.self, forKey: .tags)?.array ?? []
