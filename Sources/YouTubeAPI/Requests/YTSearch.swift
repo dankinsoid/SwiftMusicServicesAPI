@@ -118,7 +118,7 @@ extension YouTube.API.Search {
         videoSyndicated: YTO.VideoSyndicated? = nil,
         videoType: YTO.VideoType? = nil,
         auth: Bool? = nil,
-        part: [YTO.Video.CodingKeys],
+        part: [YTO.SearchResult.CodingKeys],
         limit: Int? = nil,
         pageToken: String? = nil
     ) -> YTPaging<YTO.SearchResult> {
