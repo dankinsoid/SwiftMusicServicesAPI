@@ -14,29 +14,17 @@ public typealias YTMO = YouTube.Music.Objects
 extension YouTube.Music {
     
     public struct API {
-        
-        public enum BaseURL: String {
-            
-            /// Official primary domain name
-            case baseURL = "https://music.youtube.com"
-            
-            public var url: URL {
-                URL(string: rawValue)!
-            }
-        }
 
         public let client: APIClient
 
-        public let clientID: String
-        
         public init(
-            baseURL: BaseURL,
             clientID: String,
             clientSecret: String,
             redirectURI: String,
+            apiKey: String,
             cache: SecureCacheService
         ) {
-            self.client = APIClient(baseURL: baseURL.url)
+            self.client = APIClient(string: "https://www.googleapis.com/youtube/v3")
                 .tokenRefresher(cacheService: cache) { refreshToken, _, _ in
                     let result = try await YouTube.OAuth2(
                         clientID: clientID,
@@ -44,13 +32,21 @@ extension YouTube.Music {
                         redirectURI: redirectURI
                     )
                     .refreshToken(
-                        refreshToken.unwrap(throwing: AnyError("No refresh token found"))
+                        refreshToken.unwrap(throwing: AnyError("No refresh token found in cache"))
                     )
                     return (result.accessToken, refreshToken, Date(timeIntervalSinceNow: result.expiresIn))
                 } auth: { token in
                     .bearer(token: token)
                 }
-            self.clientID = clientID
+                .bodyEncoder(.json(dateEncodingStrategy: .iso8601))
+                .bodyDecoder(.json(dateDecodingStrategy: .iso8601))
+                .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator))
+                .auth(enabled: true)
+                .modifyRequest { components, configs in
+                    if let key = HTTPField.Name("x-goog-api-key") {
+                        components.headers[key] = apiKey
+                    }
+                }
         }
     }
 }

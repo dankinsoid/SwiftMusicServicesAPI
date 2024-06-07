@@ -4,8 +4,9 @@ import SwiftAPIClient
 
 extension YouTube {
 
-    public struct OAuth2 {
+    public final class OAuth2 {
 
+        package var onLogin: ((Result<YTMO.OAuthToken, Swift.Error>) -> Void)?
         public let clientID: String
         public let clientSecret: String
         public let redirectURI: String
@@ -56,8 +57,8 @@ extension YouTube {
         ///   - loginHint: If your application knows which user is trying to authenticate, it can use this parameter to provide a hint to the Google Authentication Server.
         ///   The server uses the hint to simplify the login flow either by prefilling the email field in the sign-in form or by selecting the appropriate multi-login session.
         ///   Set the parameter value to an email address or sub identifier, which is equivalent to the user's Google ID.
-        ///  - prompt: A list of prompts to present the user. If you don't specify this parameter, the user will be prompted only the first time your project requests access.
-        ///  See [Prompting re-consent](https://developers.google.com/identity/protocols/oauth2/openid-connect#re-consent) for more information.
+        ///   - prompt: A list of prompts to present the user. If you don't specify this parameter, the user will be prompted only the first time your project requests access.
+        ///   See [Prompting re-consent](https://developers.google.com/identity/protocols/oauth2/openid-connect#re-consent) for more information.
         public func authURL(
             responseType: String = "code",
             scope: YouTube.Scope,
@@ -90,7 +91,7 @@ extension YouTube {
         
         /// - Returns: An auth code.
         /// - Throws: ``YouTube.OAuth.Error``
-        public static func codeFrom(redirected url: String) throws -> String {
+        public func codeFrom(redirected url: String) throws -> String {
             if url.contains("?code=") {
                 return url.components(separatedBy: "?code=")[1]
             } else if url.contains("?error=") {
@@ -100,21 +101,28 @@ extension YouTube {
             }
         }
 
+        @discardableResult
         public func token(code: String, cache: SecureCacheService) async throws -> YTMO.OAuthToken {
-            let result: YTMO.OAuthToken = try await client("token")
-                .body(
-                    YTMO.TokenRequest(
-                        clientId: clientID,
-                        clientSecret: clientSecret,
-                        code: code,
-                        redirectUri: redirectURI
+            do {
+                let result: YTMO.OAuthToken = try await client("token")
+                    .body(
+                        YTMO.TokenRequest(
+                            clientId: clientID,
+                            clientSecret: clientSecret,
+                            code: code,
+                            redirectUri: redirectURI
+                        )
                     )
-                )
-                .post()
-            try? await cache.save(result.accessToken, for: .accessToken)
-            try? await cache.save(result.refreshToken, for: .refreshToken)
-            try? await cache.save(Date(timeIntervalSinceNow: result.expiresIn), for: .expiryDate)
-            return result
+                    .post()
+                try? await cache.save(result.accessToken, for: .accessToken)
+                try? await cache.save(result.refreshToken, for: .refreshToken)
+                try? await cache.save(Date(timeIntervalSinceNow: result.expiresIn), for: .expiryDate)
+                onLogin?(.success(result))
+                return result
+            } catch {
+                onLogin?(.failure(error))
+                throw error
+            }
         }
 
         public func refreshToken(_ refreshToken: String) async throws -> YTMO.OAuthRefreshedToken {

@@ -52,6 +52,10 @@ let package = Package(
             name: "YouTubeMusicAPI",
             targets: ["YouTubeMusicAPI"]
         ),
+        .library(
+            name: "YouTubeLogin",
+            targets: ["YouTubeLogin"]
+        ),
 	],
 	dependencies: [
 		.package(url: "https://github.com/BinaryBirds/swift-http.git", from: "1.2.2"),
@@ -150,6 +154,10 @@ let package = Package(
             dependencies: [
                 "SwiftMusicServicesApi",
             ]
+        ),
+        .target(
+            name: "YouTubeLogin",
+            dependencies: [.target(name: "YouTubeMusicAPI")]
         ),
 	]
 )
