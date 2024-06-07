@@ -2,7 +2,7 @@ import SwiftMusicServicesApi
 import SwiftAPIClient
 import Foundation
 
-public extension YouTube.Music.API {
+public extension YouTube.API {
     
     var playlists: Playlists {
         Playlists(client: client("playlists"))
@@ -13,7 +13,7 @@ public extension YouTube.Music.API {
     }
 }
 
-extension YouTube.Music.API.Playlists {
+extension YouTube.API.Playlists {
 
     /// Returns a collection of playlists that match the API request parameters.
     /// For example, you can retrieve all playlists that the authenticated user owns, or you can retrieve one or more playlists by their unique IDs.
@@ -42,10 +42,10 @@ extension YouTube.Music.API.Playlists {
         hl: String? = nil,
         onBehalfOfContentOwner: String? = nil,
         onBehalfOfContentOwnerChannel: String? = nil,
-        part: [YTMO.Playlist.CodingKeys],
+        part: [YTO.Playlist.CodingKeys],
         limit: Int? = nil,
         pageToken: String? = nil
-    ) -> YTPaging<YTMO.Playlist> {
+    ) -> YTPaging<YTO.Playlist> {
         let filterParams = filter.params
         return YTPaging(
             client: client.query([
@@ -78,7 +78,7 @@ extension YouTube.Music.API.Playlists {
     }
 }
 
-extension YouTube.Music.API.Playlists {
+extension YouTube.API.Playlists {
     
     /// Creates a playlist.
     ///
@@ -109,13 +109,13 @@ extension YouTube.Music.API.Playlists {
     public func insert(
         title: String,
         description: String? = nil,
-        privacyStatus: YTMO.PrivacyStatus? = nil,
+        privacyStatus: YTO.PrivacyStatus? = nil,
         defaultLanguage: String? = nil,
-        localizations: [String: YTMO.Localization]? = nil,
+        localizations: [String: YTO.Localization]? = nil,
         onBehalfOfContentOwner: String? = nil,
         onBehalfOfContentOwnerChannel: String? = nil,
-        part: [YTMO.Playlist.CodingKeys]
-    ) async throws -> YTMO.Playlist {
+        part: [YTO.Playlist.CodingKeys]
+    ) async throws -> YTO.Playlist {
         try await client
             .query([
                 "part": part,
@@ -123,8 +123,8 @@ extension YouTube.Music.API.Playlists {
                 "onBehalfOfContentOwnerChannel": onBehalfOfContentOwnerChannel
             ])
             .body(
-                YTMO.Playlist(
-                    snippet: YTMO.Playlist.Snippet(
+                YTO.Playlist(
+                    snippet: YTO.Playlist.Snippet(
                         title: title,
                         description: description,
                         defaultLanguage: defaultLanguage
@@ -139,7 +139,7 @@ extension YouTube.Music.API.Playlists {
     }
 }
 
-extension YouTube.Music.API.Playlists {
+extension YouTube.API.Playlists {
 
     /// Modifies a playlist. For example, you could change a playlist's title, description, or privacy status.
     ///
@@ -157,10 +157,10 @@ extension YouTube.Music.API.Playlists {
     ///   - part: The part parameter specifies a comma-separated list of one or more playlist resource properties that the API response will include.
     @discardableResult
     public func update(
-        playlist: YTMO.Playlist,
+        playlist: YTO.Playlist,
         onBehalfOfContentOwner: String? = nil,
-        part: [YTMO.Playlist.CodingKeys]
-    ) async throws -> YTMO.Playlist {
+        part: [YTO.Playlist.CodingKeys]
+    ) async throws -> YTO.Playlist {
         try await update(
             id: playlist.id.unwrap(throwing: AnyError("id must be provided")),
             title: playlist.snippet.unwrap(throwing: AnyError("title must be provided")).title,
@@ -197,21 +197,21 @@ extension YouTube.Music.API.Playlists {
         id: String,
         title: String,
         description: String? = nil,
-        privacyStatus: YTMO.PrivacyStatus? = nil,
+        privacyStatus: YTO.PrivacyStatus? = nil,
         defaultLanguage: String? = nil,
-        localizations: [String: YTMO.Localization]? = nil,
+        localizations: [String: YTO.Localization]? = nil,
         onBehalfOfContentOwner: String? = nil,
-        part: [YTMO.Playlist.CodingKeys]
-    ) async throws -> YTMO.Playlist {
+        part: [YTO.Playlist.CodingKeys]
+    ) async throws -> YTO.Playlist {
         try await client
             .query([
                 "part": part,
                 "onBehalfOfContentOwner": onBehalfOfContentOwner
             ])
             .body(
-                YTMO.Playlist(
+                YTO.Playlist(
                     id: id,
-                    snippet: YTMO.Playlist.Snippet(
+                    snippet: YTO.Playlist.Snippet(
                         title: title,
                         description: description,
                         defaultLanguage: defaultLanguage
@@ -226,7 +226,7 @@ extension YouTube.Music.API.Playlists {
     }
 }
 
-extension YouTube.Music.API.Playlists {
+extension YouTube.API.Playlists {
 
     /// Deletes a playlist.
     ///
@@ -254,7 +254,7 @@ extension YouTube.Music.API.Playlists {
     }
 }
 
-extension YouTube.Music.Objects {
+extension YouTube.Objects {
 
     public struct Playlist: Codable, Equatable {
 
@@ -263,7 +263,7 @@ extension YouTube.Music.Objects {
         public var contentDetails: ContentDetails?
         public var player: Player?
         public var status: Status?
-        public var localizations: [String: YTMO.Localization]?
+        public var localizations: [String: YTO.Localization]?
 
         public enum CodingKeys: String, CodingKey, CaseIterable, Codable {
             case id
@@ -274,7 +274,7 @@ extension YouTube.Music.Objects {
             case snippet
         }
         
-        public init(id: String? = nil, snippet: Snippet? = nil, contentDetails: ContentDetails? = nil, player: Player? = nil, status: Status? = nil, localizations: [String: YTMO.Localization]? = nil) {
+        public init(id: String? = nil, snippet: Snippet? = nil, contentDetails: ContentDetails? = nil, player: Player? = nil, status: Status? = nil, localizations: [String: YTO.Localization]? = nil) {
             self.id = id
             self.snippet = snippet
             self.contentDetails = contentDetails
@@ -289,12 +289,12 @@ extension YouTube.Music.Objects {
             public var channelId: String?
             public var title: String
             public var description: String?
-            public var thumbnails: YTMO.Thumbnails?
+            public var thumbnails: YTO.Thumbnails?
             public var channelTitle: String?
-            public var localized: YTMO.Localization?
+            public var localized: YTO.Localization?
             public var defaultLanguage: String?
     
-            public init(publishedAt: Date? = nil, channelId: String? = nil, title: String, description: String? = nil, thumbnails: YTMO.Thumbnails? = nil, channelTitle: String? = nil, localized: YTMO.Localization? = nil, defaultLanguage: String? = nil) {
+            public init(publishedAt: Date? = nil, channelId: String? = nil, title: String, description: String? = nil, thumbnails: YTO.Thumbnails? = nil, channelTitle: String? = nil, localized: YTO.Localization? = nil, defaultLanguage: String? = nil) {
                 self.publishedAt = publishedAt
                 self.channelId = channelId
                 self.title = title
@@ -308,9 +308,9 @@ extension YouTube.Music.Objects {
         
         public struct Status: Codable, Equatable {
 
-            public var privacyStatus: YTMO.PrivacyStatus
+            public var privacyStatus: YTO.PrivacyStatus
             
-            public init(privacyStatus: YTMO.PrivacyStatus) {
+            public init(privacyStatus: YTO.PrivacyStatus) {
                 self.privacyStatus = privacyStatus
             }
         }

@@ -1,6 +1,6 @@
 import Foundation
 
-extension YTMO {
+extension YTO {
 
     public struct Localization: Codable, Equatable {
         

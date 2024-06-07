@@ -1,6 +1,6 @@
 import Foundation
 
-extension YTMO {
+extension YTO {
     
     public struct ErrorResponse: Codable, Equatable, LocalizedError, CustomStringConvertible {
 

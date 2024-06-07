@@ -6,8 +6,8 @@ public enum YouTube {
     public enum Objects {}
 }
 
-public typealias YTM = YouTube
-public typealias YTMO = YouTube.Objects
+public typealias YT = YouTube
+public typealias YTO = YouTube.Objects
 
 extension YouTube {
 
@@ -40,7 +40,7 @@ extension YouTube {
                 .bodyDecoder(.json(dateDecodingStrategy: .iso8601))
                 .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator))
                 .auth(enabled: true)
-                .errorDecoder(.decodable(YTMO.ErrorResponse.self))
+                .errorDecoder(.decodable(YTO.ErrorResponse.self))
                 .httpResponseValidator(.statusCode)
                 .modifyRequest { components, configs in
                     if let key = HTTPField.Name("x-goog-api-key") {

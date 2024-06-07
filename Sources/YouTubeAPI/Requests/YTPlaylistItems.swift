@@ -33,11 +33,11 @@ extension YouTube.API.PlaylistItems {
     public func list(
         filter: Filter,
         videoId: String? = nil,
-        part: [YTMO.PlaylistItem.CodingKeys],
+        part: [YTO.PlaylistItem.CodingKeys],
         onBehalfOfContentOwner: String? = nil,
         limit: Int? = nil,
         pageToken: String? = nil
-    ) -> YTPaging<YTMO.PlaylistItem> {
+    ) -> YTPaging<YTO.PlaylistItem> {
         YTPaging(
             client: client.query([
                 "videoId": videoId,
@@ -90,22 +90,22 @@ extension YouTube.API.PlaylistItems {
     @discardableResult
     public func insert(
         playlistId: String,
-        resourceId: YTMO.PlaylistItem.Snippet.ResourceId,
+        resourceId: YTO.PlaylistItem.Snippet.ResourceId,
         position: UInt? = nil,
         startAt: String? = nil,
         endAt: String? = nil,
         note: String? = nil,
         onBehalfOfContentOwner: String? = nil,
-        part: [YTMO.PlaylistItem.CodingKeys]
-    ) async throws -> YTMO.PlaylistItem {
+        part: [YTO.PlaylistItem.CodingKeys]
+    ) async throws -> YTO.PlaylistItem {
         try await client
             .query([
                 "part": part,
                 "onBehalfOfContentOwner": onBehalfOfContentOwner
             ])
             .body(
-                YTMO.PlaylistItem(
-                    snippet: YTMO.PlaylistItem.Snippet(
+                YTO.PlaylistItem(
+                    snippet: YTO.PlaylistItem.Snippet(
                         playlistId: playlistId,
                         position: position,
                         resourceId: resourceId
@@ -136,10 +136,10 @@ extension YouTube.API.PlaylistItems {
     ///   - part: The part parameter specifies a comma-separated list of one or more playlist resource properties that the API response will include.
     @discardableResult
     public func insert(
-        _ item: YTMO.PlaylistItem,
+        _ item: YTO.PlaylistItem,
         onBehalfOfContentOwner: String? = nil,
-        part: [YTMO.PlaylistItem.CodingKeys]
-    ) async throws -> YTMO.PlaylistItem {
+        part: [YTO.PlaylistItem.CodingKeys]
+    ) async throws -> YTO.PlaylistItem {
         try await insert(
             playlistId: item.snippet.unwrap(throwing: AnyError("snippet.playlistId must be specified")).playlistId,
             resourceId: item.snippet.unwrap(throwing: AnyError("snippet.resourceId must be specified")).resourceId,
@@ -171,10 +171,10 @@ extension YouTube.API.PlaylistItems {
     ///   - part: The part parameter specifies a comma-separated list of one or more playlist resource properties that the API response will include.
     @discardableResult
     public func update(
-        _ item: YTMO.PlaylistItem,
+        _ item: YTO.PlaylistItem,
         onBehalfOfContentOwner: String? = nil,
-        part: [YTMO.PlaylistItem.CodingKeys]
-    ) async throws -> YTMO.Playlist {
+        part: [YTO.PlaylistItem.CodingKeys]
+    ) async throws -> YTO.PlaylistItem {
         try await update(
             id: item.id.unwrap(throwing: AnyError("id must be specified")),
             playlistId: item.snippet.unwrap(throwing: AnyError("snippet.playlistId must be specified")).playlistId,
@@ -212,23 +212,23 @@ extension YouTube.API.PlaylistItems {
     public func update(
         id: String,
         playlistId: String,
-        resourceId: YTMO.PlaylistItem.Snippet.ResourceId,
+        resourceId: YTO.PlaylistItem.Snippet.ResourceId,
         position: UInt? = nil,
         startAt: String? = nil,
         endAt: String? = nil,
         note: String? = nil,
         onBehalfOfContentOwner: String? = nil,
-        part: [YTMO.PlaylistItem.CodingKeys]
-    ) async throws -> YTMO.Playlist {
+        part: [YTO.PlaylistItem.CodingKeys]
+    ) async throws -> YTO.PlaylistItem {
         try await client
             .query([
                 "part": part,
                 "onBehalfOfContentOwner": onBehalfOfContentOwner
             ])
             .body(
-                YTMO.PlaylistItem(
+                YTO.PlaylistItem(
                     id: id,
-                    snippet: YTMO.PlaylistItem.Snippet(
+                    snippet: YTO.PlaylistItem.Snippet(
                         playlistId: playlistId,
                         position: position,
                         resourceId: resourceId
@@ -280,7 +280,7 @@ public extension YouTube.Objects {
         public var id: String?
         public var snippet: Snippet?
         public var contentDetails: ContentDetails?
-        public var status: YTMO.PrivacyStatus?
+        public var status: YTO.PrivacyStatus?
 
         public enum CodingKeys: String, CodingKey, Codable, Hashable {
             case id
@@ -289,7 +289,7 @@ public extension YouTube.Objects {
             case status
         }
         
-        public init(id: String? = nil, snippet: Snippet? = nil, contentDetails: ContentDetails? = nil, status: YTMO.PrivacyStatus? = nil) {
+        public init(id: String? = nil, snippet: Snippet? = nil, contentDetails: ContentDetails? = nil, status: YTO.PrivacyStatus? = nil) {
             self.id = id
             self.snippet = snippet
             self.contentDetails = contentDetails
@@ -302,7 +302,7 @@ public extension YouTube.Objects {
             public var channelId: String?
             public var title: String?
             public var description: String?
-            public var thumbnails: YTMO.Thumbnails?
+            public var thumbnails: YTO.Thumbnails?
             public var channelTitle: String?
             public var videoOwnerChannelTitle: String?
             public var videoOwnerChannelId: String?
@@ -310,7 +310,7 @@ public extension YouTube.Objects {
             public var position: UInt?
             public var resourceId: ResourceId
             
-            public init(publishedAt: Date? = nil, channelId: String? = nil, title: String? = nil, description: String? = nil, thumbnails: YTMO.Thumbnails? = nil, channelTitle: String? = nil, videoOwnerChannelTitle: String? = nil, videoOwnerChannelId: String? = nil, playlistId: String, position: UInt? = nil, resourceId: ResourceId) {
+            public init(publishedAt: Date? = nil, channelId: String? = nil, title: String? = nil, description: String? = nil, thumbnails: YTO.Thumbnails? = nil, channelTitle: String? = nil, videoOwnerChannelTitle: String? = nil, videoOwnerChannelId: String? = nil, playlistId: String, position: UInt? = nil, resourceId: ResourceId) {
                 self.publishedAt = publishedAt
                 self.channelId = channelId
                 self.title = title

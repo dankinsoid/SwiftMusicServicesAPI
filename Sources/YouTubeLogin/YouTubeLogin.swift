@@ -13,9 +13,9 @@ extension YouTube.OAuth2 {
     ///   - url: url to handle.
     ///   - completion: Returns an optional error or nil if successful.
     /// - Returns: Whether or not the URL was handled.
-    public func applicationOpenURL(_ url: URL, cache: SecureCacheService = .youTube, completion block: @escaping (Result<YTMO.OAuthToken, Swift.Error>) -> Void = { _ in }) -> Bool {
+    public func applicationOpenURL(_ url: URL, cache: SecureCacheService = .youTube, completion block: @escaping (Result<YTO.OAuthToken, Swift.Error>) -> Void = { _ in }) -> Bool {
         let onLogin = onLogin
-        let completion: (Result<YTMO.OAuthToken, Swift.Error>) -> Void = { result in
+        let completion: (Result<YTO.OAuthToken, Swift.Error>) -> Void = { result in
             DispatchQueue.main.async {
                 block(result)
                 onLogin?(result)

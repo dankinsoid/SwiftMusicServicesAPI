@@ -6,7 +6,7 @@ extension YouTube {
 
     public final class OAuth2 {
 
-        package var onLogin: ((Result<YTMO.OAuthToken, Swift.Error>) -> Void)?
+        package var onLogin: ((Result<YTO.OAuthToken, Swift.Error>) -> Void)?
         public let clientID: String
         public let clientSecret: String
         public let redirectURI: String
@@ -62,12 +62,12 @@ extension YouTube {
         public func authURL(
             responseType: String = "code",
             scope: YouTube.Scope,
-            accessType: YouTube.Music.Objects.AccessType? = .offline,
+            accessType: YouTube.Objects.AccessType? = .offline,
             state: String?,
             includeGrantedScopes: Bool? = nil,
             enableGranularConsent: Bool? = nil,
             loginHint: String? = nil,
-            prompt: [YouTube.Music.Objects.Prompt]? = nil
+            prompt: [YouTube.Objects.Prompt]? = nil
         ) throws -> URL {
             try APIClient()
                 .url("https://accounts.google.com/o/oauth2/v2/auth")
@@ -102,11 +102,11 @@ extension YouTube {
         }
 
         @discardableResult
-        public func token(code: String, cache: SecureCacheService) async throws -> YTMO.OAuthToken {
+        public func token(code: String, cache: SecureCacheService) async throws -> YTO.OAuthToken {
             do {
-                let result: YTMO.OAuthToken = try await client("token")
+                let result: YTO.OAuthToken = try await client("token")
                     .body(
-                        YTMO.TokenRequest(
+                        YTO.TokenRequest(
                             clientId: clientID,
                             clientSecret: clientSecret,
                             code: code,
@@ -125,10 +125,10 @@ extension YouTube {
             }
         }
 
-        public func refreshToken(_ refreshToken: String) async throws -> YTMO.OAuthRefreshedToken {
+        public func refreshToken(_ refreshToken: String) async throws -> YTO.OAuthRefreshedToken {
             try await client("token")
                 .body(
-                    YTMO.TokenRequest(
+                    YTO.TokenRequest(
                         clientId: clientID,
                         clientSecret: clientSecret,
                         refreshToken: refreshToken
@@ -177,7 +177,7 @@ extension YouTube.OAuth2 {
     }
 }
 
-extension YouTube.Music.Objects {
+extension YouTube.Objects {
     
     public struct OAuthToken: Codable, Hashable {
         
@@ -236,7 +236,7 @@ extension YouTube.Music.Objects {
     }
 }
 
-public extension YouTube.Music.Objects {
+public extension YouTube.Objects {
 
     enum AccessType: String, Hashable, Codable {
         case offline, online

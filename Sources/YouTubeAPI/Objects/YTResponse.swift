@@ -1,7 +1,7 @@
 import Foundation
 import SwiftMusicServicesApi
 
-extension YTMO {
+extension YTO {
 
     public struct Response<T: Decodable>: Decodable {
 

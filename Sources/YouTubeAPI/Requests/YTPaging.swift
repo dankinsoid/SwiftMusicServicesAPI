@@ -48,7 +48,7 @@ public struct YTPaging<Output: Decodable>: AsyncSequence {
                     "pageToken": paging.pageToken,
                     "maxResults": paging.setMaxResults ? Swift.min(50, Swift.max(0, paging.limit)) : nil
                 ])
-                .call(.http, as: .decodable(YTMO.Response<Output>.self))
+                .call(.http, as: .decodable(YTO.Response<Output>.self))
     
             let newLimit = paging.limit - result.items.count
             paging.limit = newLimit
