@@ -64,13 +64,13 @@ extension YouTube.Objects {
             public var thumbnails: YTO.Thumbnails?
             public var channelTitle: String?
             public var tags: [String]?
-            public var categoryId: String?
+            public var categoryId: YTO.VideoCategoryID?
             public var liveBroadcastContent: String?
             public var defaultLanguage: String?
             public var localized: YTO.Localization?
             public var defaultAudioLanguage: String?
             
-            public init(publishedAt: Date? = nil, channelId: String? = nil, title: String? = nil, description: String? = nil, thumbnails: YTO.Thumbnails? = nil, channelTitle: String? = nil, tags: [String]? = nil, categoryId: String? = nil, liveBroadcastContent: String? = nil, defaultLanguage: String? = nil, localized: YTO.Localization? = nil, defaultAudioLanguage: String? = nil) {
+            public init(publishedAt: Date? = nil, channelId: String? = nil, title: String? = nil, description: String? = nil, thumbnails: YTO.Thumbnails? = nil, channelTitle: String? = nil, tags: [String]? = nil, categoryId: YTO.VideoCategoryID? = nil, liveBroadcastContent: String? = nil, defaultLanguage: String? = nil, localized: YTO.Localization? = nil, defaultAudioLanguage: String? = nil) {
                 self.publishedAt = publishedAt
                 self.channelId = channelId
                 self.title = title
