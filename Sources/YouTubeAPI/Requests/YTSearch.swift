@@ -108,7 +108,7 @@ extension YouTube.API.Search {
         topicId: String? = nil,
         type: String? = nil,
         videoCaption: YTO.VideoCaption? = nil,
-        videoCategoryId: String? = nil,
+        videoCategoryId: YTO.VideoCategoryID? = nil,
         videoDefinition: YTO.VideoDefinition? = nil,
         videoDimension: YTO.VideoDimension? = nil,
         videoDuration: YTO.VideoDuration? = nil,
