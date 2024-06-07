@@ -2,7 +2,7 @@
 import UIKit
 import Logging
 import SafariServices
-import YouTubeMusicAPI
+import YouTubeAPI
 import SwiftAPIClient
 
 extension YouTube.OAuth2 {

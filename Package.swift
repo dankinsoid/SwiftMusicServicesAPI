@@ -49,8 +49,8 @@ let package = Package(
 			targets: ["AmazonMusicAPI"]
 		),
         .library(
-            name: "YouTubeMusicAPI",
-            targets: ["YouTubeMusicAPI"]
+            name: "YouTubeAPI",
+            targets: ["YouTubeAPI"]
         ),
         .library(
             name: "YouTubeLogin",
@@ -150,14 +150,14 @@ let package = Package(
             ]
         ),
         .target(
-            name: "YouTubeMusicAPI",
+            name: "YouTubeAPI",
             dependencies: [
                 "SwiftMusicServicesApi",
             ]
         ),
         .target(
             name: "YouTubeLogin",
-            dependencies: [.target(name: "YouTubeMusicAPI")]
+            dependencies: [.target(name: "YouTubeAPI")]
         ),
 	]
 )

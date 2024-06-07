@@ -3,16 +3,14 @@ import SwiftMusicServicesApi
 import SwiftAPIClient
 
 public enum YouTube {
-    public enum Music {
-        public enum Objects {}
-    }
+    public enum Objects {}
 }
 
-public typealias YTM = YouTube.Music
-public typealias YTMO = YouTube.Music.Objects
+public typealias YTM = YouTube
+public typealias YTMO = YouTube.Objects
 
-extension YouTube.Music {
-    
+extension YouTube {
+
     public struct API {
 
         public let client: APIClient
@@ -42,6 +40,8 @@ extension YouTube.Music {
                 .bodyDecoder(.json(dateDecodingStrategy: .iso8601))
                 .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator))
                 .auth(enabled: true)
+                .errorDecoder(.decodable(YTMO.ErrorResponse.self))
+                .httpResponseValidator(.statusCode)
                 .modifyRequest { components, configs in
                     if let key = HTTPField.Name("x-goog-api-key") {
                         components.headers[key] = apiKey

@@ -6,18 +6,21 @@ public struct YTPaging<Output: Decodable>: AsyncSequence {
     public typealias Element = [Output]
 
     public let client: APIClient
-    public var limit: Int?
+    public var limit: Int
     public var pageToken: String?
+    let setMaxResults: Bool
 
     public init(
         of type: Output.Type = Output.self,
         client: APIClient,
-        limit: Int? = nil,
+        limit: Int?,
+        setMaxResults: Bool = true,
         pageToken: String? = nil
     ) {
         self.client = client
-        self.limit = limit
+        self.limit = limit ?? .max
         self.pageToken = pageToken
+        self.setMaxResults = setMaxResults
     }
 
     public func first() async throws -> [Output] {
@@ -33,23 +36,29 @@ public struct YTPaging<Output: Decodable>: AsyncSequence {
 
         var paging: YTPaging<Output>?
 
+        public var hasMore: Bool { (paging?.limit ?? 0) > 0 }
+        public var nextPageToken: String? { paging?.pageToken }
+        private(set) public var prevPageToken: String?
+
         public mutating func next() async throws -> [Output]? {
-            guard var paging else { return nil }
+            guard var paging, paging.limit > 0 else { return nil }
     
             let result = try await paging.client
                 .query([
                     "pageToken": paging.pageToken,
-                    "maxResults": Swift.min(50, Swift.max(0, paging.limit ?? .max))
+                    "maxResults": paging.setMaxResults ? Swift.min(50, Swift.max(0, paging.limit)) : nil
                 ])
                 .call(.http, as: .decodable(YTMO.Response<Output>.self))
     
-            let newLimit = paging.limit.map { $0 - result.items.count }
+            let newLimit = paging.limit - result.items.count
             paging.limit = newLimit
-            if let pageToken = result.nextPageToken, (newLimit ?? .max) > 0 {
+            if let pageToken = result.nextPageToken, newLimit > 0 {
                 paging.pageToken = pageToken
                 paging.limit = newLimit
+                prevPageToken = result.prevPageToken
                 self.paging = paging
             } else {
+                prevPageToken = paging.pageToken
                 self.paging = nil
             }
             return result.items

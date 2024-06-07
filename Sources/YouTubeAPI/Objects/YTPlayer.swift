@@ -1,6 +1,6 @@
 import Foundation
 
-extension YouTube.Music.Objects {
+extension YouTube.Objects {
     
     public struct Player: Codable, Hashable {
         public var embedHtml: String

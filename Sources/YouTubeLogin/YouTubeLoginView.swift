@@ -1,7 +1,7 @@
 #if canImport(SafariServices) && canImport(UIKit) && canImport(SwiftUI)
 	import Combine
 	import Foundation
-	import YouTubeMusicAPI
+	import YouTubeAPI
 	import SwiftUI
 
 /// Google OAuth 2.0 view
@@ -39,12 +39,12 @@ public struct YouTubeLoginView: View {
         oauth: YouTube.OAuth2,
         responseType: String = "code",
         scope: YouTube.Scope,
-        accessType: YouTube.Music.Objects.AccessType? = .offline,
+        accessType: YouTube.Objects.AccessType? = .offline,
         state: String?,
         includeGrantedScopes: Bool? = nil,
         enableGranularConsent: Bool? = nil,
         loginHint: String? = nil,
-        prompt: [YouTube.Music.Objects.Prompt]? = nil
+        prompt: [YouTube.Objects.Prompt]? = nil
     ) {
         // authURL should never throw
         url = try? oauth.authURL(

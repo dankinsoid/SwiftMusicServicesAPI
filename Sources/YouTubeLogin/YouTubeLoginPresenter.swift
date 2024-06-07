@@ -1,7 +1,7 @@
 #if canImport(SafariServices) && canImport(UIKit)
 import Foundation
 import SafariServices
-import YouTubeMusicAPI
+import YouTubeAPI
 import UIKit
 
 extension YouTube.OAuth2 {
@@ -37,12 +37,12 @@ extension YouTube.OAuth2 {
     public func loginController(
         responseType: String = "code",
         scope: YouTube.Scope,
-        accessType: YouTube.Music.Objects.AccessType? = .offline,
+        accessType: YouTube.Objects.AccessType? = .offline,
         state: String?,
         includeGrantedScopes: Bool? = nil,
         enableGranularConsent: Bool? = nil,
         loginHint: String? = nil,
-        prompt: [YouTube.Music.Objects.Prompt]? = nil,
+        prompt: [YouTube.Objects.Prompt]? = nil,
         completion: @escaping (Result<YTMO.OAuthToken, Swift.Error>) -> Void = { _ in }
     ) -> UIViewController {
         do {
