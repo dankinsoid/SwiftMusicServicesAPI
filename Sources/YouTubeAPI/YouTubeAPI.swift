@@ -14,15 +14,17 @@ extension YouTube {
     public struct API {
 
         public let client: APIClient
+        public let cache: SecureCacheService
 
         public init(
+            client: APIClient = APIClient(),
             clientID: String,
             clientSecret: String,
             redirectURI: String,
             apiKey: String,
             cache: SecureCacheService
         ) {
-            self.client = APIClient(string: "https://www.googleapis.com/youtube/v3")
+            self.client = client.url("https://www.googleapis.com/youtube/v3")
                 .tokenRefresher(cacheService: cache) { refreshToken, _, _ in
                     let result = try await YouTube.OAuth2(
                         clientID: clientID,
@@ -47,6 +49,40 @@ extension YouTube {
                         components.headers[key] = apiKey
                     }
                 }
+        }
+        
+        public init(
+            client: APIClient,
+            clientID: String,
+            clientSecret: String,
+            redirectURI: String,
+            apiKey: String,
+            token: String? = nil,
+            refreshToken: String? = nil,
+            expiryIn: Double? = nil
+        ) {
+            let cache = MockSecureCacheService([
+                .accessToken: token,
+                .refreshToken: refreshToken,
+            ].compactMapValues { $0 })
+            
+            self.init(
+                client: client,
+                clientID: clientID,
+                clientSecret: clientSecret,
+                cache: cache
+            )
+            if let expiryIn {
+                Task {
+                    try await self.cache.save(Date(timeIntervalSinceNow: expiryIn), for: .expiryDate)
+                }
+            }
+        }
+
+        public func update(accessToken: String, refreshToken: String, expiresIn: Double?) async {
+            try? await cache.save(accessToken, for: .accessToken)
+            try? await cache.save(refreshToken, for: .refreshToken)
+            try? await cache.save(expiresIn.map { Date(timeIntervalSinceNow: $0) }, for: .expiryDate)
         }
     }
 }
