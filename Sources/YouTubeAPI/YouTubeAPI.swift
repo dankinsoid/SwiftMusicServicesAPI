@@ -82,7 +82,7 @@ extension YouTube {
             }
         }
 
-        public func update(accessToken: String, refreshToken: String, expiresIn: Double?) async {
+        public func update(accessToken: String, refreshToken: String?, expiresIn: Double?) async {
             try? await cache.save(accessToken, for: .accessToken)
             try? await cache.save(refreshToken, for: .refreshToken)
             try? await cache.save(expiresIn.map { Date(timeIntervalSinceNow: $0) }, for: .expiryDate)
