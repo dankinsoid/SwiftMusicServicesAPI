@@ -65,7 +65,7 @@ extension YouTube {
         ///   See [Prompting re-consent](https://developers.google.com/identity/protocols/oauth2/openid-connect#re-consent) for more information.
         public func authURL(
             responseType: String = "code",
-            scope: YouTube.Scope,
+            scope: [YouTube.Scope],
             accessType: YouTube.Objects.AccessType? = .offline,
             state: String?,
             includeGrantedScopes: Bool? = nil,
