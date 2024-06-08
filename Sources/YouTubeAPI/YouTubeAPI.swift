@@ -49,6 +49,7 @@ extension YouTube {
                         components.headers[key] = apiKey
                     }
                 }
+            self.cache = cache
         }
         
         public init(
@@ -70,11 +71,13 @@ extension YouTube {
                 client: client,
                 clientID: clientID,
                 clientSecret: clientSecret,
+                redirectURI: redirectURI,
+                apiKey: apiKey,
                 cache: cache
             )
             if let expiryIn {
                 Task {
-                    try await self.cache.save(Date(timeIntervalSinceNow: expiryIn), for: .expiryDate)
+                    try await cache.save(Date(timeIntervalSinceNow: expiryIn), for: .expiryDate)
                 }
             }
         }
