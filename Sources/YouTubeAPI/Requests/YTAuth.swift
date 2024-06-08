@@ -14,6 +14,8 @@ extension YouTube {
         public let client = APIClient(string: "https://oauth2.googleapis.com")
             .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase))
             .bodyDecoder(.json(keyDecodingStrategy: .convertFromSnakeCase))
+            .errorDecoder(.decodable(YTO.ErrorResponse.self))
+            .httpResponseValidator(.statusCode)
 
         /// - Parameters:
         ///   - clientID: The client ID for your application. You can find this value in the API Console Credentials [page](https://console.developers.google.com/apis/credentials).
@@ -185,9 +187,9 @@ extension YouTube.Objects {
         public var expiresIn: Double
         public var tokenType: String
         public var scope: String
-        public var refreshToken: String
+        public var refreshToken: String?
         
-        public init(accessToken: String, expiresIn: Double, tokenType: String, scope: String, refreshToken: String) {
+        public init(accessToken: String, expiresIn: Double, tokenType: String, scope: String, refreshToken: String?) {
             self.accessToken = accessToken
             self.expiresIn = expiresIn
             self.tokenType = tokenType
