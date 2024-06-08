@@ -11,11 +11,7 @@ extension YouTube {
         public let clientSecret: String
         public let redirectURI: String
 
-        public let client = APIClient(string: "https://oauth2.googleapis.com")
-            .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase))
-            .bodyDecoder(.json(keyDecodingStrategy: .convertFromSnakeCase))
-            .errorDecoder(.decodable(YTO.ErrorResponse.self))
-            .httpResponseValidator(.statusCode)
+        public let client: APIClient
 
         /// - Parameters:
         ///   - clientID: The client ID for your application. You can find this value in the API Console Credentials [page](https://console.developers.google.com/apis/credentials).
@@ -25,10 +21,16 @@ extension YouTube {
         ///   If this value doesn't match an authorized redirect URI for the provided client_id you will get a redirect_uri_mismatch error.
         ///   Note that the http or https scheme, case, and trailing slash ('/') must all match.
         public init(
+            client: APIClient = APIClient(),
             clientID: String,
             clientSecret: String,
             redirectURI: String
         ) {
+            self.client = client.url("https://oauth2.googleapis.com")
+                .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase))
+                .bodyDecoder(.json(keyDecodingStrategy: .convertFromSnakeCase))
+                .errorDecoder(.decodable(YTO.ErrorResponse.self))
+                .httpResponseValidator(.statusCode)
             self.clientID = clientID
             self.clientSecret = clientSecret
             self.redirectURI = redirectURI
