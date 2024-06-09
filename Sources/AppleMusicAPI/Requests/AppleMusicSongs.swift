@@ -3,7 +3,7 @@ import Foundation
 public extension AppleMusic.API {
 
 	func mySongs(
-				include: [AppleMusic.Objects.Include]? = [.catalog],
+        include: [AppleMusic.Objects.Include]? = [.catalog],
         limit: Int? = nil,
         offset: Int = 0
     ) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
@@ -30,6 +30,17 @@ public extension AppleMusic.API {
 			.first
 			.unwrap(throwing: "No equivalent song found for \(id) in \(storefront)")
 	}
+    
+    func add(ids: [String], type: AppleMusic.TrackType, language: String? = nil) async throws {
+        var ids = ids
+        let limit = 150
+        while !ids.isEmpty {
+            try await client.path("v1", "me", "library", "songs")
+                .query(["ids[\(type.rawValue)]": Array(ids.prefix(limit)), "l": language])
+                .post()
+            ids.removeFirst(min(limit, ids.count))
+        }
+    }
 
 	struct MySongsInput: Encodable {
 		public var include: [AppleMusic.Objects.Include]?
