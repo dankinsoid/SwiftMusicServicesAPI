@@ -59,7 +59,7 @@ extension YouTube.API.PlaylistItems {
         
         public var params: (String, Encodable) {
             switch self {
-            case let .playlist(id): return ("playlist", id)
+            case let .playlist(id): return ("playlistId", id)
             case let .id(id): return ("id", id)
             }
         }

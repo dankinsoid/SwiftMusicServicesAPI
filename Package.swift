@@ -159,5 +159,11 @@ let package = Package(
             name: "YouTubeLogin",
             dependencies: [.target(name: "YouTubeAPI")]
         ),
+        .testTarget(
+            name: "YouTubeAPITests",
+            dependencies: [
+                .target(name: "YouTubeAPI")
+            ]
+        ),
 	]
 )
