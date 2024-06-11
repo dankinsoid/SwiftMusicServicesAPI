@@ -32,6 +32,8 @@ extension Amazon.Music {
                 } auth: { token in
                     .bearer(token: token)
                 }
+                .errorDecoder(.decodable(Amazon.Objects.Error.self))
+            
             self.cache = cache
         }
         
