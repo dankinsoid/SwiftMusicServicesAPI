@@ -27,6 +27,7 @@ extension YouTube {
             self.client = client.url("https://www.googleapis.com/youtube/v3")
                 .tokenRefresher(cacheService: cache) { refreshToken, _, _ in
                     let result = try await YouTube.OAuth2(
+                        client: client,
                         clientID: clientID,
                         clientSecret: clientSecret,
                         redirectURI: redirectURI
