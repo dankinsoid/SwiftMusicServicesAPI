@@ -288,7 +288,10 @@ private extension YouTube.OAuth2 {
         self.codeVerifier = codeVerifier
         switch method {
         case .S256:
-            guard let data = codeVerifier.data(using: .ascii) else { return nil }
+            guard let data = codeVerifier.data(using: .ascii) else {
+                self.codeVerifier = nil
+                return nil
+            }
             
             let hash = data.sha256()
             let hashData = Data(hash)
@@ -299,10 +302,17 @@ private extension YouTube.OAuth2 {
     }
 
     func generateCodeVerifier() -> String {
-        var bytes = [UInt8](repeating: 0, count: 32)
-        _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
-        let data = Data(bytes)
-        return data.base64URLEncodedString()
+        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+        let length = Int.random(in: 43..<129) // Ensure length is between 43 and 128
+        var codeVerifier = ""
+
+        for _ in 0..<length {
+            if let randomCharacter = characters.randomElement() {
+                codeVerifier.append(randomCharacter)
+            }
+        }
+        
+        return codeVerifier
     }
 }
 
