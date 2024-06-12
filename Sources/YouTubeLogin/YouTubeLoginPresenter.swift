@@ -33,6 +33,8 @@ extension YouTube.OAuth2 {
     ///   Set the parameter value to an email address or sub identifier, which is equivalent to the user's Google ID.
     ///   - prompt: A list of prompts to present the user. If you don't specify this parameter, the user will be prompted only the first time your project requests access.
     ///   See [Prompting re-consent](https://developers.google.com/identity/protocols/oauth2/openid-connect#re-consent) for more information.
+    ///   - codeChallengeMethod: Specifies what method was used to encode a `code_verifier` that will be used during authorization code exchange.
+    ///   The only supported values for this parameter are S256 or plain. When nil PCKE auth is not used.   .
     ///   - completion: A login completion
     public func loginController(
         responseType: String = "code",
@@ -43,6 +45,7 @@ extension YouTube.OAuth2 {
         enableGranularConsent: Bool? = nil,
         loginHint: String? = nil,
         prompt: [YouTube.Objects.Prompt]? = nil,
+        codeChallengeMethod: YouTube.Objects.CodeChallengeMethod? = nil,
         completion: @escaping (Result<YTO.OAuthToken, Swift.Error>) -> Void = { _ in }
     ) -> UIViewController {
         do {
@@ -54,7 +57,8 @@ extension YouTube.OAuth2 {
                 includeGrantedScopes: includeGrantedScopes,
                 enableGranularConsent: enableGranularConsent,
                 loginHint: loginHint,
-                prompt: prompt
+                prompt: prompt,
+                codeChallengeMethod: codeChallengeMethod
             )
             onLogin = completion
             return SafariViewController(url: url)

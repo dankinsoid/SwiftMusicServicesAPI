@@ -1,6 +1,7 @@
 import Foundation
 import SwiftMusicServicesApi
 import SwiftAPIClient
+import CryptoSwift
 
 extension YouTube {
 
@@ -10,6 +11,7 @@ extension YouTube {
         public let clientID: String
         public let clientSecret: String
         public let redirectURI: String
+        private var codeVerifier: String?
 
         public let client: APIClient
 
@@ -63,6 +65,8 @@ extension YouTube {
         ///   Set the parameter value to an email address or sub identifier, which is equivalent to the user's Google ID.
         ///   - prompt: A list of prompts to present the user. If you don't specify this parameter, the user will be prompted only the first time your project requests access.
         ///   See [Prompting re-consent](https://developers.google.com/identity/protocols/oauth2/openid-connect#re-consent) for more information.
+        ///   - codeChallengeMethod: Specifies what method was used to encode a `code_verifier` that will be used during authorization code exchange.
+        ///   The only supported values for this parameter are S256 or plain. When nil PCKE auth is not used.   .   
         public func authURL(
             responseType: String = "code",
             scope: [YouTube.Scope],
@@ -71,7 +75,8 @@ extension YouTube {
             includeGrantedScopes: Bool? = nil,
             enableGranularConsent: Bool? = nil,
             loginHint: String? = nil,
-            prompt: [YouTube.Objects.Prompt]? = nil
+            prompt: [YouTube.Objects.Prompt]? = nil,
+            codeChallengeMethod: YouTube.Objects.CodeChallengeMethod? = nil
         ) throws -> URL {
             try APIClient()
                 .url("https://accounts.google.com/o/oauth2/v2/auth")
@@ -85,7 +90,8 @@ extension YouTube {
                     "include_granted_scopes": includeGrantedScopes,
                     "enable_granular_consent": enableGranularConsent,
                     "login_hint": loginHint,
-                    "prompt": prompt
+                    "prompt": prompt,
+                    "code_challenge": codeChallengeMethod.map(generateCodeChallenge)
                 ])
                 .queryEncoder(.urlQuery(arrayEncodingStrategy: .separator(" ")))
                 .request()
@@ -114,10 +120,13 @@ extension YouTube {
                             clientId: clientID,
                             clientSecret: clientSecret,
                             code: code,
+                            codeVerifier: codeVerifier,
+                            grantType: "authorization_code",
                             redirectUri: redirectURI
                         )
                     )
                     .post()
+                codeVerifier = nil
                 try? await cache.save(result.accessToken, for: .accessToken)
                 try? await cache.save(result.refreshToken, for: .refreshToken)
                 try? await cache.save(Date(timeIntervalSinceNow: result.expiresIn), for: .expiryDate)
@@ -135,12 +144,18 @@ extension YouTube {
                     YTO.TokenRequest(
                         clientId: clientID,
                         clientSecret: clientSecret,
+                        grantType: "refresh_token",
                         refreshToken: refreshToken
                     )
                 )
                 .post()
         }
     }
+}
+
+public extension SecureCacheServiceKey {
+    
+    static let codeVerifier: SecureCacheServiceKey = "codeVerifier"
 }
 
 private struct ClientSecretMissing: Error {}
@@ -224,36 +239,80 @@ extension YouTube.Objects {
         public var grantType: String
         public var redirectUri: String?
         public var refreshToken: String?
+        public var codeVerifier: String?
         
         public init(
             clientId: String,
             clientSecret: String,
             code: String? = nil,
+            codeVerifier: String? = nil,
+            grantType: String,
             redirectUri: String? = nil,
             refreshToken: String? = nil
         ) {
             self.clientId = clientId
             self.clientSecret = clientSecret
             self.code = code
-            self.grantType = "authorization_code"
+            self.grantType = grantType
             self.redirectUri = redirectUri
             self.refreshToken = refreshToken
+            self.codeVerifier = codeVerifier
         }
     }
 }
 
 public extension YouTube.Objects {
 
-    enum AccessType: String, Hashable, Codable {
+    enum AccessType: String, Hashable, Codable, CaseIterable {
         case offline, online
     }
 
-    enum Prompt: String, Hashable, Codable {
+    enum Prompt: String, Hashable, Codable, CaseIterable {
         /// Do not display any authentication or consent screens. Must not be specified with other values.
         case none
         /// Prompt the user for consent.
         case consent
         /// Prompt the user to select an account.
         case selectAccount = "select_account"
+    }
+
+    enum CodeChallengeMethod: String, Hashable, Codable, CaseIterable {
+        case S256, plain
+    }
+}
+
+private extension YouTube.OAuth2 {
+
+    func generateCodeChallenge(method: YouTube.Objects.CodeChallengeMethod) -> String? {
+        let codeVerifier = generateCodeVerifier()
+        self.codeVerifier = codeVerifier
+        switch method {
+        case .S256:
+            guard let data = codeVerifier.data(using: .ascii) else { return nil }
+            
+            let hash = data.sha256()
+            let hashData = Data(hash)
+            return hashData.base64URLEncodedString()
+        case .plain:
+            return codeVerifier
+        }
+    }
+
+    func generateCodeVerifier() -> String {
+        var bytes = [UInt8](repeating: 0, count: 32)
+        _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
+        let data = Data(bytes)
+        return data.base64URLEncodedString()
+    }
+}
+
+// Extension to encode data to Base64 URL encoded string
+private extension Data {
+
+    func base64URLEncodedString() -> String {
+        self.base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
     }
 }

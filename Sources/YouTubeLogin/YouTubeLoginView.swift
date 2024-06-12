@@ -34,7 +34,9 @@ public struct YouTubeLoginView: View {
     ///   The server uses the hint to simplify the login flow either by prefilling the email field in the sign-in form or by selecting the appropriate multi-login session.
     ///   Set the parameter value to an email address or sub identifier, which is equivalent to the user's Google ID.
     ///   - prompt: A list of prompts to present the user. If you don't specify this parameter, the user will be prompted only the first time your project requests access.
-    ///   See [Prompting re-consent](https://developers.google.com/identity/protocols/oauth2/openid-connect#re-consent) for more information.
+    ///   See [Prompting re-consent](https://developers.google.com/identity/protocols/oauth2/openid-connect#re-consent) for more information
+    ///   - codeChallengeMethod: Specifies what method was used to encode a `code_verifier` that will be used during authorization code exchange.
+    ///   The only supported values for this parameter are S256 or plain. When nil PCKE auth is not used.   .
     public init(
         oauth: YouTube.OAuth2,
         responseType: String = "code",
@@ -44,7 +46,8 @@ public struct YouTubeLoginView: View {
         includeGrantedScopes: Bool? = nil,
         enableGranularConsent: Bool? = nil,
         loginHint: String? = nil,
-        prompt: [YouTube.Objects.Prompt]? = nil
+        prompt: [YouTube.Objects.Prompt]? = nil,
+        codeChallengeMethod: YouTube.Objects.CodeChallengeMethod? = nil
     ) {
         // authURL should never throw
         url = try? oauth.authURL(
@@ -55,7 +58,8 @@ public struct YouTubeLoginView: View {
             includeGrantedScopes: includeGrantedScopes,
             enableGranularConsent: enableGranularConsent,
             loginHint: loginHint,
-            prompt: prompt
+            prompt: prompt,
+            codeChallengeMethod: codeChallengeMethod
         )
     }
 
