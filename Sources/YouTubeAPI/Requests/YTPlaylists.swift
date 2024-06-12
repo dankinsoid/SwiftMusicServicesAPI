@@ -104,7 +104,6 @@ extension YouTube.API.Playlists {
     ///   Finally, the channel that the onBehalfOfContentOwnerChannel parameter value specifies must be linked to the content owner that the onBehalfOfContentOwner parameter specifies.
     ///   This parameter is intended for YouTube content partners that own and manage many different YouTube channels.
     ///   It allows content owners to authenticate once and perform actions on behalf of the channel specified in the parameter value, without having to provide authentication credentials for each separate channel.
-    ///   - part: The part parameter specifies a comma-separated list of one or more playlist resource properties that the API response will include.
     @discardableResult
     public func insert(
         title: String,
@@ -113,10 +112,16 @@ extension YouTube.API.Playlists {
         defaultLanguage: String? = nil,
         localizations: [String: YTO.Localization]? = nil,
         onBehalfOfContentOwner: String? = nil,
-        onBehalfOfContentOwnerChannel: String? = nil,
-        part: [YTO.Playlist.CodingKeys]
+        onBehalfOfContentOwnerChannel: String? = nil
     ) async throws -> YTO.Playlist {
-        try await client
+        var part = ["snippet"]
+        if localizations != nil {
+            part.append("localizations")
+        }
+        if privacyStatus != nil {
+            part.append("status")
+        }
+        return try await client
             .query([
                 "part": part,
                 "onBehalfOfContentOwner": onBehalfOfContentOwner,

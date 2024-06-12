@@ -86,7 +86,6 @@ extension YouTube.API.PlaylistItems {
     ///   The onBehalfOfContentOwner parameter indicates that the request's authorization credentials identify a YouTube CMS user who is acting on behalf of the content owner specified in the parameter value.
     ///   This parameter is intended for YouTube content partners that own and manage many different YouTube channels. It allows content owners to authenticate once and get access to all their video and channel data, without having to provide authentication credentials for each individual channel.
     ///   The CMS account that the user authenticates with must be linked to the specified YouTube content owner.
-    ///   - part: The part parameter specifies a comma-separated list of one or more playlist resource properties that the API response will include.
     @discardableResult
     public func insert(
         playlistId: String,
@@ -95,12 +94,11 @@ extension YouTube.API.PlaylistItems {
         startAt: String? = nil,
         endAt: String? = nil,
         note: String? = nil,
-        onBehalfOfContentOwner: String? = nil,
-        part: [YTO.PlaylistItem.CodingKeys]
+        onBehalfOfContentOwner: String? = nil
     ) async throws -> YTO.PlaylistItem {
         try await client
             .query([
-                "part": part,
+                "part": ["snippet", "contentDetails"],
                 "onBehalfOfContentOwner": onBehalfOfContentOwner
             ])
             .body(
@@ -133,12 +131,10 @@ extension YouTube.API.PlaylistItems {
     ///   The onBehalfOfContentOwner parameter indicates that the request's authorization credentials identify a YouTube CMS user who is acting on behalf of the content owner specified in the parameter value.
     ///   This parameter is intended for YouTube content partners that own and manage many different YouTube channels. It allows content owners to authenticate once and get access to all their video and channel data, without having to provide authentication credentials for each individual channel.
     ///   The CMS account that the user authenticates with must be linked to the specified YouTube content owner.
-    ///   - part: The part parameter specifies a comma-separated list of one or more playlist resource properties that the API response will include.
     @discardableResult
     public func insert(
         _ item: YTO.PlaylistItem,
-        onBehalfOfContentOwner: String? = nil,
-        part: [YTO.PlaylistItem.CodingKeys]
+        onBehalfOfContentOwner: String? = nil
     ) async throws -> YTO.PlaylistItem {
         try await insert(
             playlistId: item.snippet.unwrap(throwing: AnyError("snippet.playlistId must be specified")).playlistId,
@@ -147,8 +143,7 @@ extension YouTube.API.PlaylistItems {
             startAt: item.contentDetails?.startAt,
             endAt: item.contentDetails?.endAt,
             note: item.contentDetails?.note,
-            onBehalfOfContentOwner: onBehalfOfContentOwner,
-            part: part
+            onBehalfOfContentOwner: onBehalfOfContentOwner
         )
     }
 }
