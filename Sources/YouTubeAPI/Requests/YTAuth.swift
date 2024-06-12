@@ -8,7 +8,7 @@ extension YouTube {
 
         package var onLogin: ((Result<YTO.OAuthToken, Swift.Error>) -> Void)?
         public let clientID: String
-        public let clientSecret: String?
+        public let clientSecret: String
         public let redirectURI: String
 
         public let client: APIClient
@@ -23,7 +23,7 @@ extension YouTube {
         public init(
             client: APIClient = APIClient(),
             clientID: String,
-            clientSecret: String?,
+            clientSecret: String,
             redirectURI: String
         ) {
             self.client = client.url("https://oauth2.googleapis.com")
@@ -112,7 +112,7 @@ extension YouTube {
                     .body(
                         YTO.TokenRequest(
                             clientId: clientID,
-                            clientSecret: clientSecret.unwrap(throwing: ClientSecretMissing()),
+                            clientSecret: clientSecret,
                             code: code,
                             redirectUri: redirectURI
                         )
@@ -134,7 +134,7 @@ extension YouTube {
                 .body(
                     YTO.TokenRequest(
                         clientId: clientID,
-                        clientSecret: clientSecret.unwrap(throwing: ClientSecretMissing()),
+                        clientSecret: clientSecret,
                         refreshToken: refreshToken
                     )
                 )
