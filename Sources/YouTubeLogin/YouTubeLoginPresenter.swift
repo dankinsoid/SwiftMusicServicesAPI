@@ -45,7 +45,7 @@ extension YouTube.OAuth2 {
         enableGranularConsent: Bool? = nil,
         loginHint: String? = nil,
         prompt: [YouTube.Objects.Prompt]? = nil,
-        codeChallengeMethod: YouTube.Objects.CodeChallengeMethod? = nil,
+        codeChallengeMethod: CodeChallengeMethod? = nil,
         completion: @escaping (Result<YTO.OAuthToken, Swift.Error>) -> Void = { _ in }
     ) -> UIViewController {
         do {

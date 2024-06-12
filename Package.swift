@@ -72,6 +72,7 @@ let package = Package(
 				.product(name: "SwiftHttp", package: "swift-http"),
 				.product(name: "VDCodable", package: "VDCodable"),
                 .product(name: "SwiftAPIClient", package: "swift-api-client"),
+                "CryptoSwift"
 			]
 		),
 		.target(
@@ -147,14 +148,13 @@ let package = Package(
         .target(
             name: "AmazonMusicAPI",
             dependencies: [
-                "SwiftMusicServicesApi",
+                "SwiftMusicServicesApi"
             ]
         ),
         .target(
             name: "YouTubeAPI",
             dependencies: [
-                "SwiftMusicServicesApi",
-                "CryptoSwift"
+                "SwiftMusicServicesApi"
             ]
         ),
         .target(

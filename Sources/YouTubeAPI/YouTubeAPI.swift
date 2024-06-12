@@ -1,5 +1,5 @@
 import Foundation
-import SwiftMusicServicesApi
+@_exported import SwiftMusicServicesApi
 import SwiftAPIClient
 
 public enum YouTube {

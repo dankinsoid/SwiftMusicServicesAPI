@@ -1,5 +1,6 @@
 import Foundation
 import SwiftAPIClient
+@_exported import SwiftMusicServicesApi
 
 extension Amazon {
 
@@ -10,6 +11,7 @@ extension Amazon {
         public let clientID: String
         public let clientSecret: String
         public let redirectURI: String
+        private var codeVerifier: String?
         package var onLogin: ((Result<Amazon.Objects.TokenResponse, Error>) -> Void)?
 
         public init(
@@ -37,22 +39,28 @@ extension Amazon {
         /// - Parameters:
         ///   - scope: The scope of the request. Must be `profile`, `profile:user_id`, `postal_code`, or some combination.
         ///   - state: An opaque value used by the client to maintain state between this request and the response.
-        ///   - codeChallenge: Used to secure authorization code grants via Proof Key for Code Exchange (PKCE).
-        ///   - codeChallengeMethod: The method used to encode the code_verifier for the codeChallenge parameter. Defaults to `plain` if no option is provided.
+        ///   - codeChallengeMethod: The method used to encode the code_verifier for the codeChallenge parameter.  Used to secure authorization code grants via Proof Key for Code Exchange (PKCE).
         public func authURL(
             scope: [Amazon.Objects.Scope],
             state: String? = nil,
-            codeChallenge: String? = nil,
-            codeChallengeMethod: String? = nil
+            codeChallengeMethod: CodeChallengeMethod? = nil
         ) -> URL? {
-            try? client.url("https://api.amazon.com/ap/oa")
+            let code_challenge: String?
+            if let codeChallengeMethod, let (verifier, challenge) = generateCodeChallenge(method: codeChallengeMethod) {
+                codeVerifier = verifier
+                code_challenge = challenge
+            } else {
+                codeVerifier = nil
+                code_challenge = nil
+            }
+            return try? client.url("https://api.amazon.com/ap/oa")
                 .query([
                     "response_type": "code",
                     "client_id": clientID,
                     "scope": scope,
                     "redirect_uri": redirectURI,
                     "state": state,
-                    "code_challenge": codeChallenge,
+                    "code_challenge": code_challenge,
                     "code_challenge_method": codeChallengeMethod
                 ])
                 .auth(enabled: true)
@@ -83,6 +91,7 @@ extension Amazon {
                         "client_id": clientID,
                         "client_secret": clientSecret,
                         "redirect_uri": redirectURI,
+                        "code_verifier": codeVerifier,
                         "code": code
                     ])
                     .post

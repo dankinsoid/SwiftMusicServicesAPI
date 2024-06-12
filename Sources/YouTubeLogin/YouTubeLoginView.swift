@@ -47,7 +47,7 @@ public struct YouTubeLoginView: View {
         enableGranularConsent: Bool? = nil,
         loginHint: String? = nil,
         prompt: [YouTube.Objects.Prompt]? = nil,
-        codeChallengeMethod: YouTube.Objects.CodeChallengeMethod? = nil
+        codeChallengeMethod: CodeChallengeMethod? = nil
     ) {
         // authURL should never throw
         url = try? oauth.authURL(

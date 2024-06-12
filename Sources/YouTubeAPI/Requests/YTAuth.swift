@@ -66,7 +66,7 @@ extension YouTube {
         ///   - prompt: A list of prompts to present the user. If you don't specify this parameter, the user will be prompted only the first time your project requests access.
         ///   See [Prompting re-consent](https://developers.google.com/identity/protocols/oauth2/openid-connect#re-consent) for more information.
         ///   - codeChallengeMethod: Specifies what method was used to encode a `code_verifier` that will be used during authorization code exchange.
-        ///   The only supported values for this parameter are S256 or plain. When nil PCKE auth is not used.   .   
+        ///   The only supported values for this parameter are S256 or plain. When nil PKCE auth is not used.   .
         public func authURL(
             responseType: String = "code",
             scope: [YouTube.Scope],
@@ -76,9 +76,17 @@ extension YouTube {
             enableGranularConsent: Bool? = nil,
             loginHint: String? = nil,
             prompt: [YouTube.Objects.Prompt]? = nil,
-            codeChallengeMethod: YouTube.Objects.CodeChallengeMethod? = nil
+            codeChallengeMethod: CodeChallengeMethod? = nil
         ) throws -> URL {
-            try APIClient()
+            let code_challenge: String?
+            if let codeChallengeMethod, let (verifier, challenge) = generateCodeChallenge(method: codeChallengeMethod) {
+                codeVerifier = verifier
+                code_challenge = challenge
+            } else {
+                codeVerifier = nil
+                code_challenge = nil
+            }
+            return try APIClient()
                 .url("https://accounts.google.com/o/oauth2/v2/auth")
                 .query([
                     "client_id": clientID,
@@ -91,7 +99,7 @@ extension YouTube {
                     "enable_granular_consent": enableGranularConsent,
                     "login_hint": loginHint,
                     "prompt": prompt,
-                    "code_challenge": codeChallengeMethod.map(generateCodeChallenge)
+                    "code_challenge": code_challenge
                 ])
                 .queryEncoder(.urlQuery(arrayEncodingStrategy: .separator(" ")))
                 .request()
@@ -274,55 +282,5 @@ public extension YouTube.Objects {
         case consent
         /// Prompt the user to select an account.
         case selectAccount = "select_account"
-    }
-
-    enum CodeChallengeMethod: String, Hashable, Codable, CaseIterable {
-        case S256, plain
-    }
-}
-
-private extension YouTube.OAuth2 {
-
-    func generateCodeChallenge(method: YouTube.Objects.CodeChallengeMethod) -> String? {
-        let codeVerifier = generateCodeVerifier()
-        self.codeVerifier = codeVerifier
-        switch method {
-        case .S256:
-            guard let data = codeVerifier.data(using: .ascii) else {
-                self.codeVerifier = nil
-                return nil
-            }
-            
-            let hash = data.sha256()
-            let hashData = Data(hash)
-            return hashData.base64URLEncodedString()
-        case .plain:
-            return codeVerifier
-        }
-    }
-
-    func generateCodeVerifier() -> String {
-        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
-        let length = Int.random(in: 43..<129) // Ensure length is between 43 and 128
-        var codeVerifier = ""
-
-        for _ in 0..<length {
-            if let randomCharacter = characters.randomElement() {
-                codeVerifier.append(randomCharacter)
-            }
-        }
-        
-        return codeVerifier
-    }
-}
-
-// Extension to encode data to Base64 URL encoded string
-private extension Data {
-
-    func base64URLEncodedString() -> String {
-        self.base64EncodedString()
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "=", with: "")
     }
 }
