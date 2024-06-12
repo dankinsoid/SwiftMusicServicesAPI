@@ -36,7 +36,7 @@ extension YouTube.OAuth2 {
     ///   - completion: A login completion
     public func loginController(
         responseType: String = "code",
-        scope: YouTube.Scope,
+        scope: [YouTube.Scope],
         accessType: YouTube.Objects.AccessType? = .offline,
         state: String?,
         includeGrantedScopes: Bool? = nil,
