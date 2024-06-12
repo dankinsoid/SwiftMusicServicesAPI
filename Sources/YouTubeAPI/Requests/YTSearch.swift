@@ -140,7 +140,7 @@ extension YouTube.API.Search {
                     "relevanceLanguage": relevanceLanguage,
                     "safeSearch": safeSearch,
                     "topicId": topicId,
-                    "type": type,
+                    "type": videoCategoryId == nil ? type : "video",
                     "videoCaption": videoCaption,
                     "videoCategoryId": videoCategoryId,
                     "videoDefinition": videoDefinition,
