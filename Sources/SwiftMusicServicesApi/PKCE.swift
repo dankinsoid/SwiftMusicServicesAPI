@@ -2,12 +2,13 @@ import Foundation
 import CryptoSwift
 
 package func generateCodeChallenge(
+    verifier: String? = nil,
     method: CodeChallengeMethod
 ) -> (codeVerifier: String, codeChallenge: String)? {
-    let codeVerifier = generateCodeVerifier()
+    let codeVerifier = verifier ?? generateCodeVerifier()
     switch method {
     case .S256:
-        guard let data = codeVerifier.data(using: .utf8) else {
+        guard let data = codeVerifier.data(using: .ascii) else {
             return nil
         }
         
