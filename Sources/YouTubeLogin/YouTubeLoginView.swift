@@ -38,7 +38,7 @@ public struct YouTubeLoginView: View {
     public init(
         oauth: YouTube.OAuth2,
         responseType: String = "code",
-        scope: YouTube.Scope,
+        scope: [YouTube.Scope],
         accessType: YouTube.Objects.AccessType? = .offline,
         state: String?,
         includeGrantedScopes: Bool? = nil,
