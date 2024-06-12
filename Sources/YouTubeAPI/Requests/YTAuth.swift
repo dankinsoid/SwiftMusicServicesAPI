@@ -136,7 +136,9 @@ extension YouTube {
                     .post()
                 codeVerifier = nil
                 try? await cache.save(result.accessToken, for: .accessToken)
-                try? await cache.save(result.refreshToken, for: .refreshToken)
+                if let refreshToken = result.refreshToken {
+                    try? await cache.save(refreshToken, for: .refreshToken)
+                }
                 try? await cache.save(Date(timeIntervalSinceNow: result.expiresIn), for: .expiryDate)
                 onLogin?(.success(result))
                 return result
