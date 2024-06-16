@@ -20,4 +20,10 @@ public struct VKAudioPageInput: Codable {
 			self = try Self(rawValue: String(from: decoder)) ?? .unknown
 		}
 	}
+    
+    public init(section: Section? = nil, block: Block? = nil, z: String? = nil) {
+        self.section = section
+        self.block = block
+        self.z = z
+    }
 }

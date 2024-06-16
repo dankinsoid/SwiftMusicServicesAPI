@@ -29,30 +29,6 @@ public extension VK.API.AudioPageRequestInput {
 	}
 }
 
-public extension VK.API.MyTracksPageRequestInput {
-	static func publicInit(
-		act: VKAct,
-		block: String,
-		start_from: String
-	) -> Self {
-		.init(
-			act: act,
-			block: block,
-			start_from: start_from
-		)
-	}
-}
-
-public extension VK.API.MyTracksPageRequestInputBody {
-	static func publicInit(
-		_ajax: Int = 1
-	) -> Self {
-		.init(
-			_ajax: _ajax
-		)
-	}
-}
-
 public extension VKActInput {
 	static func publicInit(
 		act: VKAct? = nil
@@ -135,20 +111,6 @@ public extension VKAudioInput {
 			from: from,
 			__query: __query,
 			_ref: _ref
-		)
-	}
-}
-
-public extension VKAudioPageInput {
-	static func publicInit(
-		section: VKAudioPageInput.Section? = nil,
-		block: VKAudioPageInput.Block? = nil,
-		z: String? = nil
-	) -> Self {
-		.init(
-			section: section,
-			block: block,
-			z: z
 		)
 	}
 }

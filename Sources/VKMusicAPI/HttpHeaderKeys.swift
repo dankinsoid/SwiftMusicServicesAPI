@@ -1,6 +1,6 @@
 import Foundation
-import SwiftHttp
+import HTTPTypes
 
-public extension HttpHeaderKey {
-	static let xRequestedWith: HttpHeaderKey = "X-Requested-With"
+public extension HTTPField.Name {
+    static let xRequestedWith: HTTPField.Name = HTTPField.Name("X-Requested-With")!
 }

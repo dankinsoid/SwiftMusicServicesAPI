@@ -3,13 +3,17 @@ import SwiftHttp
 
 public extension VK.API {
 	func authorize(_ parameters: VKAuthorizeParameters) async throws {
-		let extractedExpr = VKAuthorizeAllParameters(ip_h: parameters.pre.ip, lg_h: parameters.pre.lg, email: parameters.login, pass: parameters.password)
-		let input = extractedExpr
-		_ = try await rawRequest(
-			url: HttpUrl(host: "login.vk.com").query(from: input),
-			method: .post,
-			headers: headers(minimum: true)
-		)
+        try await client.url("https://login.vk.com")
+            .query(
+                VKAuthorizeAllParameters(
+                    ip_h: parameters.pre.ip,
+                    lg_h: parameters.pre.lg,
+                    email: parameters.login,
+                    pass: parameters.password
+                )
+            )
+            .configs(\.minimal, true)
+            .post()
 	}
 
 	func authorizeAndGetUser(_ parameters: VKAuthorizeParameters) async throws -> VKUser {
@@ -22,11 +26,9 @@ public extension VK.API {
 	}
 
 	func checkAuthorize() async throws -> VKAuthorizationState {
-		try await request(
-			url: baseURL.path("feed"),
-			method: .get,
-			minimum: false
-		)
+        try await client("feed")
+            .xmlHttpRequest
+            .call(.http, as: .htmlInitable)
 	}
 }
 

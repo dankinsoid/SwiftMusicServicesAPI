@@ -1,33 +1,32 @@
 import Foundation
 import SimpleCoders
-import SwiftHttp
+import SwiftAPIClient
 import SwiftSoup
 import VDCodable
 
 public extension VK.API {
-	func audioFirstPageRequest(href: String) async throws -> AudioFirstPageRequestOutput {
-		try await request(
-			url: baseURL
-				.path(href.components(separatedBy: "?").first?.trimmingCharacters(in: CharacterSet(charactersIn: "/")) ?? "")
-				.query(
-					href.components(separatedBy: "?")
-						.dropFirst()
-						.joined(separator: "?")
-						.components(separatedBy: "&")
-						.map {
-							$0.components(separatedBy: "=")
-						}
-						.reduce(into: [:]) {
-							$0[$1[0]] = $1.dropFirst().joined(separator: "=").removingPercentEncoding
-						}
-				),
-			method: .get
-		)
-	}
+    
+    func audioFirstPageRequest(href: String) async throws -> AudioFirstPageRequestOutput {
+        try await client
+            .xmlHttpRequest
+            .path(href, percentEncoded: true)
+            .call(.http, as: .htmlInitable)
+    }
 
+    func audioFirstPageRequest(id: Int) async throws -> AudioFirstPageRequestOutput {
+        try await client("audios\(id)")
+            .query(VKAudioPageInput(section: .my))
+            .call(.http, as: .htmlInitable)
+    }
+    
 	struct AudioFirstPageRequestOutput: Codable, Hashable {
 		public var tracks: [VKAudio]
 		public var next: String?
+        
+        public init(tracks: [VKAudio], next: String? = nil) {
+            self.tracks = tracks
+            self.next = next
+        }
 	}
 }
 
@@ -51,14 +50,14 @@ extension VK.API.AudioFirstPageRequestOutput: HTMLStringInitable {
 public extension VK.API {
 
 	func audioPageRequest(act: String, offset: Int, from: String? = nil) async throws -> [VKAudio] {
-		let input = AudioPageRequestInput(act: act, offset: offset, from: from)
-		let output: AudioPageRequestOutput = try await decodableRequest(
-			url: baseURL.path("audio").query(from: input),
-			method: .post,
-			body: multipartData(AudioPageRequestBody()),
-			headers: headers(multipart: true)
-		)
-		return output.data.flatMap(\.list)
+		try await client("audio")
+            .xmlHttpRequest
+            .query(AudioPageRequestInput(act: act, offset: offset, from: from))
+            .method(.post)
+            .bodyEncoder(multipartEncoder)
+            .body(AudioPageRequestBody())
+            .call(.http, as: .decodable(AudioPageRequestOutput.self))
+            .data.flatMap(\.list)
 	}
 
 	struct AudioPageRequestInput: Codable {
@@ -99,27 +98,118 @@ public extension VK.API {
 }
 
 public extension VK.API {
-	func list(tracks: [VKAudio] = [], block: String? = nil, next: String? = nil) async throws -> [VKAudio] {
-		if let block {
-			if let next, !next.isEmpty {
-				let tr = try await myTracksPageRequest(start_from: next, block: block)
-				return try await list(tracks: tracks + tr.list, block: block, next: next == tr.nextOffset ? nil : tr.nextOffset)
-			} else {
-				return tracks
-			}
-		} else {
-			let bl = try await audioBlock()
-			let tr = try await audioFirstPageRequest(href: bl.href)
-			return try await list(tracks: tracks + tr.tracks, block: bl.block, next: tr.next)
-		}
-	}
 
-	func list(playlist: VKPlaylistItemHTML, tracks: [VKAudio] = [], offset: Int? = 0) async throws -> [VKAudio] {
-		if let offset {
-			let tr = try await audioPageRequest(act: playlist.act ?? "", offset: offset)
-			return try await list(playlist: playlist, tracks: tracks + tr, offset: tr.count < 100 || tr.count == 0 ? nil : offset + tr.count)
-		} else {
-			return tracks
-		}
+    func list(limit: Int? = nil) -> VKMyTracks {
+        VKMyTracks(limit: limit, api: self)
+    }
+
+//	func list(id: Int, tracks: [VKAudio] = [], next: String? = nil) async throws -> [VKAudio] {
+//		if let next, !next.isEmpty {
+//            let tr = try await myTracksPageRequest(id: id, start_from: next)
+//            return try await list(id: id, tracks: tracks + tr.list, next: next == tr.nextOffset ? nil : tr.nextOffset)
+//        } else if tracks.isEmpty {
+//            let tr = try await audioFirstPageRequest(id: id)
+//            return try await list(id: id, tracks: tracks + tr.tracks, next: tr.next)
+//        } else {
+//            return tracks
+//        }
+//	}
+
+	func list(playlist: VKPlaylistItemHTML, limit: Int? = nil, offset: Int = 0) -> VKMyPlaylistTracks {
+        VKMyPlaylistTracks(limit: limit, offset: offset, playlist: playlist, api: self)
 	}
+}
+
+public struct VKMyTracks: AsyncSequence {
+
+    public typealias Element = [VKAudio]
+    
+    let limit: Int?
+    let api: VK.API
+    
+    public func makeAsyncIterator() -> AsyncIterator {
+        AsyncIterator(page: self)
+    }
+    
+    public func first() async throws -> [VKAudio] {
+        var iterator = makeAsyncIterator()
+        return try await iterator.next() ?? []
+    }
+    
+    public struct AsyncIterator: AsyncIteratorProtocol {
+        
+        let page: VKMyTracks
+        var block: String?
+        var next: String?
+        var didSendFirst = false
+        var didSendCount = 0
+        var didExceedLimits: Bool {
+            page.limit.map { didSendCount >= $0 } ?? false
+        }
+        
+        public mutating func next() async throws -> Element? {
+            guard !didExceedLimits else { return nil }
+            if let block {
+                if let next, !next.isEmpty {
+                    let tr = try await page.api.myTracksPageRequest(start_from: next, block: block)
+                    self.next = next == tr.nextOffset ? nil : tr.nextOffset
+                    didSendCount += tr.list.count
+                    return tr.list
+                } else {
+                    return nil
+                }
+            } else if !didSendFirst {
+                didSendFirst = true
+                let bl = try await page.api.audioBlock()
+                let tr = try await page.api.audioFirstPageRequest(href: bl.href)
+                didSendCount += tr.tracks.count
+                block = bl.block
+                next = tr.next
+                return tr.tracks
+            } else {
+                return nil
+            }
+        }
+    }
+}
+
+public struct VKMyPlaylistTracks: AsyncSequence {
+    
+    public typealias Element = [VKAudio]
+    
+    let limit: Int?
+    let offset: Int
+    let playlist: VKPlaylistItemHTML
+    let api: VK.API
+    
+    public func makeAsyncIterator() -> AsyncIterator {
+        AsyncIterator(page: self, offset: offset)
+    }
+    
+    public func first() async throws -> [VKAudio] {
+        var iterator = makeAsyncIterator()
+        return try await iterator.next() ?? []
+    }
+    
+    public struct AsyncIterator: AsyncIteratorProtocol {
+
+        let page: VKMyPlaylistTracks
+        var didSendCount = 0
+        var offset: Int?
+        var didExceedLimits: Bool {
+            page.limit.map { didSendCount >= $0 } ?? false
+        }
+
+        public mutating func next() async throws -> Element? {
+            guard !didExceedLimits else { return nil }
+            if let offset {
+                let tr = try await page.api.audioPageRequest(act: page.playlist.act ?? "", offset: offset)
+                didSendCount += tr.count
+                self.offset = tr.count < 100 || tr.count == 0 ? nil : offset + tr.count
+                return tr
+            } else {
+                return nil
+            }
+        }
+    }
 }

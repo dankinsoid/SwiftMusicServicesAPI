@@ -1,21 +1,23 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 import VKMusicAPI
 import XCTest
+import HTTPTypes
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 final class VKMusicAPITests: XCTestCase {
 
 	let api = VK.API(
-		client: UrlSessionHttpClient(logLevel: .info),
-        webCookies: [
-            "remixsid":"1_MRjkOy4xYx8nnecEWXOo396fX4eoPl8S3K26XCrOgYW4HZdgQXiQ1G30uoqjnZip3vKookk0UjNZk6TNZ0Mjng",
-            "remixnsid":"vk1.a.RdlTH-yPCBtTvX0AL4Vp_hExBnV5n7vHzQ-JI5BDv0XgBsdhU75qej1GDPE3Cdbu3EopobY1V4Z9dDfHyhhkHDz6KRi718gMZK6OhNaIJFqFLoptAvEk_WOrJkT0Jrwsg6Hm_57jjDML8EMHiYoRA-PCoo_sG43k4I49FAw2NMiurjWEdK2ePUrgpwSyz-3s"
-        ]
+        client: APIClient(),
+        cache: MockSecureCacheService(),
+        webCookies: [:]
 	)
-
+    
 	func testList() async throws {
-		let list = try await api.list()
-		print(list.count)
+        let list = try await api.list().first()
+        print(list.count)
 	}
 	
 	func testPlaylistsById() async throws {
@@ -31,8 +33,7 @@ final class VKMusicAPITests: XCTestCase {
 		}
 		let plists = try await api.playlists(id: id)
 		let tr = try await api.audioPageRequest(act: plists[0].act ?? "", offset: 0)
-		print(tr)
-		let plist = try await api.list(playlist: plists[0])
+		let plist = try await api.list(playlist: plists[0]).first()
 		print(plist.count)
 	}
 }
