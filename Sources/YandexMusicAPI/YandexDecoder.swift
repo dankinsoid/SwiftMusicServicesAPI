@@ -32,38 +32,39 @@ struct YandexDecoder: DataDecoder {
     /// - Returns: The decoded object
     ///
     func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
-        do {
-            if isAuthorized {
-                return try decoder.decode(YMO.Result<T>.self, from: data).result
-            } else {
-                return try decoder.decode(type, from: data)
-            }
-        } catch {
-            throw mapError(from: data) ?? error
+        if isAuthorized {
+            return try decoder.decode(YMO.Result<T>.self, from: data).result
+        } else {
+            return try decoder.decode(type, from: data)
         }
     }
+}
+
+extension ErrorDecoder {
     
-    private func mapError(from data: Data) -> Error? {
-        if let string = String(data: data, encoding: .utf8)?.lowercased() {
-            let pattern = #"expected ?revision: ?(\d+).*actual ?revision: ?(\d+)"#
-            if let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) {
-                let matches = regex.matches(in: string, options: [], range: NSRange(location: 0, length: string.count))
-                if let match = matches.first {
-                    if let expected = Int((string as NSString).substring(with: match.range(at: 1))),
-                       let actual = Int((string as NSString).substring(with: match.range(at: 2))) {
-                        Yandex.onWrongRevisionError(expected, actual, string)
-                        return WrongRevisionError(expected: expected, actual: actual, message: string)
+    public static var yandexMusic: ErrorDecoder {
+        ErrorDecoder { data, _ in
+            if let string = String(data: data, encoding: .utf8)?.lowercased() {
+                let pattern = #"expected ?revision: ?(\d+).*actual ?revision: ?(\d+)"#
+                if let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) {
+                    let matches = regex.matches(in: string, options: [], range: NSRange(location: 0, length: string.count))
+                    if let match = matches.first {
+                        if let expected = Int((string as NSString).substring(with: match.range(at: 1))),
+                           let actual = Int((string as NSString).substring(with: match.range(at: 2))) {
+                            Yandex.onWrongRevisionError(expected, actual, string)
+                            return WrongRevisionError(expected: expected, actual: actual, message: string)
+                        }
                     }
                 }
             }
-        }
-
-        if let err = try? VDJSONDecoder().decode(YandexError.self, from: data) {
-            return err
-        } else if let err = try? VDJSONDecoder().decode(YandexFailure.self, from: data) {
-            return err
-        } else {
-            return nil
+            
+            if let err = try? VDJSONDecoder().decode(YandexError.self, from: data) {
+                return err
+            } else if let err = try? VDJSONDecoder().decode(YandexFailure.self, from: data) {
+                return err
+            } else {
+                return nil
+            }
         }
     }
 }

@@ -6,11 +6,18 @@ import YandexMusicAPI
 
 final class YandexMusicTests: XCTestCase {
 
-    let api = YM.API()
+    let api = YM.API(
+        client: APIClient().loggingComponents(.full)
+    )
 
     func testUser() async throws {
         let account = try await api.account()
         dump(account)
+    }
+    
+    func testLikes() async throws {
+        let likes = try await api.likedTracks(userID: 43474620)
+        print(likes.library.tracks.count)
     }
 
     func testPlaylists() async throws {
@@ -33,16 +40,21 @@ final class YandexMusicTests: XCTestCase {
         let result = try await api.search(text: "Blindfold Derek Pope", page: 0)
         dump(result.tracks?.results.first?.short)
     }
+
+    func testLike() async throws {
+        try await api.like(trackIDs: ["46682063"], userID: 43474620)
+    }
     
     func testAdd() async throws {
-        let result = try await api.search(text: "Isabella Dances", page: 0)
-        guard let toAdd = result.tracks?.results.first?.short else {
-            throw AnyError("")
-        }
+//        let result = try await api.search(text: "Isabella Dances", page: 0)
+//        guard let toAdd = result.tracks?.results.first?.short else {
+//            throw AnyError("")
+//        }
+        let toAdd = YMO.TrackShort(id: "46682063", albumId: 6304185)
         let tracks = try await api.playlistsAdd(
             userID: 43474620,
-            playlistKind: 1244,
-            revision: 3,
+            playlistKind: 1253,
+            revision: 16,
             tracks: [toAdd]
         )
         print(tracks)

@@ -40,6 +40,7 @@ public extension Yandex.Music {
             self.client = client
                 .url(API.baseURL)
                 .bodyDecoder(YandexDecoder())
+                .errorDecoder(.yandexMusic)
                 .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator, nestedEncodingStrategy: .json))
                 .header(.userAgent, "Maple/667 (iPhone; 17.\(Int.random(in: 1...4)).1; Scale/3.0)")
                 .header("X-Yandex-Music-Client", "Yandex.Music/672.155743")

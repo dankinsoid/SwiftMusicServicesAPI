@@ -123,7 +123,7 @@ private extension Yandex.Music.API {
     
     func playlistsChange(userID id: Int, input: PlaylistsChangeInput, counter: Int) async throws -> YMO.Playlist<YMO.TrackShort> {
         try await onRevisionError {
-            try await self.client("users", "\(id)", "playlists", "\(input.kind)", "change-relative")
+            try await client("users", "\(id)", "playlists", "\(input.kind)", "change-relative")
                 .bodyEncoder(.formURL(nestedEncodingStrategy: .json(encode: .arraysAndObjects)))
                 .body(input)
                 .post()

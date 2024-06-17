@@ -59,6 +59,32 @@ extension Yandex.Music.API {
 		let parameters = Parameters(trackId: trackId, uid: uid)
 		return try URLQueryEncoder().encode(parameters, for: base)
 	}
+    
+    public struct TrackIDs: AsyncSequence {
+    
+        public typealias Element = [YMO.Track]
+    
+        let ids: [String]
+        let withPositions: Bool
+        let api: YM.API
+        
+        public func makeAsyncIterator() -> AsyncIterator {
+            AsyncIterator(base: self)
+        }
+        
+        public func first() async throws -> [YMO.Track] {
+            var iterator = makeAsyncIterator()
+            return try await iterator.next() ?? []
+        }
+        
+        public struct AsyncIterator: AsyncIteratorProtocol {
+            let base: TrackIDs
+            
+            public mutating func next() async throws -> [YMO.Track]? {
+                nil
+            }
+        }
+    }
 
 	private func getXML(at key: String, xml: String) throws -> String {
 		let all = xml.components(separatedBy: "<\(key)>")

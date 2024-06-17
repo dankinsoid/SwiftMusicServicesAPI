@@ -3,7 +3,13 @@ import SwiftAPIClient
 
 public extension Yandex.Music.API {
 
-    func search(text: String, nocorrect: Bool = false, type: YMO.SearchType = .track, page: Int, playlistInBest: Bool = false) async throws -> SearchOutput {
+    func search(
+        text: String,
+        nocorrect: Bool = false,
+        type: YMO.SearchType = .track,
+        page: Int = 0,
+        playlistInBest: Bool = false
+    ) async throws -> SearchOutput {
         try await client("search")
             .query(SearchInput(text: text, nocorrect: nocorrect, type: type, page: page, playlistInBest: playlistInBest))
             .get()
