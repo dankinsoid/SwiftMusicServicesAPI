@@ -24,7 +24,7 @@ public extension Yandex.Music {
         public static var uuid = UUID().uuidString.lowercased().replacingOccurrences(of: "-", with: "")
         public static var ifv = UUID()
         
-        private(set) public var client: APIClient
+        public var client: APIClient
         public var token: String? {
             get { lock.withReaderLock{ _token } }
             set { lock.withWriterLockVoid { _token = newValue } }
