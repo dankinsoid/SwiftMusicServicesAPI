@@ -1,6 +1,6 @@
 import Foundation
 import SimpleCoders
-import SwiftHttp
+import SwiftAPIClient
 import SwiftSoup
 
 public extension VK.API {
@@ -79,7 +79,9 @@ extension VK.API.MyTracksPageRequestInputOutput: Decodable {
 			playlist = try keyed.decode(VKAudioListSection.self, forKey: "playlist")
 		} catch {
 			guard let playlists = try keyed.decode([VKAudioListSection].self, forKey: "playlists").first else {
-				throw HttpError.invalidResponse
+                throw DecodingError.dataCorrupted(
+                    DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Empty playlists")
+                )
 			}
 			playlist = playlists
 		}

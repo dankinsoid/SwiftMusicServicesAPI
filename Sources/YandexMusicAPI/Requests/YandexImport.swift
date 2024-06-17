@@ -1,12 +1,11 @@
 import Foundation
-import SwiftHttp
-import VDCodable
+import SwiftAPIClient
 
 public extension Yandex.Music.API {
 
 	enum Import {
 
-		public static var baseURL = HttpUrl(host: "music.yandex.ru")
+		public static var baseURL = URL(string: "https://music.yandex.ru")!
 	}
 }
 
@@ -29,18 +28,16 @@ public extension Yandex.Music.API {
 
 public extension Yandex.Music.API {
 
-	func importFile(e3u: E3U) async throws -> ImportFileOutput {
-		let response = try await encodableRequest(
-			url: Yandex.Music.API.Import.baseURL.path("handlers").resource("import-file.jsx"),
-			method: .post,
-			headers: [
-				.contentType: "text/plain",
-				"Connection": "keep-alive",
-			],
-			body: E3U.Formatter().convert(e3u)
-		)
-		return try VDJSONDecoder().decode(ImportFileOutput.self, from: response.data)
-	}
+    func importFile(e3u: E3U) async throws -> ImportFileOutput {
+        try await client.url(Yandex.Music.API.Import.baseURL)
+            .path("handlers", "import-file.jsx")
+            .headers(.contentType(.text(.plain)))
+            .header(.connection, "keep-alive")
+            .body(E3U.Formatter().convert(e3u))
+            .auth(enabled: false)
+            .bodyDecoder(YandexDecoder(isAuthorized: false))
+            .post()
+    }
 
 	struct ImportFileOutput: Codable {
 		public let importCode: String
@@ -50,13 +47,11 @@ public extension Yandex.Music.API {
 public extension Yandex.Music.API {
 
 	func importCode(_ code: String) async throws -> ImportCodeOutput {
-		let response = try await rawRequest(
-			url: Yandex.Music.API.Import.baseURL
-				.path("handlers").resource("import.jsx")
-				.query("code", code),
-			method: .post
-		)
-		return try VDJSONDecoder().decode(ImportCodeOutput.self, from: response.data)
+		try await client("handlers", "import.jsx")
+            .query("code", code)
+            .auth(enabled: false)
+            .bodyDecoder(YandexDecoder(isAuthorized: false))
+            .post()
 	}
 
 	struct ImportCodeOutput: Codable {

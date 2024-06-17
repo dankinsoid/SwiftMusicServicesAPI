@@ -1,13 +1,9 @@
 import Foundation
-import SwiftHttp
-import VDCodable
+import SwiftAPIClient
 
 public extension Yandex.Music.API {
 
     func settings() async throws -> YMO.Settings {
-        try await request(
-            url: baseURL.path("account", "settings"),
-            method: .get
-        )
+        try await client("account", "settings").get()
     }
 }

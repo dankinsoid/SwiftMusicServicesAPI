@@ -1,14 +1,12 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 import VDCodable
 import XCTest
 import YandexMusicAPI
 
 final class YandexMusicTests: XCTestCase {
 
-    let api = YM.API(
-        client: ProxyClient(base: UrlSessionHttpClient(session: session(), logLevel: .info))
-    )
+    let api = YM.API()
 
     func testUser() async throws {
         let account = try await api.account()
@@ -39,7 +37,7 @@ final class YandexMusicTests: XCTestCase {
     func testAdd() async throws {
         let result = try await api.search(text: "Isabella Dances", page: 0)
         guard let toAdd = result.tracks?.results.first?.short else {
-            throw HttpError.invalidResponse
+            throw AnyError("")
         }
         let tracks = try await api.playlistsAdd(
             userID: 43474620,
@@ -54,56 +52,56 @@ final class YandexMusicTests: XCTestCase {
         try await dump(api.tracks(ids: ["f3b136c0-5f33-4cd5-8db1-48dc41465d5f", "81897915"]))
     }
 }
-
-private struct ProxyClient: HttpClient {
-
-    let base: HttpClient
-
-    func dataTask(_ req: any SwiftHttp.HttpRequest) async throws -> any SwiftHttp.HttpResponse {
-        try await base.dataTask(proxied(req))
-    }
-    
-    func downloadTask(_ req: any SwiftHttp.HttpRequest) async throws -> any SwiftHttp.HttpResponse {
-        try await base.downloadTask(proxied(req))
-    }
-    
-    func uploadTask(_ req: any SwiftHttp.HttpRequest) async throws -> any SwiftHttp.HttpResponse {
-        try await base.uploadTask(proxied(req))
-    }
-    
-    private func proxied(_ req: HttpRequest) throws -> HttpRequest {
-        let username = "VK6EFPcD07"
-        let password = "KXLobQ78lS"
-        let userPasswordString = "\(username):\(password)"
-        guard let userPasswordData = userPasswordString.data(using: .utf8) else {
-            throw InvalidResponse()
-        }
-        let base64EncodedCredential = userPasswordData.base64EncodedString()
-        var request = HttpRawRequest(url: req.url, method: req.method, headers: req.headers, body: req.body)
-        request.headers["Proxy-Authorization"] = "Basic \(base64EncodedCredential)"
-        return request
-    }
-
-    private struct InvalidResponse: Error {}
-}
-
-private func session() -> URLSession {
-
-    let proxyHost = "45.132.252.75"
-    let proxyPort = 37959
-    let username = "VK6EFPcD07"
-    let password = "KXLobQ78lS"
-
-    let proxyURL = URL(string: "http://\(username):\(password)@\(proxyHost):\(proxyPort)")!
-
-    let config = URLSessionConfiguration.default
-    config.connectionProxyDictionary = [
-        kCFNetworkProxiesHTTPEnable as String: true,
-        kCFNetworkProxiesHTTPProxy as String: proxyHost,
-        kCFNetworkProxiesHTTPPort as String: proxyPort,
-        kCFNetworkProxiesHTTPSEnable as String: true,
-        kCFNetworkProxiesHTTPSProxy as String: proxyHost,
-        kCFNetworkProxiesHTTPSPort as String: proxyPort
-    ]
-    return URLSession(configuration: config)
-}
+//
+//private struct ProxyClient: HttpClient {
+//
+//    let base: HttpClient
+//
+//    func dataTask(_ req: any SwiftHttp.HttpRequest) async throws -> any SwiftHttp.HttpResponse {
+//        try await base.dataTask(proxied(req))
+//    }
+//    
+//    func downloadTask(_ req: any SwiftHttp.HttpRequest) async throws -> any SwiftHttp.HttpResponse {
+//        try await base.downloadTask(proxied(req))
+//    }
+//    
+//    func uploadTask(_ req: any SwiftHttp.HttpRequest) async throws -> any SwiftHttp.HttpResponse {
+//        try await base.uploadTask(proxied(req))
+//    }
+//    
+//    private func proxied(_ req: HttpRequest) throws -> HttpRequest {
+//        let username = "VK6EFPcD07"
+//        let password = "KXLobQ78lS"
+//        let userPasswordString = "\(username):\(password)"
+//        guard let userPasswordData = userPasswordString.data(using: .utf8) else {
+//            throw InvalidResponse()
+//        }
+//        let base64EncodedCredential = userPasswordData.base64EncodedString()
+//        var request = HttpRawRequest(url: req.url, method: req.method, headers: req.headers, body: req.body)
+//        request.headers["Proxy-Authorization"] = "Basic \(base64EncodedCredential)"
+//        return request
+//    }
+//
+//    private struct InvalidResponse: Error {}
+//}
+//
+//private func session() -> URLSession {
+//
+//    let proxyHost = "45.132.252.75"
+//    let proxyPort = 37959
+//    let username = "VK6EFPcD07"
+//    let password = "KXLobQ78lS"
+//
+//    let proxyURL = URL(string: "http://\(username):\(password)@\(proxyHost):\(proxyPort)")!
+//
+//    let config = URLSessionConfiguration.default
+//    config.connectionProxyDictionary = [
+//        kCFNetworkProxiesHTTPEnable as String: true,
+//        kCFNetworkProxiesHTTPProxy as String: proxyHost,
+//        kCFNetworkProxiesHTTPPort as String: proxyPort,
+//        kCFNetworkProxiesHTTPSEnable as String: true,
+//        kCFNetworkProxiesHTTPSProxy as String: proxyHost,
+//        kCFNetworkProxiesHTTPSPort as String: proxyPort
+//    ]
+//    return URLSession(configuration: config)
+//}

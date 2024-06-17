@@ -1,26 +1,26 @@
 #if canImport(UIKit)
 	import Logging
-	import SwiftHttp
+	import SwiftAPIClient
 	import UIKit
 	import VKMusicAPI
 	import WebKit
 
 	open class VKLoginController: UIViewController, WKNavigationDelegate {
-		open var client: VK.API = .init(client: UrlSessionHttpClient(logLevel: .debug))
+		open var client: VK.API
 		open var hideOnLogin = false
 		public private(set) lazy var webView = WKWebView()
 		var successLogin: (VKUser, _ webCookies: [String: String]) -> Void = { _, _ in }
 		private var wasPreauthorized = false
 		private var loadCount = 0
 
-		public init(client: VK.API = VK.API(client: UrlSessionHttpClient(logLevel: .debug)), successLogin: @escaping (VKUser, _ webCookies: [String: String]) -> Void = { _, _ in }) {
+		public init(client: VK.API, successLogin: @escaping (VKUser, _ webCookies: [String: String]) -> Void = { _, _ in }) {
+            self.client = client
 			super.init(nibName: nil, bundle: nil)
 			self.successLogin = successLogin
-			self.client = client
 		}
 
 		public required init?(coder aDecoder: NSCoder) {
-			super.init(coder: aDecoder)
+			fatalError()
 		}
 
 		override open func viewDidLoad() {
@@ -35,7 +35,7 @@
 				webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 			])
 			webView.navigationDelegate = self
-			webView.load(URLRequest(url: VK.API.baseURL.url))
+			webView.load(URLRequest(url: VK.API.baseURL))
 			webView.allowsBackForwardNavigationGestures = true
 			view.backgroundColor = .clear
 		}

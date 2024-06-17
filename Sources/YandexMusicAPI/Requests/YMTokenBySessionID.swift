@@ -1,7 +1,5 @@
 import Foundation
-import SimpleCoders
-import SwiftHttp
-import VDCodable
+import SwiftAPIClient
 
 public extension Yandex.Music.API {
 
@@ -9,24 +7,18 @@ public extension Yandex.Music.API {
 		let cookies = cookies.map { "\($0.0)=\($0.1)" }.joined(separator: "; ")
 		let set = CharacterSet(charactersIn: "=\"#%/<>?@\\^`{|};: ").inverted
 		let input = TokenBySessionIDInput(track_id: track_id, cookies: cookies.addingPercentEncoding(withAllowedCharacters: set) ?? cookies)
-
-		let encoder = URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase())
-		encoder.nestedEncodingStrategy = .json
-		encoder.trimmingSquareBrackets = true
-
-		return try await request(
-			url: Yandex.Music.API.mobileproxyPassportURL.path("1", "bundle", "oauth", "token_by_sessionid").query(from: info, encoder: encoder),
-			method: .post,
-			auth: false,
-			body: Data(encoder.encodePath(input).utf8),
-			headers: [
-				.contentType: "application/x-www-form-urlencoded",
-				"Cookie": cookies,
-				"Ya-Client-Cookie": cookies,
-				"Ya-Client-Host": cookies,
-				"Host": "mobileproxy.passport.yandex.net",
-			]
-		)
+		return try await client
+            .url(Yandex.Music.API.mobileproxyPassportURL)
+            .path("1", "bundle", "oauth", "token_by_sessionid")
+            .query(info)
+            .auth(enabled: false)
+            .bodyDecoder(YandexDecoder(isAuthorized: false))
+            .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase, nestedEncodingStrategy: .json))
+            .header(.cookie, cookies)
+            .header("Ya-Client-Cookie", cookies)
+            .header("Ya-Client-Host", cookies)
+            .header("Host", "mobileproxy.passport.yandex.net")
+            .post()
 	}
 
 	struct TokenBySessionIDQuery: Codable {

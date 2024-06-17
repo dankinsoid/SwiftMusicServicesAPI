@@ -129,3 +129,48 @@ private func decodeArray<T: Decodable>(unkeyedContainer: () throws -> UnkeyedDec
     }
     return array
 }
+
+extension Error {
+    
+    var humanReadable: String {
+        if let decoding = self as? DecodingError {
+            return decoding.humanReadable
+        }
+        return localizedDescription
+    }
+}
+
+private extension DecodingError {
+    
+    var humanReadable: String {
+        switch self {
+        case let .typeMismatch(any, context):
+            return "Expected \(any) at \(context.humanReadable)"
+        case let .valueNotFound(any, context):
+            return "Value of \(any) not found at \(context.humanReadable)"
+        case let .keyNotFound(codingKey, context):
+            return "Key \(context.humanReadable) not found"
+        case let .dataCorrupted(context):
+            return "Data corrupted at \(context.humanReadable)"
+        @unknown default:
+            return errorDescription ?? "\(self)"
+        }
+    }
+}
+
+private extension DecodingError.Context {
+    
+    var humanReadable: String {
+        codingPath.map(\.string).joined()
+    }
+}
+
+private extension CodingKey {
+    
+    var string: String {
+        if let intValue {
+            return "[\(intValue)]"
+        }
+        return "." + stringValue
+    }
+}

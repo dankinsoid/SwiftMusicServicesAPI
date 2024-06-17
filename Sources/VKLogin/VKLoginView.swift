@@ -1,7 +1,7 @@
 #if canImport(SwiftUI) && canImport(UIKit)
 	import Foundation
 	import Logging
-	import SwiftHttp
+	import SwiftAPIClient
 	import SwiftUI
 	import VKMusicAPI
 
@@ -10,7 +10,11 @@
 		public var hideOnLogin: Bool
 		public var successLogin: (VKUser, _ webCookies: [String: String]) -> Void
 
-		public init(client: VK.API = VK.API(client: UrlSessionHttpClient(logLevel: .debug)), hideOnLogin: Bool = true, successLogin: @escaping (VKUser, _ webCookies: [String: String]) -> Void = { _, _ in }) {
+		public init(
+            client: VK.API,
+            hideOnLogin: Bool = true,
+            successLogin: @escaping (VKUser, _ webCookies: [String: String]) -> Void = { _, _ in }
+        ) {
 			self.successLogin = successLogin
 			self.client = client
 			self.hideOnLogin = hideOnLogin

@@ -1,6 +1,6 @@
 import Foundation
 import SimpleCoders
-import SwiftHttp
+import SwiftAPIClient
 import VDCodable
 
 public extension Yandex {
@@ -8,14 +8,17 @@ public extension Yandex {
     static var onWrongRevisionError: (_ expected: Int, _ actual: Int, String) -> Void = { _, _, _ in }
 }
 
-struct YandexDecoder: HttpDataDecoder {
+struct YandexDecoder: DataDecoder {
+
     let decoder: VDJSONDecoder
+    let isAuthorized: Bool
     
-    init() {
+    init(isAuthorized: Bool = true) {
         let decoder = VDJSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase(separators: ["_", "-"])
         decoder.dateDecodingStrategy = ISO8601CodingStrategy()
         self.decoder = decoder
+        self.isAuthorized = isAuthorized
     }
     
     ///
@@ -29,9 +32,12 @@ struct YandexDecoder: HttpDataDecoder {
     /// - Returns: The decoded object
     ///
     func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
-        //        try? print(JSON(from: data))
         do {
-            return try decoder.decode(type, from: data)
+            if isAuthorized {
+                return try decoder.decode(YMO.Result<T>.self, from: data).result
+            } else {
+                return try decoder.decode(type, from: data)
+            }
         } catch {
             throw mapError(from: data) ?? error
         }

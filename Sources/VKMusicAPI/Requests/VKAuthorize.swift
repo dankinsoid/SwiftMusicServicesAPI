@@ -1,5 +1,5 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 
 public extension VK.API {
 	func authorize(_ parameters: VKAuthorizeParameters) async throws {

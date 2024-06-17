@@ -1,12 +1,9 @@
 import Foundation
-import SwiftHttp
+import SwiftAPIClient
 
 public extension Yandex.Music.API {
 
 	func likedTracks(userID id: Int) async throws -> YMO.LibraryContainer {
-		try await request(
-			url: baseURL.path("users", "\(id)", "likes", "tracks"),
-			method: .get
-		)
+        try await client("users", "\(id)", "likes", "tracks").get()
 	}
 }

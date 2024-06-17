@@ -1,15 +1,12 @@
 import Foundation
-import SwiftHttp
-import VDCodable
+import SwiftAPIClient
 
 public extension Yandex.Music.API {
 
 	func playlists(userID id: Int, playlistsKinds: [Int]) async throws -> [YM.Objects.Playlist<YMO.TrackShort>] {
-		try await request(
-			url: baseURL.path("users", "\(id)", "playlists")
-                .query(from: PlaylistsInput(kinds: playlistsKinds), encoder: queryEncoder),
-			method: .post
-		)
+        try await client("users", "\(id)", "playlists")
+            .query(PlaylistsInput(kinds: playlistsKinds))
+            .post()
 	}
 
 	struct PlaylistsInput: Encodable {
@@ -32,21 +29,16 @@ public extension Yandex.Music.API {
 public extension Yandex.Music.API {
 
 	func playlistsList(userID id: Int) async throws -> [YM.Objects.Playlist<YMO.TrackShort>] {
-		try await request(
-			url: baseURL.path("users", "\(id)", "playlists", "list"),
-			method: .get
-		)
+        try await client("users", "\(id)", "playlists", "list").get()
 	}
 }
 
 public extension Yandex.Music.API {
 
 	func playlistsCreate(userID id: Int, title: String, visibility: YMO.Visibility = .public) async throws -> YMO.Playlist<YMO.TrackShort> {
-		try await request(
-			url: baseURL.path("users", "\(id)", "playlists", "create")
-				.query(from: PlaylistsCreateInput(title: title, visibility: visibility), encoder: queryEncoder),
-			method: .post
-		)
+        try await client("users", "\(id)", "playlists", "create")
+            .query(PlaylistsCreateInput(title: title, visibility: visibility))
+            .post()
 	}
 
 	struct PlaylistsCreateInput: Encodable {
@@ -130,16 +122,11 @@ public extension Yandex.Music.API {
 private extension Yandex.Music.API {
     
     func playlistsChange(userID id: Int, input: PlaylistsChangeInput, counter: Int) async throws -> YMO.Playlist<YMO.TrackShort> {
-        let encoder = URLQueryEncoder()
-        encoder.nestedEncodingStrategy = .json
-        encoder.trimmingSquareBrackets = false
-        return try await onRevisionError {
-            try await self.request(
-                url: self.baseURL.path("users", "\(id)", "playlists", "\(input.kind)", "change-relative"),
-                method: .post,
-                body: encoder.encodePath(input).data(using: .utf8),
-                headers: [.contentType: "application/x-www-form-urlencoded"]
-            )
+        try await onRevisionError {
+            try await self.client("users", "\(id)", "playlists", "\(input.kind)", "change-relative")
+                .bodyEncoder(.formURL(nestedEncodingStrategy: .json(encode: .arraysAndObjects)))
+                .body(input)
+                .post()
         } retry: { revision, error in
             if counter > 0 {
                 var input = input
@@ -148,6 +135,22 @@ private extension Yandex.Music.API {
             } else {
                 throw error
             }
+        }
+    }
+
+    func onRevisionError<T>(action: () async throws -> T, retry: (Int, Error) async throws -> T) async throws -> T {
+        do {
+            return try await action()
+        } catch let error as WrongRevisionError {
+            return try await retry(error.actual, error)
+        } catch let error as APIClientError {
+            if let wrongRevisionError = error.error as? WrongRevisionError {
+                return try await retry(wrongRevisionError.actual, error)
+            } else {
+                throw error
+            }
+        } catch {
+            throw error
         }
     }
 }

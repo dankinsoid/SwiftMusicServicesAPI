@@ -1,7 +1,6 @@
 import Foundation
+import SwiftAPIClient
 import SimpleCoders
-import SwiftHttp
-import VDCodable
 
 public extension Yandex.Music.API {
 
@@ -13,13 +12,9 @@ public extension Yandex.Music.API {
                 let chunk = Array(ids[i..<min(i + maxSize, ids.count)])
                 i += maxSize
                 group.addTask { [self] in
-                    try await request(
-                        url: baseURL.path("tracks").query(
-                            from: TracksInput(ids: chunk, withPositions: withPositions),
-                            encoder: queryEncoder
-                        ),
-                        method: .post
-                    )
+                    try await client("tracks")
+                        .query(TracksInput(ids: chunk, withPositions: withPositions))
+                        .post()
                 }
             }
             return try await group.collect()
@@ -46,33 +41,20 @@ public extension Yandex.Music.API {
 public extension Yandex.Music.API {
 
 	func tracksDownloadInfo(id: Int) async throws -> [YMO.DownloadInfo] {
-		try await request(
-			url: baseURL.path("tracks", "\(id)", "download-info"),
-			method: .get
-		)
+        try await client("tracks", "\(id)", "download-info").get()
 	}
 }
 
 extension Yandex.Music.API {
 
 	public func fileURL(xmlURL: URL, codec: YMO.Codec, trackId: Int, uid: Int) async throws -> URL {
-		guard let url = HttpUrl(url: xmlURL) else { throw InvalidUrl() }
-		let response = try await rawRequest(
-			url: url,
-			method: .get,
-			headers: headers()
-		)
-
-		guard let xml = String(data: response.data, encoding: .utf8) else {
-			throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "No XML"))
-		}
-
+        let xml = try await client.url(xmlURL).call(.http, as: .string)
 		let host = try getXML(at: "host", xml: xml)
 		let path = try getXML(at: "path", xml: xml)
 		let ts = try getXML(at: "ts", xml: xml)
 		let s = try getXML(at: "s", xml: xml)
 		//            let region = getXML(at: "region", xml: xml).flatMap(Int.init)
-		var base = URL(string: "https://" + host) ?? Yandex.Music.API.baseURL.url
+		var base = URL(string: "https://" + host) ?? Yandex.Music.API.baseURL
 		base.appendPathComponent("get-\(codec.rawValue)/\(MD5(String(path.dropFirst()) + s))/\(ts)\(path)")
 		let parameters = Parameters(trackId: trackId, uid: uid)
 		return try URLQueryEncoder().encode(parameters, for: base)
@@ -85,7 +67,10 @@ extension Yandex.Music.API {
 		      .compactMap({ $0.components(separatedBy: "</\(key)>").first })
 		      .first
 		else {
-			throw DecodingError.keyNotFound(PlainCodingKey(key), DecodingError.Context(codingPath: [], debugDescription: ""))
+			throw DecodingError.keyNotFound(
+                PlainCodingKey(key),
+                DecodingError.Context(codingPath: [], debugDescription: "")
+            )
 		}
 		return result
 	}

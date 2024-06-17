@@ -1,12 +1,11 @@
 #if canImport(SwiftUI) && canImport(UIKit)
 	import Foundation
 	import Logging
-	import SwiftHttp
 	import SwiftUI
 	import YandexMusicAPI
 
 	public struct YMLoginView: UIViewControllerRepresentable {
-		public var api = YM.API(client: UrlSessionHttpClient(logLevel: .debug))
+		public var api = YM.API()
 		public var clientId = YM.API.clientID
 		public var clientSecret = YM.API.clientSecret
 		public var info = YMLoginInfo()
@@ -14,7 +13,7 @@
 		public var successLogin: (_ token: String, _ userID: Int) -> Void
 
 		public init(
-			api: YM.API = YM.API(client: UrlSessionHttpClient(logLevel: .debug)),
+			api: YM.API = YM.API(),
 			info: YMLoginInfo = YMLoginInfo(),
 			clientId: String = YM.API.clientID,
 			clientSecret: String = YM.API.clientSecret,

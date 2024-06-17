@@ -1,21 +1,16 @@
 import Foundation
-import SimpleCoders
-import SwiftHttp
-import VDCodable
+import SwiftAPIClient
 
 public extension Yandex.Music.API {
 
 	func token(input: TokenInput) async throws -> TokenOutput {
-		try await request(
-			url: Yandex.Music.API.authURL.path("token"),
-			method: .post,
-			auth: false,
-			body: Data(
-				URLQueryEncoder(keyEncodingStrategy: .convertToSnakeCase())
-					.encodePath(input)
-					.utf8
-			)
-		)
+        try await client.url(Yandex.Music.API.authURL)
+            .path("token")
+            .auth(enabled: false)
+            .bodyDecoder(YandexDecoder(isAuthorized: false))
+            .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase))
+            .body(input)
+            .post()
 	}
 
 	struct TokenInput: Codable {

@@ -1,13 +1,13 @@
 #if canImport(UIKit)
 	import Logging
-	import SwiftHttp
+	import SwiftAPIClient
 	import UIKit
 	import VDCodable
 	import WebKit
 	import YandexMusicAPI
 
 	open class YMLoginController: UIViewController, WKNavigationDelegate {
-		open var api = YM.API(client: UrlSessionHttpClient(logLevel: .debug))
+		open var api = YM.API()
 		open var clientId = YM.API.clientID
 		open var clientSecret = YM.API.clientSecret
 		open var info = YMLoginInfo()
@@ -20,7 +20,7 @@
 		private var _yasc: String?
 
 		public init(
-			api: YM.API = YM.API(client: UrlSessionHttpClient(logLevel: .debug)),
+			api: YM.API = YM.API(),
 			info: YMLoginInfo = YMLoginInfo(),
 			clientId: String = YM.API.clientID,
 			clientSecret: String = YM.API.clientSecret,
@@ -66,10 +66,13 @@
 			//		webView.isOpaque = false
 			webView.scrollView.indicatorStyle = .default
 
-			let url = try! URLQueryEncoder().encode(info, for: YM.API.passportURL.url)
-			var request = URLRequest(url: url)
-			request.addValue("passport.yandex.com", forHTTPHeaderField: "Host")
-			webView.load(request)
+            do {
+                let url = try URLQueryEncoder().encode(info, for: YM.API.passportURL)
+                var request = URLRequest(url: url)
+                request.addValue("passport.yandex.com", forHTTPHeaderField: "Host")
+                webView.load(request)
+            } catch {
+            }
 			webView.allowsBackForwardNavigationGestures = true
 			view.backgroundColor = .clear
 		}

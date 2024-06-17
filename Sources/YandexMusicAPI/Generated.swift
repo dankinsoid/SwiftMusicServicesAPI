@@ -1,6 +1,5 @@
 import Foundation
 import SimpleCoders
-import SwiftHttp
 import SwiftMusicServicesApi
 import VDCodable
 
