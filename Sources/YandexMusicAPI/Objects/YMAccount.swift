@@ -11,7 +11,7 @@ public extension YMO {
 		public var defaultEmail: String?
 		public var plus: Plus?
 		public var subeditor: Bool?
-		public var subscription: Subscription
+		public var subscription: Subscription?
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
 			case subeditorLevel, account, permissions
