@@ -175,19 +175,29 @@ private struct VKRedirectMiddleware: HTTPClientMiddleware {
     }
     
     private func redirect<T>(data: T, response: HTTPResponse) -> URL? {
+        let result: URL
         if
             response.status.kind == .redirection,
             let location = response.headerFields[.location],
-            let url = URL(string: location, relativeTo: VK.API.baseURL)
+            let url = URL(string: location)
         {
-            return url
+            result = url
+        } else if let data = data as? Data, let location = try? JSONDecoder().decode(Location.self, from: data) {
+            result = location.location
+        } else {
+            return nil
         }
-        if let data = data as? Data, let location = try? JSONDecoder().decode(Location.self, from: data) {
-            return location.location
+        if result.absoluteString.hasPrefix("http") {
+            return result
+        } else {
+            return URL(
+                string: [VK.API.baseURL.absoluteString, result.absoluteString]
+                    .map { $0.trimmingCharacters(in: ["/"]) }
+                    .joined(separator: "/")
+            ) ?? VK.API.baseURL
         }
-        return nil
     }
-    
+
     @discardableResult
     private func find(cookie: String, comp: [String], request: inout HTTPRequestComponents) -> String? {
         if comp[0] == cookie {
