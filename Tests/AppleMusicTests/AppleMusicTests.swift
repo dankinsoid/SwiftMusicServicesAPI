@@ -5,7 +5,11 @@ import SwiftAPIClient
 final class AppleMusicTests: XCTestCase {
 
     let api = AppleMusic.API(
-        client: APIClient().loggingComponents([.baseURL, .basic, .body])
+        client: APIClient().loggingComponents([.full]),
+        token: AppleMusic.Objects.Tokens(
+            token: "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkE2N1ozMlBYRkIifQ.eyJpc3MiOiI0NzMzVDU2VVpXIiwiaWF0IjoxNzE5MDU1Mjc1LjA0OTI4NSwiZXhwIjoxNzI2OTQzNzc1LjA0OTI4Nn0.hD1hstq4VXtCF6ls34Z4omvMuwqtm6RJc-ID5FC2JRPSpD2gzfYyHLeCZjGb3ZAW92tlTVzkbIYKyUrVS48Smg",
+            userToken: "Aocdivqrc2Ypg/tuBd1ZdZsxOvil/inHz6G5mOYpWBKgnTM0NyzgD14WHShSbRFTKuiMdBdAvA+HJi7yPHsVU1z+wp1+w/TOdylkLy4lCcaH5dIy/yEAqI9p5LBWjTa4bMfNQwXxTvZbbUS/uDqFfe8Q/d1wjiBluiK402Z7/Tssz+yfY+W+aJey+M5A4robkA0644YYcET7KLSievimXU2NfQMuARDyxbHS9cQlHGHBN+5nkg=="
+        )
     )
 
     func testGetTracks() async throws {
