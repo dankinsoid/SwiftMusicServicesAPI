@@ -116,7 +116,7 @@ private extension Spotify.API {
         clientSecret: String
     ) async throws -> (accessToken: String, refreshToken: String?, expiryDate: Date?) {
         guard let refreshToken else {
-            throw SPError(status: 401, message: "No refresh token")
+            throw TokenNotFound()
         }
         let response: SPTokenResponse = try await client
             .url(apiBaseURL)

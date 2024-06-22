@@ -33,7 +33,7 @@ extension YouTube {
                         redirectURI: redirectURI
                     )
                     .refreshToken(
-                        refreshToken.unwrap(throwing: AnyError("No refresh token found in cache"))
+                        refreshToken.unwrap(throwing: TokenNotFound())
                     )
                     return (result.accessToken, refreshToken, Date(timeIntervalSinceNow: result.expiresIn))
                 } auth: { token in
