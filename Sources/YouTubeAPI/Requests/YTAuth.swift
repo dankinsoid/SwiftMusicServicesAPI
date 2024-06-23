@@ -1,7 +1,6 @@
 import Foundation
 import SwiftMusicServicesApi
 import SwiftAPIClient
-import CryptoSwift
 
 extension YouTube {
 
@@ -159,6 +158,15 @@ extension YouTube {
                     )
                 )
                 .post()
+        }
+
+        public func revoke(token: String, cache: SecureCacheService? = nil) async throws {
+            try await client("revoke")
+                .query("token", token)
+                .post()
+            try? await cache?.save(nil, for: .accessToken)
+            try? await cache?.save(nil, for: .refreshToken)
+            try? await cache?.save(nil, for: .expiryDate)
         }
     }
 }

@@ -497,7 +497,7 @@ public extension Yandex.Music.Objects.Result {
 		invocationInfo: YMO.InvocationInfo? = nil
 	) -> Self {
 		.init(
-			result: result,
+            result: .value(result),
 			invocationInfo: invocationInfo
 		)
 	}

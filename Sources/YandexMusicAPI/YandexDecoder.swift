@@ -33,7 +33,8 @@ struct YandexDecoder: DataDecoder {
     ///
     func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
         if isAuthorized {
-            return try decoder.decode(YMO.Result<T>.self, from: data).result
+            return try decoder.decode(YMO.Result<T>.self, from: data)
+                .result.value.unwrap(throwing: AnyError("Server returned error"))
         } else {
             return try decoder.decode(type, from: data)
         }

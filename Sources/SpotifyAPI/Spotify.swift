@@ -17,6 +17,12 @@ public enum Spotify {
 		public let clientID: String
 		public let clientSecret: String
         public let cache: SecureCacheService
+        var codeVerifier: String? {
+            get { lock.withReaderLock { _codeVerifier } }
+            set { lock.withWriterLockVoid { _codeVerifier = newValue } }
+        }
+        private var _codeVerifier: String?
+        private let lock = ReadWriteLock()
 
         public init(
             client: APIClient,

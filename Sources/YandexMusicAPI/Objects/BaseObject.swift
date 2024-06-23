@@ -29,8 +29,28 @@ public extension Yandex.Music.Objects {
 	}
 
 	struct Result<T: Decodable>: Decodable {
-		public var result: T
+		public var result: ResultValue
 		public var invocationInfo: InvocationInfo?
+        
+        public enum ResultValue: Decodable {
+            case bool(Bool)
+            case value(T)
+            
+            public init(from decoder: Decoder) throws {
+                do {
+                    let value = try T(from: decoder)
+                    self = .value(value)
+                } catch {
+                    let value = try? Bool(from: decoder)
+                    self = .bool(value ?? false)
+                }
+            }
+            
+            public var value: T? {
+                guard case .value(let value) = self else { return nil }
+                return value
+            }
+        }
 	}
 
 	struct Results<T: Decodable>: Decodable {
@@ -86,5 +106,5 @@ public extension Yandex.Music.Objects {
 	}
 }
 
-extension YMO.Result: Encodable where T: Encodable {}
+//extension YMO.Result: Encodable where T: Encodable {}
 extension YMO.Results: Encodable where T: Encodable {}

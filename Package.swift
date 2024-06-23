@@ -56,6 +56,10 @@ let package = Package(
             name: "YouTubeLogin",
             targets: ["YouTubeLogin"]
         ),
+        .library(
+            name: "SoundCloudAPI",
+            targets: ["SoundCloudAPI"]
+        ),
 	],
 	dependencies: [
 		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.13.0"),
@@ -163,6 +167,18 @@ let package = Package(
             name: "YouTubeAPITests",
             dependencies: [
                 .target(name: "YouTubeAPI")
+            ]
+        ),
+        .target(
+            name: "SoundCloudAPI",
+            dependencies: [
+                "SwiftMusicServicesApi"
+            ]
+        ),
+        .testTarget(
+            name: "SoundCloudAPITests",
+            dependencies: [
+                .target(name: "SoundCloudAPI")
             ]
         ),
 	]
