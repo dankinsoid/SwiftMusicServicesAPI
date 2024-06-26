@@ -40,14 +40,14 @@ public extension Yandex.Music.API {
 
 public extension Yandex.Music.API {
 
-	func tracksDownloadInfo(id: Int) async throws -> [YMO.DownloadInfo] {
-        try await client("tracks", "\(id)", "download-info").get()
+	func tracksDownloadInfo(id: String) async throws -> [YMO.DownloadInfo] {
+        try await client("tracks", id, "download-info").get()
 	}
 }
 
 extension Yandex.Music.API {
 
-	public func fileURL(xmlURL: URL, codec: YMO.Codec, trackId: Int, uid: Int) async throws -> URL {
+	public func fileURL(xmlURL: URL, codec: YMO.Codec, trackId: String, uid: Int) async throws -> URL {
         let xml = try await client.url(xmlURL).call(.http, as: .string)
 		let host = try getXML(at: "host", xml: xml)
 		let path = try getXML(at: "path", xml: xml)
@@ -102,7 +102,7 @@ extension Yandex.Music.API {
 	}
 
 	private struct Parameters: Encodable {
-		let trackId: Int
+		let trackId: String
 		let uid: Int
 		let from = "mobile"
 		let play = false
