@@ -5,7 +5,7 @@ import SwiftSoup
 
 public extension VK.API {
 
-    func myTracksPageRequest(start_from: String, block: String) async throws -> VKAudioListSection {
+    func myTracksPageRequest(start_from: String?, block: String) async throws -> VKAudioListSection {
         var string = try await client("audio")
             .xmlHttpRequest
             .query(MyTracksPageRequestInput(act: .block, block: block, start_from: start_from))
@@ -41,11 +41,11 @@ public extension VK.API {
 
 	struct MyTracksPageRequestInput: Codable {
 		public var act: VKAct?
-		public var start_from: String
+		public var start_from: String?
         public var section: VKAudioPageInput.Section?
         public var block: String?
         
-        public init(act: VKAct? = nil, block: String? = nil, section:  VKAudioPageInput.Section? = nil, start_from: String) {
+        public init(act: VKAct? = nil, block: String? = nil, section:  VKAudioPageInput.Section? = nil, start_from: String?) {
             self.act = act
             self.block = block
             self.section = section

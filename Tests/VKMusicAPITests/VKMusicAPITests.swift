@@ -3,6 +3,7 @@ import SwiftAPIClient
 import VKMusicAPI
 import XCTest
 import HTTPTypes
+import VDCodable
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -16,10 +17,10 @@ final class VKMusicAPITests: XCTestCase {
 	)
     
 	func testList() async throws {
-        let list = try await api.list().first()
-        print(list.count)
+        let tracks = try await api.list().collect()
+        print(tracks.count)
 	}
-	
+
 	func testPlaylistsById() async throws {
 		let list = try await api.playlists(id: 73750576)
 		print("Count: \(list.count)")

@@ -12,6 +12,7 @@ public struct VKAudio: Encodable, Hashable, Identifiable {
 	public var imageURL: URL?
 	public var ids: String?
 	public var addHash: String?
+    public var hashes: [String]
 	public var trackCode: String?
 
 	public static func == (_ lhs: VKAudio, _ rhs: VKAudio) -> Bool {
@@ -37,13 +38,11 @@ extension VKAudio: Decodable {
 				_ = try container.decode(JSON.self)
 			}
 			let str = try container.decode(String.self)
-			addHash = str.components(separatedBy: "//").first
-			let id3 = str
-				.components(separatedBy: "//")
-				.dropFirst()
-				.joined(separator: "_")
-				.replacingOccurrences(of: "/", with: "")
-			ids = "\(id2)_\(_id)_\(id3)"
+            hashes = str.components(separatedBy: "/")
+			addHash = hashes.first
+            if hashes.count > 5 {
+                ids = "\(id2)_\(_id)_\(hashes[2])_\(hashes[5])"
+            }
 			imageURL = try? URL(string: container.decode(String.self).components(separatedBy: ",").last ?? "")
 			for _ in 15 ..< 20 {
 				_ = try container.decode(JSON.self)
@@ -60,6 +59,7 @@ extension VKAudio: Decodable {
 			ids = try container.decodeIfPresent(String.self, forKey: .ids)
 			trackCode = try container.decodeIfPresent(String.self, forKey: .trackCode)
 			addHash = try container.decodeIfPresent(String.self, forKey: .addHash)
+            hashes = try container.decodeIfPresent([String].self, forKey: .hashes) ?? []
 		}
 	}
 }
@@ -75,6 +75,7 @@ extension VKAudio: XMLInitable {
 		title = try xml.getElementsByClass("ai_title").first()?.text() ?? ""
 		artist = try xml.getElementsByClass("ai_artist").first()?.text() ?? ""
 		duration = try Int(xml.getElementsByClass("ai_dur").first()?.attr("data-dur") ?? "") ?? 0
+        hashes = []
 		do {
 			let style = try xml.getElementsByClass("ai_play").first()?.attr("style")
 			imageURL = (style?.components(separatedBy: "url(").dropFirst().first?.components(separatedBy: ")").first).flatMap {

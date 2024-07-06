@@ -60,6 +60,10 @@ let package = Package(
             name: "SoundCloudAPI",
             targets: ["SoundCloudAPI"]
         ),
+        .library(
+            name: "TidalAPI",
+            targets: ["TidalAPI"]
+        ),
 	],
 	dependencies: [
 		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.13.0"),
@@ -179,6 +183,18 @@ let package = Package(
             name: "SoundCloudAPITests",
             dependencies: [
                 .target(name: "SoundCloudAPI")
+            ]
+        ),
+        .target(
+            name: "TidalAPI",
+            dependencies: [
+                "SwiftMusicServicesApi"
+            ]
+        ),
+        .testTarget(
+            name: "TidalAPITests",
+            dependencies: [
+                .target(name: "TidalAPI")
             ]
         ),
 	]

@@ -118,6 +118,19 @@ public extension VK.API {
 	func list(playlist: VKPlaylistItemHTML, limit: Int? = nil, offset: Int = 0) -> VKMyPlaylistTracks {
         VKMyPlaylistTracks(limit: limit, offset: offset, playlist: playlist, api: self)
 	}
+
+    func encodedLink(ids: String) async throws -> String {
+        let json: JSON = try await client("audio")
+            .body([
+                "act": "reload_audio",
+                "al": "1",
+                "ids": ids
+            ])
+            .bodyEncoder(.formURL)
+            .xmlHttpRequest
+            .post()
+        return try (json["data"][0][0][2]?.string).unwrap(throwing: AnyError("Invalid link"))
+    }
 }
 
 public struct VKMyTracks: AsyncSequence {
@@ -161,11 +174,11 @@ public struct VKMyTracks: AsyncSequence {
             } else if !didSendFirst {
                 didSendFirst = true
                 let bl = try await page.api.audioBlock()
-                let tr = try await page.api.audioFirstPageRequest(href: bl.href)
-                didSendCount += tr.tracks.count
+                let tr = try await page.api.myTracksPageRequest(start_from: nil, block: bl.block)
+                didSendCount += tr.list.count
                 block = bl.block
-                next = tr.next
-                return tr.tracks
+                next = tr.nextOffset
+                return tr.list
             } else {
                 return nil
             }
