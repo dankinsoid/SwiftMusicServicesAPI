@@ -116,8 +116,12 @@ public extension VK.API {
 //	}
 
 	func list(playlist: VKPlaylistItemHTML, limit: Int? = nil, offset: Int = 0) -> VKMyPlaylistTracks {
-        VKMyPlaylistTracks(limit: limit, offset: offset, playlist: playlist, api: self)
+        VKMyPlaylistTracks(limit: limit, offset: offset, act: playlist.act, api: self)
 	}
+
+    func list(playlistAct: String?, limit: Int? = nil, offset: Int = 0) -> VKMyPlaylistTracks {
+        VKMyPlaylistTracks(limit: limit, offset: offset, act: playlistAct, api: self)
+    }
 
     func encodedLink(ids: String) async throws -> String {
         let json: JSON = try await client("audio")
@@ -192,7 +196,7 @@ public struct VKMyPlaylistTracks: AsyncSequence {
     
     let limit: Int?
     let offset: Int
-    let playlist: VKPlaylistItemHTML
+    let act: String?
     let api: VK.API
     
     public func makeAsyncIterator() -> AsyncIterator {
@@ -216,7 +220,7 @@ public struct VKMyPlaylistTracks: AsyncSequence {
         public mutating func next() async throws -> Element? {
             guard !didExceedLimits else { return nil }
             if let offset {
-                let tr = try await page.api.audioPageRequest(act: page.playlist.act ?? "", offset: offset)
+                let tr = try await page.api.audioPageRequest(act: page.act ?? "", offset: offset)
                 didSendCount += tr.count
                 self.offset = tr.count < 100 || tr.count == 0 ? nil : offset + tr.count
                 return tr
