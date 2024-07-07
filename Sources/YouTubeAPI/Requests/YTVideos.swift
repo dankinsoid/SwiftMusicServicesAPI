@@ -62,7 +62,7 @@ extension YouTube.API.Videos {
                 "regionCode": regionCode,
                 "videoCategoryId": videoCategoryId,
             ])
-            .auth(enabled: filter.isMyRating),
+            .auth(enabled: filter.isMyRating || onBehalfOfContentOwner != nil),
             limit: limit,
             pageToken: pageToken
         )

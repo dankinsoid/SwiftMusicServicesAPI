@@ -155,7 +155,7 @@ extension YouTube.API.Search {
                     filter.map { [$0.rawValue: true as Encodable] } ?? [:]
                 ) { _, p in p }
             )
-            .auth(enabled: filter != nil || auth == true),
+            .auth(enabled: filter != nil || auth == true || onBehalfOfContentOwner != nil),
             limit: limit,
             pageToken: pageToken
         )

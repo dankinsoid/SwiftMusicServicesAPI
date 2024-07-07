@@ -54,7 +54,7 @@ extension YouTube.API.Playlists {
                 "onBehalfOfContentOwner": onBehalfOfContentOwner,
                 "onBehalfOfContentOwnerChannel": onBehalfOfContentOwnerChannel
             ])
-            .auth(enabled: filter == .mine),
+            .auth(enabled: filter == .mine || onBehalfOfContentOwner != nil || onBehalfOfContentOwnerChannel != nil),
             limit: limit,
             pageToken: pageToken
         )
