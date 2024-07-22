@@ -3,11 +3,13 @@ import SwiftAPIClient
 @_exported import SwiftMusicServicesApi
 
 extension Tidal {
-    
+
     public final class Auth {
-        
+
         public static let baseURL = URL(string: "https://auth.tidal.com/v1/oauth2")!
-        public static let redirectURI = "https://account.tidal.com/login/tidal/return"
+        public static let redirectURIWeb = "https://account.tidal.com/login/tidal/return"
+        public static let redirectURIDesktop = "tidal://login/auth"
+
         public let client: APIClient
         public let clientID: String
         public let clientSecret: String
@@ -19,7 +21,7 @@ extension Tidal {
             client: APIClient = APIClient(),
             clientID: String,
             clientSecret: String,
-            redirectURI: String = Auth.redirectURI
+            redirectURI: String
         ) {
             self.client = client.url(Auth.baseURL)
                 .bodyEncoder(
@@ -40,11 +42,15 @@ extension Tidal {
         /// - Parameters:
         ///   - scope: The scope of the request.
         ///   - state: An opaque value used by the client to maintain state between this request and the response.
+        ///   - restrictSignup: If true, the user will be prompted to sign in with an existing account.
+        ///   - language: The language of the login page.
         ///   - codeChallengeMethod: The method used to encode the code_verifier for the codeChallenge parameter.  Used to secure authorization code grants via Proof Key for Code Exchange (PKCE).
         public func authURL(
             scope: Tidal.Objects.Scope = [.rUsr, .wUsr],
             state: String? = nil,
-            codeChallengeMethod: CodeChallengeMethod? = nil
+            restrictSignup: Bool = true,
+            language: String = "en",
+            codeChallengeMethod: CodeChallengeMethod? = .S256
         ) -> URL? {
             let code_challenge: String?
             if let codeChallengeMethod, let (verifier, challenge) = generateCodeChallenge(method: codeChallengeMethod) {
@@ -54,23 +60,25 @@ extension Tidal {
                 codeVerifier = nil
                 code_challenge = nil
             }
-            return try? client.url("")
-                .query([
-                    "response_type": "code",
-                    "client_id": clientID,
-                    "scope": scope,
-                    "redirect_uri": redirectURI,
-                    "state": state,
-                    "code_challenge": code_challenge,
-                    "code_challenge_method": codeChallengeMethod
-                ])
-                .auth(enabled: true)
-                .request()
-                .url
+            return try? URL(string: "https://login.tidal.com/authorize")?
+                .query(
+                    [
+                        "response_type": "code",
+                        "client_id": clientID,
+                        "scope": scope,
+                        "redirect_uri": redirectURI,
+                        "state": state,
+                        "language": language,
+                        "restrictSignup": restrictSignup,
+                        "code_challenge": code_challenge,
+                        "code_challenge_method": codeChallengeMethod
+                    ],
+                    queryEncoder: .urlQuery(arrayEncodingStrategy: .separator(" "))
+                )
         }
-        
+
         /// - Returns: An auth code.
-        /// - Throws: ``YouTube.OAuth.Error``
+        /// - Throws: ``Tidal.Auth.Error``
         public func codeFrom(redirected url: String) throws -> String? {
             if url.contains("?code=") {
                 return url.components(separatedBy: "?code=")[1]
@@ -80,7 +88,7 @@ extension Tidal {
                 return nil
             }
         }
-        
+
         public func token(
             code: String,
             clientUniqueKey: String? = nil,
@@ -164,7 +172,7 @@ extension Tidal {
                 ))
                 .post()
         }
-        
+
         public func waitForToken(
             authResponse: Tidal.Objects.DeviceAuthorizationResponse,
             cache: SecureCacheService
@@ -192,7 +200,7 @@ extension Tidal.Objects.Error {
 }
 
 extension Tidal.Objects {
-    
+
     public struct PostCodePair: Codable {
         public var response_type: Tidal.Objects.ResponseType
         public var client_id: String
@@ -209,7 +217,7 @@ extension Tidal.Objects {
         public static let rUsr = Self("r_usr")
         public static let wUsr = Self("w_usr")
         public static let wSub = Self("w_sub")
-        
+
         public var value: String
         public var description: String { value }
         public init(_ value: String) { self.value = value }
@@ -307,6 +315,10 @@ extension Tidal.Objects {
             self.expires_in = expires_in
             self.user = user
             self.user_id = user_id
+        }
+        
+        public var expiresAt: Date {
+            Date(timeIntervalSinceNow: expires_in)
         }
     }
 }
