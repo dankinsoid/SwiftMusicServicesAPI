@@ -5,23 +5,23 @@ extension Tidal.Objects {
     public struct Error: Codable, LocalizedError, CustomStringConvertible, Equatable {
 
         public var status: Int
-        public var sub_status: Int?
+        public var subStatus: Int?
         public var error: String
-        public var error_description: String?
+        public var userMessage: String?
     
         public var description: String {
-            "\(status) - \(sub_status ?? 0): \(error) - \(error_description ?? "")"
+            "\(status) - \(subStatus ?? 0): \(error) - \(userMessage ?? "")"
         }
         
         public var errorDescription: String? {
-            error_description
+            userMessage
         }
         
-        public init(status: Int = 400, sub_status: Int? = nil, error: String, error_description: String? = nil) {
+        public init(status: Int = 400, subStatus: Int? = nil, error: String, userMessage: String? = nil) {
             self.status = status
-            self.sub_status = sub_status
+            self.subStatus = subStatus
             self.error = error
-            self.error_description = error_description
+            self.userMessage = userMessage
         }
         
         public static func == (lhs: Tidal.Objects.Error, rhs: Tidal.Objects.Error) -> Bool {

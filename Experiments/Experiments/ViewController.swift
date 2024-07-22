@@ -7,7 +7,7 @@ final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate
 
     var webView: WKWebView?
     let api = Tidal.Auth(
-        client: APIClient().logger(.none),
+        client: APIClient().loggingComponents(.full),
         clientID: Tidal.API.desktopClientID,
         clientSecret: "",
         redirectURI: Tidal.Auth.redirectURIDesktop

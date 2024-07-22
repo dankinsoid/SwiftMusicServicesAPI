@@ -61,7 +61,7 @@ extension YouTube {
             apiKey: String,
             token: String? = nil,
             refreshToken: String? = nil,
-            expiryIn: Double? = nil
+            expiryAt: Date? = nil
         ) {
             let cache = MockSecureCacheService([
                 .accessToken: token,
@@ -74,13 +74,12 @@ extension YouTube {
                 clientSecret: clientSecret,
                 redirectURI: redirectURI,
                 apiKey: apiKey,
-                cache: cache
+                cache: MockSecureCacheService([
+                    .accessToken: token,
+                    .refreshToken: refreshToken,
+                    .expiryDate: expiryAt.map(DateFormatter.secureCacheService.string)
+                ].compactMapValues { $0 })
             )
-            if let expiryIn {
-                Task {
-                    try await cache.save(Date(timeIntervalSinceNow: expiryIn), for: .expiryDate)
-                }
-            }
         }
 
         public func update(accessToken: String, refreshToken: String?, expiresIn: Double?) async {

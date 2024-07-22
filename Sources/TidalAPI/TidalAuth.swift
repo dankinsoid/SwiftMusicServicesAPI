@@ -30,6 +30,7 @@ extension Tidal {
                         arrayEncodingStrategy: .separator(" ")
                     )
                 )
+                .bodyDecoder(.json(dateDecodingStrategy: .tidal))
                 .errorDecoder(.decodable(Tidal.Objects.Error.self))
                 .auth(.basic(username: clientID, password: clientSecret))
             self.clientID = clientID
@@ -80,10 +81,12 @@ extension Tidal {
         /// - Returns: An auth code.
         /// - Throws: ``Tidal.Auth.Error``
         public func codeFrom(redirected url: String) throws -> String? {
-            if url.contains("?code=") {
-                return url.components(separatedBy: "?code=")[1]
-            } else if url.contains("?error=") {
-                throw Tidal.Objects.Error(error: url.components(separatedBy: "?error=")[1])
+            guard let components = URLComponents(string: url) else { return nil }
+            let items = components.queryItems ?? []
+            if let value = items.first(where: { $0.name == "code" })?.value {
+                return value
+            } else if let error = items.first(where: { $0.name == "error" })?.value {
+                throw Tidal.Objects.Error(error: error)
             } else {
                 return nil
             }
@@ -308,7 +311,7 @@ extension Tidal.Objects {
         public var user: Tidal.Objects.User?
         public var user_id: Int?
 
-        public init(access_token: String, refresh_token: String, token_type: String, expires_in: Double, user: Tidal.Objects.User? = nil, user_id: Int? = nil) {
+        public init(access_token: String, refresh_token: String, token_type: String = "Bearer", expires_in: Double, user: Tidal.Objects.User? = nil, user_id: Int? = nil) {
             self.access_token = access_token
             self.refresh_token = refresh_token
             self.token_type = token_type

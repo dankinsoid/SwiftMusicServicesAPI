@@ -109,10 +109,12 @@ extension YouTube {
         /// - Returns: An auth code.
         /// - Throws: ``YouTube.OAuth.Error``
         public func codeFrom(redirected url: String) throws -> String {
-            if url.contains("?code=") {
-                return url.components(separatedBy: "?code=")[1]
-            } else if url.contains("?error=") {
-                throw Error(url.components(separatedBy: "?error=")[1])
+            guard let components = URLComponents(string: url) else { throw Error.invalidRedirectUrl }
+            let items = components.queryItems ?? []
+            if let value = items.first(where: { $0.name == "code" })?.value {
+                return value
+            } else if let error = items.first(where: { $0.name == "error" })?.value {
+                throw Error(error)
             } else {
                 throw Error.invalidRedirectUrl
             }

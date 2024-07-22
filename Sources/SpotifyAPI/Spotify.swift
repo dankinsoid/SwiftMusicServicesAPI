@@ -41,31 +41,25 @@ public enum Spotify {
             self.clientID = clientID
             self.clientSecret = clientSecret
         }
-    
+
 		public convenience init(
 			client: APIClient,
 			clientID: String,
 			clientSecret: String,
 			token: String? = nil,
 			refreshToken: String? = nil,
-            expiryIn: Double? = nil
+            expiryAt: Date? = nil
 		) {
-            let cache = MockSecureCacheService([
-                .accessToken: token,
-                .refreshToken: refreshToken,
-            ].compactMapValues { $0 })
-    
             self.init(
                 client: client,
                 clientID: clientID,
                 clientSecret: clientSecret,
-                cache: cache
+                cache: MockSecureCacheService([
+                    .accessToken: token,
+                    .refreshToken: refreshToken,
+                    .expiryDate: expiryAt.map(DateFormatter.secureCacheService.string)
+                ].compactMapValues { $0 })
             )
-            if let expiryIn {
-                Task {
-                    try await self.cache.save(Date(timeIntervalSinceNow: expiryIn), for: .expiryDate)
-                }
-            }
 		}
 
         public var client: APIClient {

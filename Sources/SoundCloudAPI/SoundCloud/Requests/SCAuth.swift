@@ -80,7 +80,7 @@ public extension SoundCloud {
                 ))
                 .post
         }
-        
+
         public func authURL(
             responseType: String = "code",
             state: String? = nil,
@@ -116,14 +116,16 @@ public extension SoundCloud {
         }
         
         /// - Returns: An auth code.
-        /// - Throws: ``YouTube.OAuth.Error``
-        public func codeFrom(redirected url: String) throws -> String {
-            if url.contains("?code=") {
-                return url.components(separatedBy: "?code=")[1]
-            } else if url.contains("?error=") {
-                throw AnyError(url.components(separatedBy: "?error=")[1])
+        /// - Throws: ``SCO.Auth.Error``
+        public func codeFrom(redirected url: String) throws -> String? {
+            guard let components = URLComponents(string: url) else { return nil }
+            let items = components.queryItems ?? []
+            if let value = items.first(where: { $0.name == "code" })?.value {
+                return value
+            } else if let error = items.first(where: { $0.name == "error" })?.value {
+                throw AnyError(error)
             } else {
-                throw AnyError("Invalid redirect URL")
+                return nil
             }
         }
         

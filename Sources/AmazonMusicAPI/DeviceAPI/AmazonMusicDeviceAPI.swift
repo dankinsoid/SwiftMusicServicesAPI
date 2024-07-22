@@ -44,25 +44,19 @@ extension Amazon.Music {
             redirectURI: String,
             accessToken: String? = nil,
             refreshToken: String? = nil,
-            expiryIn: Double? = nil
+            expiryAt: Date? = nil
         ) {
-            let cache = MockSecureCacheService([
-                .accessToken: accessToken,
-                .refreshToken: refreshToken,
-            ].compactMapValues { $0 })
-            
             self.init(
                 client: client,
                 clientID: clientID,
                 clientSecret: clientSecret,
                 redirectURI: redirectURI,
-                cache: cache
+                cache: MockSecureCacheService([
+                    .accessToken: accessToken,
+                    .refreshToken: refreshToken,
+                    .expiryDate: expiryAt.map(DateFormatter.secureCacheService.string)
+                ].compactMapValues { $0 })
             )
-            if let expiryIn {
-                Task {
-                    try await cache.save(Date(timeIntervalSinceNow: expiryIn), for: .expiryDate)
-                }
-            }
         }
     
         public func update(accessToken: String, refreshToken: String, expiresIn: Double?) async {
