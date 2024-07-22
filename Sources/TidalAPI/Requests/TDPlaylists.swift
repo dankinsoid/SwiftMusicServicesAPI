@@ -23,7 +23,7 @@ public extension Tidal.API.V1 {
     }
 }
 
-extension Tidal.API.V1.Playlist {
+public extension Tidal.API.V1.Playlist {
 
     func items(
         auth: Bool = true,

@@ -24,12 +24,13 @@ final class TidalAPITests: XCTestCase {
             throw error
         }
     }
+
     
     func testSearch() async throws {
-        let search = try await api.search.tracks(query: "Kanye", limit: 1).first()
+        let search = try await api.tracks.isrc("USIR19902111")
         print(search)
     }
-    
+
     func testCreatePlaylist() async throws {
         let playlist = try await api.users("198537731").playlists.create(title: "Test 2")
         print(playlist)
