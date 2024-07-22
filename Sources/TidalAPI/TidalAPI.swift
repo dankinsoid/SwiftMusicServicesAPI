@@ -39,6 +39,17 @@ extension Tidal.API {
                 .auth(enabled: true)
                 .bodyDecoder(.json(dateDecodingStrategy: .tidal))
                 .errorDecoder(.decodable(Tidal.Objects.Error.self))
+                .bodyEncoder(
+                    .formURL(
+                        keyEncodingStrategy: .convertToSnakeCase,
+                        arrayEncodingStrategy: .commaSeparator
+                    )
+                )
+                .finalizeRequest { request, configs in
+                    if request.headers[.authorization] == nil, let name = HTTPField.Name("x-tidal-token") {
+                        request.headers[name] = clientID
+                    }
+                }
             self.cache = cache
         }
         

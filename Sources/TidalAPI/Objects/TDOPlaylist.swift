@@ -72,9 +72,10 @@ public extension Tidal.Objects {
         }
     }
 
-    struct PlaylistType: Hashable, Codable {
+    struct PlaylistType: Hashable, Codable, LosslessStringConvertible {
         
         public var value: String
+        public var description: String { value }
 
         public static let user = PlaylistType("USER")
         
@@ -91,11 +92,12 @@ public extension Tidal.Objects {
         }
     }
 
-    struct UserPlaylistType: Hashable, Codable {
+    struct UserPlaylistType: Hashable, Codable, LosslessStringConvertible {
         
         public var value: String
+        public var description: String { value }
         
-        public static let userCreated = PlaylistType("USER_CREATED")
+        public static let userCreated = UserPlaylistType("USER_CREATED")
         
         public init(_ value: String) {
             self.value = value

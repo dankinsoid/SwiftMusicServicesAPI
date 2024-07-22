@@ -4,7 +4,7 @@ import SwiftAPIClient
 import XCTest
 
 final class TidalAPITests: XCTestCase {
-    
+
     var api = Tidal.API.V1(
         client: APIClient().loggingComponents(.full),
         clientID: Tidal.API.desktopClientID,
@@ -24,11 +24,14 @@ final class TidalAPITests: XCTestCase {
             throw error
         }
     }
+    
+    func testSearch() async throws {
+        let search = try await api.search.tracks(query: "Kanye", limit: 1).first()
+        print(search)
+    }
+    
+    func testCreatePlaylist() async throws {
+        let playlist = try await api.users("198537731").playlists.create(title: "Test 2")
+        print(playlist)
+    }
 }
-
-// countryCode: Optional("NL")
-// 198537731
-//
-//- access_token: "eyJraWQiOiJ2OU1GbFhqWSIsImFsZyI6IkVTMjU2In0.eyJ0eXBlIjoibzJfYWNjZXNzIiwidWlkIjoxOTg1Mzc3MzEsInNjb3BlIjoicl91c3Igd191c3IiLCJnVmVyIjowLCJzVmVyIjowLCJjaWQiOjc3ODUsImV4cCI6MTcyMTc2NTUxMywic2lkIjoiODYxOTdlYTctYjE4My00YmRjLTgwZTMtMWUzNmMwMmIwMWUyIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnRpZGFsLmNvbS92MSJ9.oLM9LduAls5IbOmaUgCDGAYORiMIMwUqPwZImlExXDlqBJ18eGxhcLMPUaRieptsUfZqw2o7owdm5Z1x6hJ30Q"
-//- refresh_token: "eyJraWQiOiJoUzFKYTdVMCIsImFsZyI6IkVTNTEyIn0.eyJ0eXBlIjoibzJfcmVmcmVzaCIsInVpZCI6MTk4NTM3NzMxLCJzY29wZSI6InJfdXNyIHdfdXNyIiwiY2lkIjo3Nzg1LCJzVmVyIjowLCJnVmVyIjowLCJpc3MiOiJodHRwczovL2F1dGgudGlkYWwuY29tL3YxIn0.AD-39L943HFov4d8WWupyqVy1s6uUEJMvlWAvKu0JjUTUpJbhGVYO96BxWGMMGFfE6Fc9CcUXL-1xBXEcjSRPs2wAOMpebV9vjT2djILnmJhk3CE8BZvjlJBNcR-Vz8zwAL5wnPtD7YjGpE_Xn5_q2zwZpwoNACq47UAbbbfm5A5gzLa"
-//- expires_in: 86400.0

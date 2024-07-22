@@ -37,11 +37,11 @@ public struct TidalPaging<T: Decodable>: AsyncSequence {
     }
 
     public func makeAsyncIterator() -> AsyncIterator {
-        AsyncIterator(client: client, limit: limit, offset: offset)
+        AsyncIterator(client: client, limit: limit, offset: offset, needFetch: limit)
     }
 
     public func first() async throws -> Tidal.Objects.Page<T> {
-        var iterator = AsyncIterator(client: client, limit: limit, offset: offset)
+        var iterator = makeAsyncIterator()
         let result = try await iterator.next()
         return result ?? Tidal.Objects.Page(limit: limit, offset: offset, totalNumberOfItems: 0, items: [])
     }

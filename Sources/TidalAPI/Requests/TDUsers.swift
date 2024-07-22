@@ -26,7 +26,7 @@ public extension Tidal.API.V1 {
 public extension Tidal.API.V1.User {
 
     func playlistsAndFavoritePlaylists(
-        order: Tidal.Objects.UserPlaylistOrder? = nil,
+        order: Tidal.Objects.Order? = nil,
         orderDirection: Tidal.Objects.OrderDirection? = nil,
         limit: Int? = nil,
         offset: Int = 0
@@ -38,11 +38,58 @@ public extension Tidal.API.V1.User {
             offset: offset
         )
     }
+    
+    var favorites: Favorites {
+        Favorites(client: client("favorites"))
+    }
+    
+    struct Favorites {
+        
+        public let client: APIClient
+    }
+    
+    var playlists: Playlists {
+        Playlists(client: client("playlists"))
+    }
+    
+    struct Playlists {
+        
+        public let client: APIClient
+    }
+}
+
+public extension Tidal.API.V1.User.Favorites {
+
+    func tracks(
+        order: Tidal.Objects.Order? = nil,
+        orderDirection: Tidal.Objects.OrderDirection? = nil,
+        limit: Int? = nil,
+        offset: Int = 0
+    ) -> TidalPaging<Tidal.Objects.UserTrack> {
+        TidalPaging(
+            client: client("tracks")
+                .query(["order": order, "orderDirection": orderDirection]),
+            limit: limit,
+            offset: offset
+        )
+    }
+}
+
+public extension Tidal.API.V1.User.Playlists {
+
+    func create(
+        title: String,
+        description: String? = nil
+    ) async throws -> Tidal.Objects.Playlist {
+        try await client
+            .body(["title": title, "description": description])
+            .post()
+    }
 }
 
 extension Tidal.Objects {
     
-    public enum UserPlaylistOrder: String, Codable {
+    public enum Order: String, Codable {
 
         case date = "DATE"
         case name = "NAME"
