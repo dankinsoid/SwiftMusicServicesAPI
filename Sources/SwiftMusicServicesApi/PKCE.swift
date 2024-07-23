@@ -1,7 +1,7 @@
 import Foundation
 import CryptoSwift
 
-package func generateCodeChallenge(
+public func generateCodeChallenge(
     verifier: String? = nil,
     method: CodeChallengeMethod
 ) -> (codeVerifier: String, codeChallenge: String)? {
@@ -11,7 +11,7 @@ package func generateCodeChallenge(
         guard let data = codeVerifier.data(using: .ascii) else {
             return nil
         }
-        
+
         let hash = data.sha256()
         let hashData = Data(hash)
         return (codeVerifier, hashData.base64URLEncodedString())
