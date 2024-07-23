@@ -1,3 +1,5 @@
+import Foundation
+
 public struct SPTrack: Codable {
 	/// The album on which the track appears. The album object includes a link in href to full information about the album.
 	public var album: SPAlbum?
@@ -62,4 +64,11 @@ public struct SPTrack: Codable {
 		self.uri = uri
 		self.isLocal = isLocal
 	}
+}
+
+extension SPTrack {
+
+    public var link: URL? {
+        id.flatMap { URL(string: "https://open.spotify.com/track/\($0)") }
+    }
 }

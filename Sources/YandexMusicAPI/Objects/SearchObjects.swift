@@ -167,6 +167,11 @@ public extension Yandex.Music.Objects {
 			lhs.id == rhs.id
 		}
 
+        public var link: URL? {
+            guard  let albumID = albums.first?.id else { return nil }
+            return URL(string: "https://music.yandex.ru/album/\(albumID)/track/\(id)")
+        }
+    
 		//        public var artists:
 		//        public var albums:
 		//        public var real_id=None
