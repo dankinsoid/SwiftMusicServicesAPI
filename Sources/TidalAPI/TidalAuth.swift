@@ -16,7 +16,7 @@ extension Tidal {
         public let redirectURI: String
         private var codeVerifier: String?
         package var onLogin: ((Result<Tidal.Objects.TokenResponse, Error>) -> Void)?
-        
+
         public init(
             client: APIClient = APIClient(),
             clientID: String,
@@ -38,7 +38,44 @@ extension Tidal {
             self.clientSecret = clientSecret
             self.redirectURI = redirectURI
         }
-        
+
+        /// Requests an authorization code from Tidal.
+        ///
+        /// - Parameters:
+        ///   - scope: The scope of the request.
+        ///   - state: An opaque value used by the client to maintain state between this request and the response.
+        ///   - restrictSignup: If true, the user will be prompted to sign in with an existing account.
+        ///   - language: The language of the login page.
+        ///   - codeVerifier: Used to secure authorization code grants via Proof Key for Code Exchange (PKCE).
+        ///   - codeChallenge: Used to secure authorization code grants via Proof Key for Code Exchange (PKCE).
+        ///   - codeChallengeMethod: The method used to encode the code_verifier for the codeChallenge parameter.  Used to secure authorization code grants via Proof Key for Code Exchange (PKCE).
+        public func authURL(
+            scope: Tidal.Objects.Scope = [.rUsr, .wUsr],
+            state: String? = nil,
+            restrictSignup: Bool = true,
+            language: String = "en",
+            codeVerifier: String?,
+            codeChallenge: String?,
+            codeChallengeMethod: CodeChallengeMethod? = .S256
+        ) -> URL? {
+            self.codeVerifier = codeVerifier
+            return try? URL(string: "https://login.tidal.com/authorize")?
+                .query(
+                    [
+                        "response_type": "code",
+                        "client_id": clientID,
+                        "scope": scope,
+                        "redirect_uri": redirectURI,
+                        "state": state,
+                        "language": language,
+                        "restrictSignup": restrictSignup,
+                        "code_challenge": codeChallenge,
+                        "code_challenge_method": codeChallengeMethod
+                    ],
+                    queryEncoder: .urlQuery(arrayEncodingStrategy: .separator(" "))
+                )
+        }
+    
         /// Requests an authorization code from Tidal.
         ///
         /// - Parameters:
@@ -62,21 +99,15 @@ extension Tidal {
                 codeVerifier = nil
                 code_challenge = nil
             }
-            return try? URL(string: "https://login.tidal.com/authorize")?
-                .query(
-                    [
-                        "response_type": "code",
-                        "client_id": clientID,
-                        "scope": scope,
-                        "redirect_uri": redirectURI,
-                        "state": state,
-                        "language": language,
-                        "restrictSignup": restrictSignup,
-                        "code_challenge": code_challenge,
-                        "code_challenge_method": codeChallengeMethod
-                    ],
-                    queryEncoder: .urlQuery(arrayEncodingStrategy: .separator(" "))
-                )
+            return authURL(
+                scope: scope,
+                state: state,
+                restrictSignup: restrictSignup,
+                language: language,
+                codeVerifier: codeVerifier,
+                codeChallenge: code_challenge,
+                codeChallengeMethod: codeChallengeMethod
+            )
         }
 
         /// - Returns: An auth code.
@@ -97,9 +128,11 @@ extension Tidal {
             code: String,
             clientUniqueKey: String? = nil,
             scope: Tidal.Objects.Scope = [.rUsr, .wUsr],
+            codeVerifier: String? = nil,
             cache: SecureCacheService
         ) async throws -> Tidal.Objects.TokenResponse {
             do {
+                let codeVerifier = codeVerifier ?? self.codeVerifier
                 let tokens = try await client("token")
                     .body([
                         "grant_type": "authorization_code",
@@ -115,6 +148,8 @@ extension Tidal {
                     .call(.http, as: .decodable(Tidal.Objects.TokenResponse.self))
                 try? await cache.save(tokens.access_token, for: .accessToken)
                 try? await cache.save(tokens.refresh_token, for: .refreshToken)
+                try? await cache.save(tokens.user_id ?? tokens.user?.id, for: "userID")
+                try? await cache.save(tokens.user?.countryCode, for: .countryCode)
                 try? await cache.save(Date(timeIntervalSinceNow: tokens.expires_in), for: .expiryDate)
                 onLogin?(.success(tokens))
                 return tokens
@@ -137,62 +172,10 @@ extension Tidal {
                 .call(.http, as: .decodable(Tidal.Objects.TokenResponse.self))
             try? await cache.save(tokens.access_token, for: .accessToken)
             try? await cache.save(tokens.refresh_token, for: .refreshToken)
+            try? await cache.save(tokens.user_id ?? tokens.user?.id, for: "userID")
+            try? await cache.save(tokens.user?.countryCode, for: .countryCode)
             try? await cache.save(Date(timeIntervalSinceNow: tokens.expires_in), for: .expiryDate)
             return tokens
-        }
-        
-        
-        // MARK: - Device
-        
-        public func token(
-            deviceAuthResponse: Tidal.Objects.DeviceAuthorizationResponse,
-            cache: SecureCacheService
-        ) async throws -> Tidal.Objects.DeviceTokenResponse {
-            let response = try await client("token")
-                .body([
-                    "grant_type": "device_code",
-                    "device_code": deviceAuthResponse.device_code,
-                    "user_code": deviceAuthResponse.user_code
-                ])
-                .post
-                .call(.http, as: .decodable(Tidal.Objects.DeviceTokenResponse.self))
-            if case let .success(tokens) = response {
-                try? await cache.save(tokens.access_token, for: .accessToken)
-                try? await cache.save(tokens.refresh_token, for: .refreshToken)
-                try? await cache.save(Date(timeIntervalSinceNow: tokens.expires_in), for: .expiryDate)
-            }
-            return response
-        }
-        
-        public func codepair(
-            responseType: Tidal.Objects.ResponseType = .deviceCode,
-            scope: [Tidal.Objects.Scope]
-        ) async throws -> Tidal.Objects.DeviceAuthorizationResponse {
-            try await client("create", "codepair")
-                .body(Tidal.Objects.PostCodePair(
-                    response_type: responseType,
-                    client_id: clientID,
-                    scope: scope
-                ))
-                .post()
-        }
-
-        public func waitForToken(
-            authResponse: Tidal.Objects.DeviceAuthorizationResponse,
-            cache: SecureCacheService
-        ) async throws -> Tidal.Objects.TokenResponse {
-            var date = Date()
-            var codeExpireDate = Date(timeIntervalSinceNow: authResponse.expires_in)
-            while date < codeExpireDate {
-                try Task.checkCancellation()
-                switch try await token(deviceAuthResponse: authResponse, cache: cache) {
-                case .pending:
-                    try await Task.sleep(nanoseconds: UInt64(authResponse.interval * 1_000_000_000))
-                case let .success(response):
-                    return response
-                }
-            }
-            throw Tidal.Objects.Error.expiredToken
         }
     }
 }
