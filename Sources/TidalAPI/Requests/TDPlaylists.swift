@@ -9,14 +9,14 @@ public extension Tidal.API.V1 {
     }
 
     struct Playlists {
-        
+    
         public let client: APIClient
 
         public func callAsFunction(_ id: String) -> Tidal.API.V1.Playlist {
             Tidal.API.V1.Playlist(client: client(id))
         }
     }
-    
+
     struct Playlist {
         
         public let client: APIClient
@@ -37,33 +37,50 @@ public extension Tidal.API.V1.Playlist {
         )
     }
 
+    func get() async throws -> Tidal.Objects.WithETag<Tidal.Objects.Playlist> {
+        let (playlist, response) = try await client
+            .call(
+                .httpResponse,
+                as: .decodable(Tidal.Objects.Playlist.self)
+            )
+        return Tidal.Objects.WithETag(eTag: response.headerFields[.eTag], value: playlist)
+    }
+    
     func add(
-        trackIDs: [String],
+        trackIDs: [Int],
+        eTag: String? = nil,
         duplicationPolicy: Tidal.Objects.DuplicationPolicy = .skip,
         artifactNotFoundPolicy: Tidal.Objects.NotFoundPolicy = .skip
     ) async throws {
-        try await client("items")
+        var tag = eTag
+        if tag == nil {
+            tag = try await get().eTag
+        }
+        return try await client("items")
             .body([
                 "itemIds": trackIDs,
                 "onArtifactNotFound": artifactNotFoundPolicy,
                 "onDupes": duplicationPolicy
             ])
+            .header("If-None-Match", tag.unwrap(throwing: ETagMustBeSpecified()))
             .post()
     }
 }
 
 extension Tidal.Objects {
 
-    public enum DuplicationPolicy: String, Codable, Equatable {
+    public enum DuplicationPolicy: String, Codable, Equatable, CaseIterable {
 
         case fail = "FAIL"
         case skip = "SKIP"
         case replace = "REPLACE"
     }
     
-    public enum NotFoundPolicy: String, Codable, Equatable {
+    public enum NotFoundPolicy: String, Codable, Equatable, CaseIterable {
         
         case fail = "FAIL"
         case skip = "SKIP"
     }
 }
+
+private struct ETagMustBeSpecified: Error {}

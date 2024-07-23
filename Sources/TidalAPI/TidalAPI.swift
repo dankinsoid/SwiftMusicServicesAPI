@@ -37,19 +37,15 @@ extension Tidal.API {
                 }
                 .httpClientMiddleware(CountryCodeRequestMiddleware(cache: cache, defaultCountryCode: defaultCountryCode))
                 .auth(enabled: true)
-                .bodyDecoder(.json(dateDecodingStrategy: .tidal))
+                .bodyDecoder(.json(dateDecodingStrategy: .tidal, dataDecodingStrategy: .base64))
                 .errorDecoder(.decodable(Tidal.Objects.Error.self))
-                .bodyEncoder(
-                    .formURL(
-                        keyEncodingStrategy: .convertToSnakeCase,
-                        arrayEncodingStrategy: .commaSeparator
-                    )
-                )
+                .bodyEncoder(.formURL(arrayEncodingStrategy: .commaSeparator))
                 .finalizeRequest { request, configs in
                     if request.headers[.authorization] == nil, let name = HTTPField.Name("x-tidal-token") {
                         request.headers[name] = clientID
                     }
                 }
+                .httpResponseValidator(.statusCode)
             self.cache = cache
         }
         
@@ -83,6 +79,24 @@ extension Tidal.API {
                 try? await cache.save(countryCode, for: .countryCode)
             }
         }
+    }
+}
+
+public extension Tidal.API {
+
+    static func url(type: String, _ path: String, width: Int, height: Int) -> URL? {
+        URL(string: "https://resources.tidal.com")?
+            .path(type)
+            .path(path.components(separatedBy: "-"))
+            .path("\(width)x\(height).jpg")
+    }
+
+    static func imageUrl(_ path: String, width: Int, height: Int) -> URL? {
+        url(type: "images", path, width: width, height: height)
+    }
+
+    static func videoUrl(_ path: String, width: Int, height: Int) -> URL?  {
+        url(type: "videos", path, width: width, height: height)
     }
 }
 

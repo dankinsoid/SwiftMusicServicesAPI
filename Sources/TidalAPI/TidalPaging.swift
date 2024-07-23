@@ -9,12 +9,14 @@ extension Tidal.Objects {
         public var offset: Int
         public var totalNumberOfItems: Int
         public var items: [T]
+        public var eTag: String?
 
-        public init(limit: Int? = nil, offset: Int, totalNumberOfItems: Int, items: [T]) {
+        public init(limit: Int? = nil, offset: Int, totalNumberOfItems: Int, items: [T], eTag: String? = nil) {
             self.limit = limit
             self.offset = offset
             self.totalNumberOfItems = totalNumberOfItems
             self.items = items
+            self.eTag = eTag
         }
     }
 }
@@ -56,17 +58,18 @@ public struct TidalPaging<T: Decodable>: AsyncSequence {
 
         public mutating func next() async throws -> Tidal.Objects.Page<T>? {
             guard (needFetch ?? .max) > 0 else { return nil }
-            let response = try await client
+            var (page, response) = try await client
                 .query(["limit": limit, "offset": offset])
-                .call(.http, as: .decodable(Tidal.Objects.Page<T>.self))
-            offset += response.items.count
-            limit? -= response.items.count
+                .call(.httpResponse, as: .decodable(Tidal.Objects.Page<T>.self))
+            page.eTag = response.headerFields[.eTag]
+            offset += page.items.count
+            limit? -= page.items.count
             if needFetch == nil {
-                needFetch = response.totalNumberOfItems - response.items.count
+                needFetch = page.totalNumberOfItems - page.items.count
             } else {
-                needFetch? -= response.items.count
+                needFetch? -= page.items.count
             }
-            return response
+            return page
         }
     }
 }

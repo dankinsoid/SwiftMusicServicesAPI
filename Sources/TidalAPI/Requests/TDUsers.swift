@@ -80,16 +80,26 @@ public extension Tidal.API.V1.User.Playlists {
     func create(
         title: String,
         description: String? = nil
-    ) async throws -> Tidal.Objects.Playlist {
-        try await client
+    ) async throws -> Tidal.Objects.WithETag<Tidal.Objects.Playlist> {
+        let (playlist, response) = try await client
             .body(["title": title, "description": description])
-            .post()
+            .post
+            .call(
+                .httpResponse,
+                as: .decodable(Tidal.Objects.Playlist.self)
+            )
+        return Tidal.Objects.WithETag(eTag: response.headerFields[.eTag], value: playlist)
     }
+}
+
+public extension HTTPField.Name {
+    
+    static let eTag = HTTPField.Name("ETag")!
 }
 
 extension Tidal.Objects {
     
-    public enum Order: String, Codable {
+    public enum Order: String, Codable, CaseIterable {
 
         case date = "DATE"
         case name = "NAME"
@@ -97,7 +107,7 @@ extension Tidal.Objects {
         case releaseDate = "RELEASE_DATE"
     }
     
-    public enum OrderDirection: String, Codable {
+    public enum OrderDirection: String, Codable, CaseIterable {
 
         case ascending = "ASC"
         case descending = "DESC"

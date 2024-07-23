@@ -14,6 +14,17 @@ public extension Tidal.Objects {
             self.playlist = playlist
         }
     }
+    
+    struct WithETag<Value> {
+        
+        public var eTag: String?
+        public var value: Value
+        
+        public init(eTag: String? = nil, value: Value) {
+            self.eTag = eTag
+            self.value = value
+        }
+    }
 
     struct Playlist: Codable, Equatable {
 
@@ -69,6 +80,27 @@ public extension Tidal.Objects {
             self.popularity = popularity
             self.squareImage = squareImage
             self.lastItemAddedAt = lastItemAddedAt
+        }
+
+        public func squareImageUrl(size: Int = 160) -> URL? {
+            guard let squareImage else { return nil }
+            // Valid size: 160x160, 320x320, 480x480, 640x640, 750x750, 1080x1080
+            let validSizes = [160, 320, 480, 640, 750, 1080]
+            let size = validSizes.first { $0 >= size } ?? 160
+            return Tidal.API.imageUrl(squareImage, width: size, height: size)
+        }
+
+        public func imageUrl(width: Int, height: Int) -> URL? {
+            guard let image else { return squareImageUrl(size: max(width, height)) }
+            // Valid sizes: 160x107, 480x320, 750x500, 1080x720
+            let validWidths = [160, 480, 750, 1080]
+            let validHeights = [107, 320, 500, 720]
+            let validSizes = Array(zip(validWidths, validHeights))
+            // Find the maximum closest valid width or height:
+            let validWidthI = validWidths.firstIndex { $0 >= width } ?? 0
+            let validHeightI = validHeights.firstIndex { $0 >= height } ?? 0
+            let (width, height) = validSizes[max(validWidthI, validHeightI)]
+            return Tidal.API.imageUrl(image, width: width, height: height)
         }
     }
 

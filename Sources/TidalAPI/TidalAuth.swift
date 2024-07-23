@@ -33,6 +33,7 @@ extension Tidal {
                 .bodyDecoder(.json(dateDecodingStrategy: .tidal))
                 .errorDecoder(.decodable(Tidal.Objects.Error.self))
                 .auth(.basic(username: clientID, password: clientSecret))
+                .httpResponseValidator(.statusCode)
             self.clientID = clientID
             self.clientSecret = clientSecret
             self.redirectURI = redirectURI

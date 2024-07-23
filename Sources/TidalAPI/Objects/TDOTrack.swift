@@ -125,6 +125,7 @@ public extension Tidal.Objects {
         public var description: String { value }
         
         public static let main = ArtistType("MAIN")
+        public static let featured = ArtistType("FEATURED")
         
         public init(_ value: String) {
             self.value = value
@@ -145,12 +146,28 @@ public extension Tidal.Objects {
         public var title: String
         public var cover: String?
         public var videoCover: String?
-        
+
         public init(id: Int, title: String, cover: String? = nil, videoCover: String? = nil) {
             self.id = id
             self.title = title
             self.cover = cover
             self.videoCover = videoCover
+        }
+
+        public func coverURL(size: Int = 160) -> URL? {
+            let size = coverSize(size)
+            return Tidal.API.imageUrl(cover ?? "0dfd3368-3aa1-49a3-935f-10ffb39803c0", width: size, height: size)
+        }
+
+        public func videoCoverURL(size: Int = 160) -> URL? {
+            videoCover.flatMap {
+                let size = coverSize(size)
+                return Tidal.API.videoUrl($0, width: size, height: size)
+            }
+        }
+
+        private func coverSize(_ size: Int) -> Int {
+            max(8, min(128, Int(pow(2, ceil(log2(Double(size) / 10)))))) * 10
         }
     }
     

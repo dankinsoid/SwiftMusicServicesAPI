@@ -25,10 +25,15 @@ final class TidalAPITests: XCTestCase {
         }
     }
 
-    
     func testSearch() async throws {
-        let search = try await api.tracks.isrc("USIR19902111")
-        print(search)
+        let tracks = try await api.tracks.isrc("USIR19902111")
+        let playlists = try await api.users("198537731").playlistsAndFavoritePlaylists().first()
+        
+        for playlist in playlists.items {
+            try await api.playlists(playlist.playlist.uuid).add(
+                trackIDs: tracks.map(\.id)
+            )
+        }
     }
 
     func testCreatePlaylist() async throws {
