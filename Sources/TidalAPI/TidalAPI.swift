@@ -128,15 +128,21 @@ extension JSONDecoder.DateDecodingStrategy {
     public static let tidal: JSONDecoder.DateDecodingStrategy = .custom { decoder in
         let container = try decoder.singleValueContainer()
         let dateString = try container.decode(String.self)
-        if let date = dateFormatter.date(from: dateString) {
+        if let date = isoDateFormatter.date(from: dateString) ?? dateFormatter.date(from: dateString) {
             return date
         }
         throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date format: \(dateString)")
     }
 }
 
-private let dateFormatter: ISO8601DateFormatter = {
+private let isoDateFormatter: ISO8601DateFormatter = {
     let dateFormatter = ISO8601DateFormatter()
     dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return dateFormatter
+}()
+
+private let dateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
     return dateFormatter
 }()

@@ -38,6 +38,10 @@ public extension Tidal.API.V1.User {
             offset: offset
         )
     }
+
+    func get() async throws -> Tidal.Objects.User {
+        try await client.get()
+    }
     
     var favorites: Favorites {
         Favorites(client: client("favorites"))

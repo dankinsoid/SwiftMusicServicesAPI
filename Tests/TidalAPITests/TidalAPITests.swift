@@ -15,14 +15,15 @@ final class TidalAPITests: XCTestCase {
     )
 
     func testUsers() async throws {
-        let user = api.users("198537731")
-        do {
-            let playlists = try await user.playlistsAndFavoritePlaylists().first()
-            dump(playlists)
-        } catch {
-            print(error)
-            throw error
-        }
+        let user = try await api.users("198537731").get()
+        print(user)
+//        do {
+//            let playlists = try await user.playlistsAndFavoritePlaylists().first()
+//            dump(playlists)
+//        } catch {
+//            print(error)
+//            throw error
+//        }
     }
 
     func testSearch() async throws {
