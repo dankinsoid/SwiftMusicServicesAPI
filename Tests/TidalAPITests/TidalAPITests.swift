@@ -15,7 +15,7 @@ final class TidalAPITests: XCTestCase {
     )
 
     func testUsers() async throws {
-        let user = try await api.users("198537731").get()
+        let user = try await api.users(198537731).get()
         print(user)
 //        do {
 //            let playlists = try await user.playlistsAndFavoritePlaylists().first()
@@ -28,7 +28,7 @@ final class TidalAPITests: XCTestCase {
 
     func testSearch() async throws {
         let tracks = try await api.tracks.isrc("USIR19902111")
-        let playlists = try await api.users("198537731").playlistsAndFavoritePlaylists().first()
+        let playlists = try await api.users(198537731).playlistsAndFavoritePlaylists().first()
         
         for playlist in playlists.items {
             try await api.playlists(playlist.playlist.uuid).add(
@@ -38,7 +38,7 @@ final class TidalAPITests: XCTestCase {
     }
 
     func testCreatePlaylist() async throws {
-        let playlist = try await api.users("198537731").playlists.create(title: "Test 2")
+        let playlist = try await api.users(198537731).playlists.create(title: "Test 2")
         print(playlist)
     }
 }

@@ -12,7 +12,7 @@ public extension Tidal.API.V1 {
         
         public let client: APIClient
 
-        public func callAsFunction(_ id: String) -> Tidal.API.V1.User {
+        public func callAsFunction(_ id: Int) -> Tidal.API.V1.User {
             Tidal.API.V1.User(client: client(id))
         }
     }
