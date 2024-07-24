@@ -124,14 +124,21 @@ private struct CountryCodeRequestMiddleware: HTTPClientMiddleware {
 }
 
 extension JSONDecoder.DateDecodingStrategy {
-    
+
     public static let tidal: JSONDecoder.DateDecodingStrategy = .custom { decoder in
         let container = try decoder.singleValueContainer()
-        let dateString = try container.decode(String.self)
+        let dateString: String
+        do {
+            dateString = try container.decode(String.self)
+        } catch {
+            let time = try container.decode(Double.self)
+            return Date(timeIntervalSince1970: time)
+        }
         if let date = isoDateFormatter.date(from: dateString) ?? dateFormatter.date(from: dateString) {
             return date
         }
         throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date format: \(dateString)")
+       
     }
 }
 
