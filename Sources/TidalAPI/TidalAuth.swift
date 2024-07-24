@@ -303,7 +303,11 @@ extension Tidal.Objects {
             self.user = user
             self.user_id = user_id
         }
-        
+
+        public var userID: Int? {
+            user_id ?? user?.id
+        }
+
         public var expiresAt: Date {
             Date(timeIntervalSinceNow: expires_in)
         }
