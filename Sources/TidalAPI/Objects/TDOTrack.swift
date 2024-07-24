@@ -5,10 +5,10 @@ public extension Tidal.Objects {
     struct UserTrack: Codable, Equatable {
         
         public var type: PlaylistItemType?
-        public var created: Date
+        public var created: Date?
         public var item: Track
         
-        public init(type: PlaylistItemType? = nil, created: Date, item: Track) {
+        public init(type: PlaylistItemType? = nil, created: Date? = nil, item: Track) {
             self.type = type
             self.created = created
             self.item = item
