@@ -19,7 +19,7 @@ public extension Tidal.Objects {
 
         public var id: Int
         public var title: String
-        public var duration: Int
+        public var duration: Double
         public var replayGain: Double?
         public var peak: Double?
         public var allowStreaming: Bool?
@@ -50,7 +50,7 @@ public extension Tidal.Objects {
         public init(
             id: Int,
             title: String,
-            duration: Int,
+            duration: Double,
             replayGain: Double? = nil,
             peak: Double? = nil,
             allowStreaming: Bool? = nil,
