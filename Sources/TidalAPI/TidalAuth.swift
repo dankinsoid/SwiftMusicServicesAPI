@@ -150,7 +150,7 @@ extension Tidal {
                 try? await cache.save(tokens.refresh_token, for: .refreshToken)
                 try? await cache.save(tokens.user_id ?? tokens.user?.id, for: "userID")
                 try? await cache.save(tokens.user?.countryCode, for: .countryCode)
-                try? await cache.save(Date(timeIntervalSinceNow: tokens.expires_in), for: .expiryDate)
+                try? await cache.save(tokens.expiresAt, for: .expiryDate)
                 onLogin?(.success(tokens))
                 return tokens
             } catch {
@@ -174,7 +174,7 @@ extension Tidal {
             try? await cache.save(tokens.refresh_token, for: .refreshToken)
             try? await cache.save(tokens.user_id ?? tokens.user?.id, for: "userID")
             try? await cache.save(tokens.user?.countryCode, for: .countryCode)
-            try? await cache.save(Date(timeIntervalSinceNow: tokens.expires_in), for: .expiryDate)
+            try? await cache.save(tokens.expiresAt, for: .expiryDate)
             return tokens
         }
     }
@@ -286,16 +286,16 @@ extension Tidal.Objects {
         /// The access token for the user. Maximum size of 2048 bytes.
         public var access_token: String
         /// The refresh token that can be used to request a new access token. Maximum size of 2048 bytes.
-        public var refresh_token: String
+        public var refresh_token: String?
         /// Will always be bearer.
-        public var token_type: String
+        public var token_type: String?
         /// The number of seconds the access token is valid.
-        public var expires_in: Double
+        public var expires_in: Double?
         /// The user associated with the token.
         public var user: Tidal.Objects.User?
         public var user_id: Int?
 
-        public init(access_token: String, refresh_token: String, token_type: String = "Bearer", expires_in: Double, user: Tidal.Objects.User? = nil, user_id: Int? = nil) {
+        public init(access_token: String, refresh_token: String? = nil, token_type: String = "Bearer", expires_in: Double? = nil, user: Tidal.Objects.User? = nil, user_id: Int? = nil) {
             self.access_token = access_token
             self.refresh_token = refresh_token
             self.token_type = token_type
@@ -308,8 +308,8 @@ extension Tidal.Objects {
             user_id ?? user?.id
         }
 
-        public var expiresAt: Date {
-            Date(timeIntervalSinceNow: expires_in)
+        public var expiresAt: Date? {
+            expires_in.map { Date(timeIntervalSinceNow: $0) }
         }
     }
 }
