@@ -64,7 +64,7 @@ extension SoundCloud.Objects {
         }
 
         public var transcoding: SoundCloud.Objects.TransCoding? {
-            guard let transcodings = media?.transcodings else { return nil }
+            guard let transcodings = media?.transcodings?.filter({ $0.format?.mime_type != .ogg }) else { return nil }
             return transcodings.first(where: { $0.format?.protocol == .progressive && $0.quality == .hq })
             ?? transcodings.first(where: { $0.format?.protocol == .progressive && $0.quality == .sq })
             ?? transcodings.first(where: { $0.quality == .hq })

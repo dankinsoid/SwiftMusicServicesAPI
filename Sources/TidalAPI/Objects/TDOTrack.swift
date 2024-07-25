@@ -234,7 +234,7 @@ public extension Tidal.Objects {
     struct PlaylistItemType: Hashable, Codable {
         
         public var value: String
-        
+
         public static let track = PlaylistItemType("track")
         public static let video = PlaylistItemType("video")
         
