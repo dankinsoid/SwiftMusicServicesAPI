@@ -16,6 +16,10 @@ extension SoundCloud.Objects {
         public var date: Date?
         public var user: SoundCloud.Objects.User?
         public var media: SoundCloud.Objects.Media?
+        public var duration: Double?
+        public var fullDuration: Double?
+        public var publisherMetadata: PublisherMetadata?
+        public var streamable: Bool?
 
         public init(
             id: Int,
@@ -29,7 +33,11 @@ extension SoundCloud.Objects {
             repostCount: Int? = nil,
             date: Date? = nil,
             user: SoundCloud.Objects.User? = nil,
-            media: SoundCloud.Objects.Media? = nil
+            media: SoundCloud.Objects.Media? = nil,
+            duration: Double? = nil,
+            fullDuration: Double? = nil,
+            publisherMetadata: PublisherMetadata? = nil,
+            streamable: Bool? = nil
         ) {
             self.id = id
             self.title = title
@@ -43,12 +51,14 @@ extension SoundCloud.Objects {
             self.date = date
             self.user = user
             self.media = media
+            self.duration = duration
+            self.fullDuration = fullDuration
+            self.publisherMetadata = publisherMetadata
+            self.streamable = streamable
         }
-        public var urn: String { "soundcloud:tracks:\(id)" }
     
-        public var duration: Double? {
-            (transcoding?.duration).flatMap { $0 / 1000 }
-        }
+        public var urn: String { "soundcloud:tracks:\(id)" }
+
         public var streamURL: URL? {
             transcoding?.url
         }
@@ -76,9 +86,51 @@ extension SoundCloud.Objects {
             case repostCount = "reposts_count"
             case date = "created_at"
             case user
+            case duration
+            case fullDuration = "full_duration"
+            case publisherMetadata = "publisher_metadata"
+            case streamable
         }
     }
     
+    public struct PublisherMetadata: Equatable, Codable, Identifiable {
+
+        public var id: Int
+        public var urn: String?
+        public var artist: String?
+        public var contains_music: Bool?
+        public var isrc: String?
+        public var album_title: String?
+        public var publisher: String?
+        public var upc_or_ean: String?
+        public var explicit: Bool?
+        public var release_title: String?
+        
+        public init(
+            id: Int,
+            urn: String? = nil,
+            artist: String? = nil,
+            contains_music: Bool? = nil,
+            isrc: String? = nil,
+            album_title: String? = nil,
+            publisher: String? = nil,
+            upc_or_ean: String? = nil,
+            explicit: Bool? = nil,
+            release_title: String? = nil
+        ) {
+            self.id = id
+            self.urn = urn
+            self.artist = artist
+            self.contains_music = contains_music
+            self.isrc = isrc
+            self.album_title = album_title
+            self.publisher = publisher
+            self.upc_or_ean = upc_or_ean
+            self.explicit = explicit
+            self.release_title = release_title
+        }
+    }
+
     public struct Media: Equatable, Codable {
 
         public var transcodings: [SoundCloud.Objects.TransCoding]?
@@ -110,9 +162,11 @@ extension SoundCloud.Objects {
         public struct Format: Equatable, Codable {
             
             public var `protocol`: `Protocol`?
+            public var mime_type: MimeType?
     
-            public init(protocol: `Protocol`? = nil) {
+            public init(protocol: `Protocol`? = nil, mime_type: MimeType? = nil) {
                 self.protocol = `protocol`
+                self.mime_type = mime_type
             }
 
             public struct `Protocol`: StringWrapper {
@@ -121,6 +175,16 @@ extension SoundCloud.Objects {
                 public init(_ value: String) { self.description = value }
                 
                 public static let progressive = Self("progressive")
+                public static let hls = Self("hls")
+            }
+            
+            public struct MimeType: StringWrapper {
+                
+                public var description: String
+                public init(_ value: String) { self.description = value }
+        
+                public static let mpeg = Self("audio/mpeg")
+                public static let ogg = Self("audio/ogg")
             }
         }
     }
