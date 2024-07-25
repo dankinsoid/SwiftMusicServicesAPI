@@ -116,21 +116,25 @@ public extension SoundCloud {
         }
         
         @discardableResult
-        public func token(code: String, cache: SecureCacheService) async throws -> SCO.OAuthToken {
+        public func token(
+            code: String,
+            codeVerifier: String? = nil,
+            cache: SecureCacheService
+        ) async throws -> SCO.OAuthToken {
             do {
                 let result: SCO.OAuthToken = try await client("token")
                     .body(
                         SCO.TokenRequest(
                             clientId: clientID,
                             code: code,
-                            codeVerifier: codeVerifier,
+                            codeVerifier: codeVerifier ?? self.codeVerifier,
                             grantType: "authorization_code",
                             redirectUri: redirectURI
                         )
                     )
                     .query("grant_type", "authorization_code")
                     .post()
-                codeVerifier = nil
+                self.codeVerifier = nil
                 try? await cache.save(result.accessToken, for: .accessToken)
                 if let refreshToken = result.refreshToken {
                     try? await cache.save(refreshToken, for: .refreshToken)

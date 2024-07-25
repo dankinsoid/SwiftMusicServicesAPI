@@ -29,7 +29,7 @@ final class SoundCloudTests: XCTestCase {
     }
     
     func testSearch() async throws {
-        try await dump(api.search.tracks("One Republic Everybody loves me").first())
+        try await dump(api.search.tracks("One Republic Everybody loves me").first().collection[0])
     }
     
     func testAdd() async throws {
