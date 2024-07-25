@@ -1,16 +1,16 @@
 import UIKit
 import WebKit
-import TidalAPI
+import SoundCloudAPI
 import SwiftAPIClient
 
 final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     var webView: WKWebView?
-    let api = Tidal.Auth(
+    let api = SoundCloud.OAuth2(
         client: APIClient().loggingComponents(.full),
-        clientID: Tidal.API.desktopClientID,
-        clientSecret: "",
-        redirectURI: Tidal.Auth.redirectURIDesktop
+        clientID: SoundCloud.API.mobileWebClientID,
+//        clientSecret: "",
+        redirectURI: SoundCloud.OAuth2.mobileWebRedirectURI
     )
 
     override func viewDidLoad() {
@@ -41,14 +41,19 @@ final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate
     }
 
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
-        if let url = navigationAction.request.url, url.absoluteString.hasPrefix("tidal") {
+        if let url = navigationAction.request.url, url.absoluteString.hasPrefix(SoundCloud.OAuth2.mobileWebRedirectURI) {
+            print(url)
             if let code = try? api.codeFrom(redirected: url.absoluteString) {
-                let token = try? await api.token(code: code, cache: .keychain)
+                let token = try? await api.token(code: code, cache: .keychain(service: "soundcloud"))
                 dump(token)
             }
             return .cancel
         }
         return .allow
+    }
+    
+    public func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        createWebView(configuration: configuration)
     }
 
     @discardableResult

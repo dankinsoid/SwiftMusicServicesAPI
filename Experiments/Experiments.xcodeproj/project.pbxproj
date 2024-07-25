@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		838B415D2C5259BF00AE9BDC /* SoundCloudAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 838B415C2C5259BF00AE9BDC /* SoundCloudAPI */; };
 		83B400FF2C4EC5D000C234C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B400FE2C4EC5D000C234C3 /* AppDelegate.swift */; };
 		83B401012C4EC5D000C234C3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B401002C4EC5D000C234C3 /* SceneDelegate.swift */; };
 		83B401032C4EC5D000C234C3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B401022C4EC5D000C234C3 /* ViewController.swift */; };
@@ -34,6 +35,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83B401152C4EC62700C234C3 /* TidalAPI in Frameworks */,
+				838B415D2C5259BF00AE9BDC /* SoundCloudAPI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +99,7 @@
 			name = Experiments;
 			packageProductDependencies = (
 				83B401142C4EC62700C234C3 /* TidalAPI */,
+				838B415C2C5259BF00AE9BDC /* SoundCloudAPI */,
 			);
 			productName = Experiments;
 			productReference = 83B400FB2C4EC5D000C234C3 /* Experiments.app */;
@@ -382,6 +385,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		838B415C2C5259BF00AE9BDC /* SoundCloudAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SoundCloudAPI;
+		};
 		83B401142C4EC62700C234C3 /* TidalAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TidalAPI;

@@ -36,6 +36,7 @@ public extension SoundCloud {
             self.client = client.url("https://secure.soundcloud.com/oauth")
                 .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase))
                 .bodyDecoder(.json(keyDecodingStrategy: .convertFromSnakeCase))
+                .queryEncoder(.urlQuery(keyEncodingStrategy: .convertToSnakeCase))
                 .errorDecoder(.decodable(SCO.Error.self))
                 .httpResponseValidator(.statusCode)
                 .finalizeRequest { req, _ in
@@ -45,73 +46,58 @@ public extension SoundCloud {
             self.redirectURI = redirectURI
         }
         
-        /// OAuth 2.0
-        ///
-        /// - Parameters:
-        ///   - responseType: Determines whether the OAuth 2.0 endpoint returns an authorization code. Set the parameter value to `code` for web server applications.
-        ///   - accessType: Recommended. Indicates whether your application can refresh access tokens when the user is not present at the browser. Valid parameter values are online, which is the default value, and offline.
-        ///   Set the value to offline if your application needs to refresh access tokens when the user is not present at the browser. This is the method of refreshing access tokens described later in this document.
-        ///   This value instructs the Google authorization server to return a refresh token and an access token the first time that your application exchanges an authorization code for tokens.
-        ///   - state: Specifies any string value that your application uses to maintain state between your authorization request and the authorization server's response.
-        ///   The server returns the exact value that you send as a name=value pair in the URL query component (?) of the redirect_uri after the user consents to or denies your application's access request.
-        ///   The only supported values for this parameter are S256 or plain. When nil PKCE auth is not used.   .
-        public func authorize(
-            responseType: String = "code",
-            state: String? = nil,
-            codeChallengeMethod: CodeChallengeMethod? = nil
-        ) {
-            let code_challenge: String?
-            if let codeChallengeMethod, let (verifier, challenge) = generateCodeChallenge(method: codeChallengeMethod) {
-                codeVerifier = verifier
-                code_challenge = challenge
-            } else {
-                codeVerifier = nil
-                code_challenge = nil
-            }
-            client.url("https://api-auth.soundcloud.com/oauth/authorize")
-                .bodyEncoder(.json(keyEncodingStrategy: .convertToSnakeCase))
-                .body(SCO.AuthorizeRequest(
-                    clientId: clientID,
-                    responseType: responseType,
-                    redirectUri: redirectURI,
-                    state: state,
-                    codeChallenge: code_challenge,
-                    codeChallengeMethod: codeChallengeMethod?.rawValue
-                ))
-                .post
-        }
-
         public func authURL(
+            deviceId: String? = nil,
             responseType: String = "code",
             state: String? = nil,
             codeChallengeMethod: CodeChallengeMethod? = .S256
         ) -> URL? {
-            let code_challenge: String?
+            let codeChallenge: String?
+            let codeVerifier: String?
             if let codeChallengeMethod, let (verifier, challenge) = generateCodeChallenge(method: codeChallengeMethod) {
                 codeVerifier = verifier
-                code_challenge = challenge
+                codeChallenge = challenge
             } else {
                 codeVerifier = nil
-                code_challenge = nil
+                codeChallenge = nil
             }
-            //
+            return authURL(
+                responseType: responseType,
+                state: state,
+                codeChallenge: codeChallenge,
+                codeVerifier: codeVerifier,
+                codeChallengeMethod: codeChallengeMethod
+            )
+        }
+        
+        public func authURL(
+            deviceId: String? = nil,
+            responseType: String = "code",
+            state: String? = nil,
+            codeChallenge: String?,
+            codeVerifier: String?,
+            codeChallengeMethod: CodeChallengeMethod? = .S256
+        ) -> URL? {
+            self.codeVerifier = codeVerifier
+            let deviceID = deviceId ?? (0..<4).map { _ in String(Int.random(in: 100_000..<999_999)) }.joined(separator: "-")
             return APIClient(string: "https://secure.soundcloud.com/web-auth")
                 .query(SCO.AuthorizeRequest(
                     clientId: clientID,
                     responseType: responseType,
                     redirectUri: redirectURI,
                     state: state,
-                    codeChallenge: code_challenge,
+                    codeChallenge: codeChallenge,
                     codeChallengeMethod: codeChallengeMethod?.rawValue
                 ))
                 .query([
-                    "deviceId": "842494-682961-9227-91727",
+                    "deviceId": deviceID,
                     "origin": "https://m.soundcloud.com",
                     "theme": "prefers-color-scheme",
                     "uiEvo": true,
                     "appId": 65097,
                     "tracking": "local"
                 ])
+                .queryEncoder(.urlQuery(keyEncodingStrategy: .convertToSnakeCase))
                 .url
         }
         
@@ -159,18 +145,27 @@ public extension SoundCloud {
                 throw error
             }
         }
-        
-        //        public func refreshToken(_ refreshToken: String) async throws -> YTO.OAuthRefreshedToken {
-        //            try await client.url("https://secure.soundcloud.com/oauth/token")
-        //                .body(
-        //                    YTO.TokenRequest(
-        //                        clientId: clientID,
-        //                        clientSecret: clientSecret,
-        //                        grantType: "refresh_token",
-        //                        refreshToken: refreshToken
-        //                    )
-        //                )
-        //                .post()
-        //        }
+
+        public func refreshToken(
+            cache: SecureCacheService
+        ) async throws -> SCO.OAuthToken {
+            let result = try await client("token")
+                .body([
+                    "grantType": "refresh_token",
+                    "clientId": clientID,
+                    "refreshToken": cache.load(for: .refreshToken),
+                    "redirectUri": redirectURI
+                ])
+                .post
+                .call(.http, as: .decodable(SCO.OAuthToken.self))
+            try? await cache.save(result.accessToken, for: .accessToken)
+            if let refreshToken = result.refreshToken {
+                try? await cache.save(refreshToken, for: .refreshToken)
+            }
+            if let expiresIn = result.expiresIn {
+                try? await cache.save(Date(timeIntervalSinceNow: expiresIn), for: .expiryDate)
+            }
+            return result
+        }
     }
 }
