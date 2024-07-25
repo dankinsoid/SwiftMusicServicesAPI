@@ -147,10 +147,14 @@ extension Tidal {
                     .post
                     .call(.http, as: .decodable(Tidal.Objects.TokenResponse.self))
                 try? await cache.save(tokens.access_token, for: .accessToken)
-                try? await cache.save(tokens.refresh_token, for: .refreshToken)
                 try? await cache.save(tokens.user_id ?? tokens.user?.id, for: "userID")
                 try? await cache.save(tokens.user?.countryCode, for: .countryCode)
-                try? await cache.save(tokens.expiresAt, for: .expiryDate)
+                if let refreshToken = tokens.refresh_token {
+                    try? await cache.save(refreshToken, for: .refreshToken)
+                }
+                if let expiresIn = tokens.expiresAt {
+                    try? await cache.save(expiresIn, for: .expiryDate)
+                }
                 onLogin?(.success(tokens))
                 return tokens
             } catch {
@@ -171,10 +175,14 @@ extension Tidal {
                 .post
                 .call(.http, as: .decodable(Tidal.Objects.TokenResponse.self))
             try? await cache.save(tokens.access_token, for: .accessToken)
-            try? await cache.save(tokens.refresh_token, for: .refreshToken)
+            if let refreshToken = tokens.refresh_token {
+                try? await cache.save(refreshToken, for: .refreshToken)
+            }
+            if let expiresIn = tokens.expiresAt {
+                try? await cache.save(expiresIn, for: .expiryDate)
+            }
             try? await cache.save(tokens.user_id ?? tokens.user?.id, for: "userID")
             try? await cache.save(tokens.user?.countryCode, for: .countryCode)
-            try? await cache.save(tokens.expiresAt, for: .expiryDate)
             return tokens
         }
     }
