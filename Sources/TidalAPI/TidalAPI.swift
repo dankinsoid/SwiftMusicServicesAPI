@@ -73,8 +73,12 @@ extension Tidal.API {
 
         public func setTokens(_ tokens: Tidal.Objects.TokenResponse) async {
             try? await cache.save(tokens.access_token, for: .accessToken)
-            try? await cache.save(tokens.refresh_token, for: .refreshToken)
-            try? await cache.save(tokens.expiresAt, for: .expiryDate)
+            if let refreshToken = tokens.refresh_token {
+                try? await cache.save(refreshToken, for: .refreshToken)
+            }
+            if let expiryDate = tokens.expiresAt {
+                try? await cache.save(expiryDate, for: .expiryDate)
+            }
             if let countryCode = tokens.user?.countryCode {
                 try? await cache.save(countryCode, for: .countryCode)
             }
