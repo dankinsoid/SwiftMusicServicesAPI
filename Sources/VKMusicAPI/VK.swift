@@ -2,6 +2,7 @@ import Foundation
 import SwiftAPIClient
 @_exported import SwiftMusicServicesApi
 import VDCodable
+import Logging
 
 public struct VK {
 
@@ -151,6 +152,7 @@ private struct VKRedirectMiddleware: HTTPClientMiddleware {
 
         while let url = redirect(data: value, response: response) {
             if redirectedURLs.contains(url) {
+                Logger(label: "VKAPI").error("Recursion detected \(url.absoluteString)")
                 return try await next(request, configs)
             }
             redirectedURLs.insert(url)
