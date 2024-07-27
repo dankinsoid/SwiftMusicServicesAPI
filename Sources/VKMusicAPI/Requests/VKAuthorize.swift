@@ -26,7 +26,7 @@ public extension VK.API {
 	}
 
 	func checkAuthorize() async throws -> VKAuthorizationState {
-        try await client("feed")
+        try await client("account")
             .xmlHttpRequest
             .call(.http, as: .htmlInitable)
 	}

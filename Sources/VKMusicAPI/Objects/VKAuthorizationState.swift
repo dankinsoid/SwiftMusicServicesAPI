@@ -26,7 +26,7 @@ public enum VKAuthorizationState: Equatable, Codable, HTMLStringInitable {
 	}
 
 	public init(_ html: String) {
-		if let id = Int(html.getParameter("vk_id") ?? "") {
+		if let id = Int(html.getParameter("vk_id") ?? html.getParameter("vk_user_id") ?? html.getParameter("user_id") ?? html.getParameter("viewer_id") ?? "") {
 			self = .authorized(user: VKUser(id: id))
 		} else if let ip_h = html.getParameter("ip_h"), let lg_h = html.getParameter("lg_h") ?? html.getParameter("lg_domain_h") {
 			self = .preAuthorized(VKPreAuthorizeParameters(ip: ip_h, lg: lg_h))

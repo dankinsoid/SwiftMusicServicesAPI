@@ -207,7 +207,7 @@ private struct VKRedirectMiddleware: HTTPClientMiddleware {
         }
         return nil
     }
-    
+
     private struct RedirectRecursiveCycle: Error {
         
         let url: URL
