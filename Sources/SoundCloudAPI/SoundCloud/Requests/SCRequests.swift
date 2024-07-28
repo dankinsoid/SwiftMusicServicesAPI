@@ -87,7 +87,7 @@ extension SoundCloud.API {
     }
 
     public func addTracksToPlaylist(id: String, trackIDs: [Int]) async throws -> SCO.Playlist {
-        try await client("playlists", id).body(["playlist": EditPlaylist(tracks: trackIDs)]).put()
+        try await client("playlists", id).query("client_id", clientID).body(["playlist": EditPlaylist(tracks: trackIDs)]).put()
     }
     
     public func trackStation(id: String) async throws -> SCO.Playlist {
@@ -158,7 +158,7 @@ extension SoundCloud.API {
         SCPaging(client: search.client.query("q", query), limit: limit)
     }
 
-    public var search: Search { Search(client: client("search")) }
+    public var search: Search { Search(client: client("search").query("client_id", clientID)) }
     public struct Search { let client: APIClient }
 }
 
