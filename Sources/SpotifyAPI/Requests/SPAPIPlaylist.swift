@@ -89,7 +89,7 @@ public extension Spotify.API {
 		public var position: Int?
 
 		public init(uris: [String]? = nil, position: Int? = nil) {
-			self.uris = uris
+            self.uris = uris?.filter { !$0.isEmpty }
 			self.position = position
 		}
 	}
