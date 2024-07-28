@@ -64,7 +64,7 @@ public enum Spotify {
 
         public var client: APIClient {
             clientWithoutTokenRefresher
-                .tokenRefresher(cacheService: cache) { [clientID, clientSecret] refreshToken, client, _ in
+                .tokenRefresher(cacheService: cache, expiredStatusCodes: [.unauthorized, .forbidden]) { [clientID, clientSecret] refreshToken, client, _ in
                     try await Self.refreshToken(
                         client: client,
                         refreshToken: refreshToken,
@@ -128,6 +128,7 @@ private extension Spotify.API {
             ])
             .headers(.accept(""), removeCurrent: true)
             .auth(.basic(username: clientID, password: clientSecret))
+            .auth(enabled: true)
             .post()
         return (response.accessToken, response.refreshToken, Date(timeIntervalSinceNow: response.expiresIn))
     }

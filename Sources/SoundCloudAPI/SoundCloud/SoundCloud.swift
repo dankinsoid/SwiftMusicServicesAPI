@@ -24,7 +24,7 @@ public enum SoundCloud {
             cache: SecureCacheService
         ) {
             self.client = client.url("https://api-v2.soundcloud.com")
-                .tokenRefresher(cacheService: cache) { refreshToken, _, _ in
+                .tokenRefresher(cacheService: cache, expiredStatusCodes: [.unauthorized, .forbidden]) { refreshToken, _, _ in
                     let result = try await SoundCloud.OAuth2(
                         client: client,
                         clientID: clientID,
