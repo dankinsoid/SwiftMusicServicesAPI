@@ -154,8 +154,8 @@ extension SoundCloud.API.User {
 
 extension SoundCloud.API {
 
-    public func search(_ query: String, limit: Int? = nil) -> SCPaging<SCO.Some> {
-        SCPaging(client: search.client.query("q", query), limit: limit)
+    public func search(_ query: String, auth: Bool = true, limit: Int? = nil) -> SCPaging<SCO.Some> {
+        SCPaging(client: search.client.auth(enabled: auth).query("q", query).query("limit", limit), limit: limit)
     }
 
     public var search: Search { Search(client: client("search").query("client_id", clientID)) }
@@ -164,20 +164,20 @@ extension SoundCloud.API {
 
 extension SoundCloud.API.Search {
 
-    public func tracks(_ query: String, limit: Int? = nil) -> SCPaging<SCO.Track> {
-        SCPaging(client: client("tracks").query("q", query), limit: limit)
-    }
-    
-    public func users(_ query: String, limit: Int? = nil) -> SCPaging<SCO.User> {
-        SCPaging(client: client("users").query("q", query), limit: limit)
-    }
-    
-    public func albums(_ query: String, limit: Int? = nil) -> SCPaging<SCO.Playlist> {
-        SCPaging(client: client("albums").query("q", query), limit: limit)
+    public func tracks(_ query: String, auth: Bool = true, limit: Int? = nil) -> SCPaging<SCO.Track> {
+        SCPaging(client: client("tracks").auth(enabled: auth).query("q", query).query("limit", limit), limit: limit)
     }
 
-    public func playlists(_ query: String, limit: Int? = nil) -> SCPaging<SCO.Playlist> {
-        SCPaging(client: client("playlists").query("q", query), limit: limit)
+    public func users(_ query: String, auth: Bool = true, limit: Int? = nil) -> SCPaging<SCO.User> {
+        SCPaging(client: client("users").auth(enabled: auth).query("q", query).query("limit", limit), limit: limit)
+    }
+
+    public func albums(_ query: String, auth: Bool = true, limit: Int? = nil) -> SCPaging<SCO.Playlist> {
+        SCPaging(client: client("albums").auth(enabled: auth).query("q", query).query("limit", limit), limit: limit)
+    }
+
+    public func playlists(_ query: String, auth: Bool = true, limit: Int? = nil) -> SCPaging<SCO.Playlist> {
+        SCPaging(client: client("playlists").auth(enabled: auth).query("q", query).query("limit", limit), limit: limit)
     }
 }
 
