@@ -6,12 +6,6 @@ import SwiftAPIClient
 final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     var webView: WKWebView?
-    let api = SoundCloud.OAuth2(
-        client: APIClient().loggingComponents(.full),
-        clientID: SoundCloud.API.mobileWebClientID,
-//        clientSecret: "",
-        redirectURI: SoundCloud.OAuth2.mobileWebRedirectURI
-    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,8 +21,8 @@ final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate
         
         webView = createWebView(configuration: configuration)
 
-        var request = URLRequest(url: api.authURL()!)
-        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        var request = URLRequest(url: URL(string: "https://www.deezer.com")!)
+//        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
         let script = """
         document.addEventListener("DOMContentLoaded", function(event) {
@@ -41,13 +35,9 @@ final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate
     }
 
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
-        if let url = navigationAction.request.url, url.absoluteString.hasPrefix(SoundCloud.OAuth2.mobileWebRedirectURI) {
+        if let url = navigationAction.request.url {
             print(url)
-            if let code = try? api.codeFrom(redirected: url.absoluteString) {
-                let token = try? await api.token(code: code, cache: .keychain(service: "soundcloud"))
-                dump(token)
-            }
-            return .cancel
+            return .allow
         }
         return .allow
     }
@@ -64,10 +54,10 @@ final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate
         let webView = WKWebView(frame: view.bounds, configuration: configuration)
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
-        webView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        webView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        webView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        webView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        webView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        webView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         webView.navigationDelegate = self
         
         let pagePreferences = WKWebpagePreferences()
@@ -80,9 +70,122 @@ final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate
         webView.scrollView.backgroundColor = .clear
         webView.scrollView.contentInsetAdjustmentBehavior = .never
         webView.uiDelegate = self
-//        let observer = CookieStoreObserver(controller: self)
-//        webView.configuration.websiteDataStore.httpCookieStore.add(observer)
-//        cookiesObservers.append((webView, observer))
+        let observer = CookieStoreObserver(controller: self)
+        webView.configuration.websiteDataStore.httpCookieStore.add(observer)
+        cookiesObservers.append((webView, observer))
         return webView
     }
+    
+    private var cookiesObservers: [(WKWebView, CookieStoreObserver)] = []
+    
+    private final class CookieStoreObserver: NSObject, WKHTTPCookieStoreObserver {
+        
+        private weak var controller: ViewController?
+        
+        init(controller: ViewController) {
+            self.controller = controller
+        }
+        
+        func cookiesDidChange(in cookieStore: WKHTTPCookieStore) {
+            cookieStore.getAllCookies { cookies in
+                print(cookies)
+            }
+        }
+    }
 }
+
+public enum Dezeer {
+    
+    public struct API {
+
+        public var client: APIClient
+
+        public init(
+            client: APIClient,
+            cache: SecureCacheService,
+            clientID: String,
+            redirectURI: String
+        ) {
+            self.client = client.url("https://api.deezer.com")
+//                .tokenRefresher(cacheService: cache, expiredStatusCodes: [.unauthorized, .forbidden]) { refreshToken, _, _ in
+//                    let result = try await SoundCloud.OAuth2(
+//                        client: client,
+//                        clientID: clientID,
+//                        redirectURI: redirectURI
+//                    )
+//                        .refreshToken(cache: cache)
+//                    return (result.accessToken, refreshToken, result.expiresIn.map { Date(timeIntervalSinceNow: $0) })
+//                } auth: { token in
+//                        .bearer(token: token)
+//                }
+                .bodyEncoder(.json(dateEncodingStrategy: .iso8601))
+                .bodyDecoder(.json(dateDecodingStrategy: .deezer))
+                .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator))
+                .auth(enabled: true)
+                .errorDecoder(.decodable(SCO.Error.self))
+                .httpResponseValidator(.statusCode)
+        }
+    }
+    
+    public struct OAuth {
+        
+        public var client: APIClient
+        
+        public init(
+            client: APIClient,
+            cache: SecureCacheService,
+            clientID: String,
+            redirectURI: String
+        ) {
+            self.client = client.url("https://api.deezer.com")
+            //                .tokenRefresher(cacheService: cache, expiredStatusCodes: [.unauthorized, .forbidden]) { refreshToken, _, _ in
+            //                    let result = try await SoundCloud.OAuth2(
+            //                        client: client,
+            //                        clientID: clientID,
+            //                        redirectURI: redirectURI
+            //                    )
+            //                        .refreshToken(cache: cache)
+            //                    return (result.accessToken, refreshToken, result.expiresIn.map { Date(timeIntervalSinceNow: $0) })
+            //                } auth: { token in
+            //                        .bearer(token: token)
+            //                }
+                .bodyEncoder(.json(dateEncodingStrategy: .iso8601))
+                .bodyDecoder(.json(dateDecodingStrategy: .deezer))
+                .queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator))
+                .auth(enabled: true)
+                .errorDecoder(.decodable(SCO.Error.self))
+                .httpResponseValidator(.statusCode)
+        }
+    }
+}
+
+extension JSONDecoder.DateDecodingStrategy {
+    
+    public static let deezer: JSONDecoder.DateDecodingStrategy = .custom { decoder in
+        let container = try decoder.singleValueContainer()
+        let dateString: String
+        do {
+            dateString = try container.decode(String.self)
+        } catch {
+            let time = try container.decode(Double.self)
+            return Date(timeIntervalSince1970: time)
+        }
+        if let date = isoDateFormatter.date(from: dateString) ?? dateFormatter.date(from: dateString) {
+            return date
+        }
+        throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date format: \(dateString)")
+        
+    }
+}
+
+private let isoDateFormatter: ISO8601DateFormatter = {
+    let dateFormatter = ISO8601DateFormatter()
+    dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return dateFormatter
+}()
+
+private let dateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    return dateFormatter
+}()
