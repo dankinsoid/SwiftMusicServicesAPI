@@ -37,4 +37,6 @@ extension YouTube.Scope {
     public static let partner = YouTube.Scope("https://www.googleapis.com/auth/youtubepartner")
     /// View private information of your YouTube channel relevant during the audit process with a YouTube partner
     public static let partnerChannelAudit = YouTube.Scope("https://www.googleapis.com/auth/youtubepartner-channel-audit")
+
+    public static let userInfoProfile = YouTube.Scope("https://www.googleapis.com/auth/userinfo.profile")
 }

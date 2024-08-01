@@ -28,7 +28,7 @@ extension YTO {
             self.nextPageToken = try container.decodeIfPresent(String.self, forKey: .nextPageToken)
             self.prevPageToken = try container.decodeIfPresent(String.self, forKey: .prevPageToken)
             self.pageInfo = try container.decodeIfPresent(PageInfo.self, forKey: .pageInfo)
-            self.items = try container.decodeIfPresent(SafeDecodeArray<T>.self, forKey: .etag)?.array ?? []
+            self.items = try container.decodeIfPresent(SafeDecodeArray<T>.self, forKey: .items)?.array ?? []
         }
 
         public enum CodingKeys: String, CodingKey {
