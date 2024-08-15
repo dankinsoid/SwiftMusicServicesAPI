@@ -16,6 +16,17 @@ public extension AppleMusic.Objects {
 
 		public var data: [T]
 		public var next: String?
+
+        public enum CodingKeys: CodingKey {
+            case data
+            case next
+        }
+
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.data = try container.decodeIfPresent(SafeDecodeArray<T>.self, forKey: .data)?.array ?? []
+            self.next = try container.decodeIfPresent(String.self, forKey: .next)
+        }
 	}
 
 	struct Tokens: Codable {

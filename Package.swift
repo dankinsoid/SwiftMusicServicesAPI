@@ -67,7 +67,7 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/dankinsoid/VDCodable", from: "2.13.0"),
-		.package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.35.0"),
+		.package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.36.0"),
 		.package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
 		.package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.0.0")

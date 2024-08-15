@@ -87,13 +87,22 @@ public extension VK.API {
 
 			public init(from decoder: Decoder) throws {
 				do {
-					let list = try [VKAudio].init(from: decoder)
-					self = .plist(list)
+					let list = try SafeDecodeArray<VKAudio>.init(from: decoder)
+                    self = .plist(list.array)
 				} catch {
 					self = .unknown
 				}
 			}
 		}
+        
+        public enum CodingKeys: CodingKey {
+            case data
+        }
+
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.data = try container.decodeIfPresent(SafeDecodeArray<AudioData>.self, forKey: .data)?.array ?? []
+        }
 	}
 }
 
