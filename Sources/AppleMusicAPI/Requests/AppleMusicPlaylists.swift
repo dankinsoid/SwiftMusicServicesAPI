@@ -16,6 +16,10 @@ public extension AppleMusic.API {
         }
 	}
 
+    func addPlaylist(input: AddPlaylistInput) async throws {
+        try await client.path("v1", "me", "library", "playlists").body(input).post()
+    }
+
 	struct AddPlaylistInput: Encodable {
 		public var attributes: Attributes
 		public var relationships: Relationships
