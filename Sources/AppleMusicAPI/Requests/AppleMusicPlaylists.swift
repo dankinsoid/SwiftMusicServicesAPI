@@ -16,7 +16,7 @@ public extension AppleMusic.API {
         }
 	}
 
-    func addPlaylist(input: AddPlaylistInput) async throws {
+    func add(playlist input: AddPlaylistInput) async throws {
         try await client.path("v1", "me", "library", "playlists").body(input).post()
     }
 
