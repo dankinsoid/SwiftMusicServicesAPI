@@ -6,12 +6,12 @@ public extension AppleMusic.API {
         name: String,
         description: String,
         tracks: [AppleMusic.Objects.ShortItem]
-    ) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
+    ) -> Pages<AppleMusic.Objects.Item> {
 		addPlaylist(input: AddPlaylistInput(name: name, description: description, tracks: tracks))
 	}
 
-	func addPlaylist(input: AddPlaylistInput) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
-        pages { [client] in
+	func addPlaylist(input: AddPlaylistInput) -> Pages<AppleMusic.Objects.Item> {
+        pages { client in
             try await client.path("v1", "me", "library", "playlists").body(input).post()
         }
 	}
@@ -62,8 +62,8 @@ public extension AppleMusic.API {
 
 public extension AppleMusic.API {
 
-	func getTracks(playlistID id: String) -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
-        pages { [client] in
+	func getTracks(playlistID id: String) -> Pages<AppleMusic.Objects.Item> {
+        pages { client in
             try await client.path("v1", "me", "library", "playlists", id, "tracks").get()
         }
 	}
@@ -77,8 +77,8 @@ public extension AppleMusic.API {
 	func getMyPlaylists(
         limit: Int? = nil,
         include: [AppleMusic.Objects.Include]? = nil
-    ) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
-        pages(limit: limit) { [client] in
+    ) throws -> Pages<AppleMusic.Objects.Item> {
+        pages(limit: limit) { client in
             try await client.path("v1", "me", "library", "playlists")
                 .query(GetMyPlaylistsInput(limit: limit ?? 100, include: include))
                 .get()
@@ -96,8 +96,8 @@ public extension AppleMusic.API {
 	func libraryPlaylist(
         playlistID id: String,
         include: [AppleMusic.Objects.Include]? = [.tracks, .catalog]
-    ) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
-        pages { [client] in
+    ) throws -> Pages<AppleMusic.Objects.Item> {
+        pages { client in
             try await client
                 .path("v1", "me", "library", "playlists", id)
                 .query(LibraryPlaylistInput(include: include))
@@ -111,8 +111,9 @@ public extension AppleMusic.API {
 }
 
 public extension AppleMusic.API {
-	func getPlaylists(ids: [String], storefront: String) throws -> AsyncThrowingStream<[AppleMusic.Objects.Item], Error> {
-        pages { [client] in
+
+	func getPlaylists(ids: [String], storefront: String) throws -> Pages<AppleMusic.Objects.Item> {
+        pages { client in
             try await client
                 .path("v1", "catalog", storefront, "playlists")
                 .query(GetPlaylistsInput(ids: ids))
