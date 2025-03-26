@@ -1,5 +1,6 @@
 import Foundation
 import SwiftAPIClient
+import SimpleCoders
 
 public extension Yandex.Music.API {
 
@@ -93,7 +94,7 @@ extension Yandex.Music.API {
 		      .first
 		else {
 			throw DecodingError.keyNotFound(
-				PlainCodingKey(key),
+				SimpleCoders.PlainCodingKey(key),
 				DecodingError.Context(codingPath: [], debugDescription: "")
 			)
 		}

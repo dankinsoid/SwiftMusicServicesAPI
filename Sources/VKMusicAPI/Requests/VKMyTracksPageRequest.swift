@@ -1,6 +1,7 @@
 import Foundation
 import SwiftAPIClient
 import SwiftSoup
+import SimpleCoders
 
 public extension VK.API {
 
