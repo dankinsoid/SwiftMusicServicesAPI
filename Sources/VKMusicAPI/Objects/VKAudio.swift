@@ -68,7 +68,7 @@ extension VKAudio: XMLInitable {
 	public init(xml: SwiftSoup.Element) throws {
 		let dataId = try xml.attr("data-id")
 		guard let int = dataId.components(separatedBy: "_").last.flatMap({ Int($0) }) else {
-			throw DecodingError.keyNotFound(PlainCodingKey("id"), DecodingError.Context(codingPath: [], debugDescription: "", underlyingError: nil))
+			throw DecodingError.keyNotFound(SimpleCoders.PlainCodingKey("id"), DecodingError.Context(codingPath: [], debugDescription: "", underlyingError: nil))
 		}
 		id = int
 		ownerId = dataId.components(separatedBy: "_").first.flatMap { Int($0) }

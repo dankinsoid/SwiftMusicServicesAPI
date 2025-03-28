@@ -104,7 +104,7 @@ private func decodeArray<T: Decodable>(unkeyedContainer: () throws -> UnkeyedDec
         } catch {
             var didCall = false
             if container.currentIndex == index {
-                if let nested = try? container.nestedContainer(keyedBy: PlainCodingKey.self) {
+							if let nested = try? container.nestedContainer(keyedBy: SimpleCoders.PlainCodingKey.self) {
                     var json: [String: JSON] = [:]
                     for key in nested.allKeys {
                         json[key.stringValue] = (try? nested.decode(JSON.self, forKey: key)) ?? .null

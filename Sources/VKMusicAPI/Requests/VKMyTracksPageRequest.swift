@@ -72,9 +72,9 @@ public extension VK.API {
 
 extension VK.API.MyTracksPageRequestInputOutput: Decodable {
 	public init(from decoder: Decoder) throws {
-		let container = try decoder.container(keyedBy: PlainCodingKey.self)
+		let container = try decoder.container(keyedBy: SimpleCoders.PlainCodingKey.self)
 		var unkeyed = try container.nestedUnkeyedContainer(forKey: "data")
-		let keyed = try unkeyed.nestedContainer(keyedBy: PlainCodingKey.self)
+		let keyed = try unkeyed.nestedContainer(keyedBy: SimpleCoders.PlainCodingKey.self)
 		do {
 			playlist = try keyed.decode(VKAudioListSection.self, forKey: "playlist")
 		} catch {

@@ -93,7 +93,7 @@ private struct UnkeyedContainer: UnkeyedEncodingContainer {
 	mutating func encode(_: UInt64) throws { count += 1 }
 	mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
 		count += 1
-		let path = codingPath + [PlainCodingKey(intValue: count - 1)].compactMap { $0 }
+		let path = codingPath + [SimpleCoders.PlainCodingKey(intValue: count - 1)].compactMap { $0 }
 		return UnkeyedContainer(
 			encoder: _InsertPartsEncoder(codingPath: path, encoder: encoder.encoder, type: [Any].self)
 		)
@@ -110,7 +110,7 @@ private struct UnkeyedContainer: UnkeyedEncodingContainer {
 
 	mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
 		count += 1
-		let path = codingPath + [PlainCodingKey(intValue: count - 1)].compactMap { $0 }
+		let path = codingPath + [SimpleCoders.PlainCodingKey(intValue: count - 1)].compactMap { $0 }
 		return KeyedEncodingContainer(
 			KeyedContainer(
 				encoder: _InsertPartsEncoder(codingPath: path, encoder: encoder.encoder, type: [Any].self)
