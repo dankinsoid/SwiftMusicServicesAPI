@@ -1,17 +1,18 @@
 import Foundation
+import SwiftMusicServicesApi
 
 public extension YMO {
 
 	struct AccountStatus: Codable {
 
-		public var subeditorLevel: Int?
+		@NilIfError public var subeditorLevel: Int?
 		public var account: Account
-		public var permissions: Permissions?
-		public var barBelow: BarBelow?
-		public var defaultEmail: String?
-		public var plus: Plus?
-		public var subeditor: Bool?
-		public var subscription: Subscription?
+		@NilIfError public var permissions: Permissions?
+		@NilIfError public var barBelow: BarBelow?
+		@NilIfError public var defaultEmail: String?
+		@NilIfError public var plus: Plus?
+		@NilIfError public var subeditor: Bool?
+		@NilIfError public var subscription: Subscription?
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
 			case subeditorLevel, account, permissions
@@ -22,19 +23,19 @@ public extension YMO {
 
 	struct Account: Codable {
 
-		public var displayName: String?
-		public var birthday: String?
-		public var secondName: String?
-		public var fullName: String?
-		public var region: Int?
-		public var registeredAt: Date?
-		public var serviceAvailable: Bool?
-		public var firstName: String?
-		public var now: Date?
-		public var passportPhones: [PassportPhone]?
-		public var hostedUser: Bool?
-		public var uid: Int?
-		public var login: String?
+		@NilIfError public var displayName: String?
+		@NilIfError public var birthday: String?
+		@NilIfError public var secondName: String?
+		@NilIfError public var fullName: String?
+		@NilIfError public var region: Int?
+		@NilIfError public var registeredAt: Date?
+		@NilIfError public var serviceAvailable: Bool?
+		@NilIfError public var firstName: String?
+		@NilIfError public var now: Date?
+		@NilIfError public var passportPhones: [PassportPhone]?
+		@NilIfError public var hostedUser: Bool?
+		@NilIfError public var uid: Int?
+		@NilIfError public var login: String?
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
 
@@ -47,20 +48,20 @@ public extension YMO {
     struct Settings: Codable {
 
         public var uid: Int
-        public var lastFmScrobblingEnabled: Bool?
-        public var facebookScrobblingEnabled: Bool?
-        public var shuffleEnabled: Bool?
-        public var addNewTrackOnPlaylistTop: Bool?
-        public var volumePercents: Int?
-        public var userMusicVisibility: String?
-        public var userSocialVisibility: String?
-        public var adsDisabled: Bool?
-        public var modified: Date?
-//        public var rbtDisabled: String?
-        public var theme: String?
-        public var promosDisabled: Bool?
-        public var autoPlayRadio: Bool?
-        public var syncQueueEnabled: Bool?
+			@NilIfError public var lastFmScrobblingEnabled: Bool?
+			@NilIfError public var facebookScrobblingEnabled: Bool?
+			@NilIfError public var shuffleEnabled: Bool?
+			@NilIfError public var addNewTrackOnPlaylistTop: Bool?
+			@NilIfError public var volumePercents: Int?
+			@NilIfError public var userMusicVisibility: String?
+			@NilIfError public var userSocialVisibility: String?
+			@NilIfError public var adsDisabled: Bool?
+			@NilIfError public var modified: Date?
+//      @NilIfError   public var rbtDisabled: String?
+			@NilIfError public var theme: String?
+			@NilIfError public var promosDisabled: Bool?
+			@NilIfError public var autoPlayRadio: Bool?
+			@NilIfError public var syncQueueEnabled: Bool?
         
         public init(uid: Int, lastFmScrobblingEnabled: Bool? = nil, facebookScrobblingEnabled: Bool? = nil, shuffleEnabled: Bool? = nil, addNewTrackOnPlaylistTop: Bool? = nil, volumePercents: Int? = nil, userMusicVisibility: String? = nil, userSocialVisibility: String? = nil, adsDisabled: Bool? = nil, modified: Date? = nil, theme: String? = nil, promosDisabled: Bool? = nil, autoPlayRadio: Bool? = nil, syncQueueEnabled: Bool? = nil) {
             self.uid = uid
@@ -82,46 +83,47 @@ public extension YMO {
 
 
 	struct PassportPhone: Codable {
-		public var phone: String?
+		@NilIfError public var phone: String?
 	}
 
 	struct BarBelow: Codable {
-		public var bgColor: HEXColor?
-		public var textColor: HEXColor?
-		public var text: String?
-		public var button: Button?
+		@NilIfError public var bgColor: HEXColor?
+		@NilIfError public var textColor: HEXColor?
+		@NilIfError public var text: String?
+		@NilIfError public var button: Button?
 	}
 
 	struct Button: Codable {
-		public var bgColor: HEXColor?
-		public var textColor: HEXColor?
-		public var text: String?
-		public var uri: String?
+		@NilIfError public var bgColor: HEXColor?
+		@NilIfError public var textColor: HEXColor?
+		@NilIfError public var text: String?
+		@NilIfError public var uri: String?
 	}
 
 	// MARK: - Permissions
 
 	struct Permissions: Codable {
-		public var `default`, values: [String]?
-		public var until: Date?
+		@NilIfError public var `default`: [String]?
+		@NilIfError public var values: [String]?
+		@NilIfError public var until: Date?
 	}
 
 	// MARK: - Plus
 
 	struct Plus: Codable {
 		public var hasPlus: Bool
-		public var isTutorialCompleted: Bool?
+		@NilIfError public var isTutorialCompleted: Bool?
 	}
 
 	// MARK: - Subscription
 
 	struct Subscription: Codable {
 
-		public var canStartTrial: Bool?
-		public var hadAnySubscription: Bool?
-		public var nonAutoRenewableRemainder: NonAutoRenewableRemainder?
-		public var mcdonalds: Bool?
-		public var autoRenewable: [AutoRenewable]?
+		@NilIfError public var canStartTrial: Bool?
+		@NilIfError public var hadAnySubscription: Bool?
+		@NilIfError public var nonAutoRenewableRemainder: NonAutoRenewableRemainder?
+		@NilIfError public var mcdonalds: Bool?
+		@NilIfError public var autoRenewable: [AutoRenewable]?
 	}
 
 	// MARK: - AutoRenewable
@@ -129,24 +131,27 @@ public extension YMO {
 	struct AutoRenewable: Codable {
 
 		public var productId: String
-		public var expires: Date?
-		public var finished: Bool?
-		public var vendorHelpUrl: String?
-		public var vendor: String?
-		public var product: Product?
-		public var orderId: Int?
+		@NilIfError public var expires: Date?
+		@NilIfError public var finished: Bool?
+		@NilIfError public var vendorHelpUrl: String?
+		@NilIfError public var vendor: String?
+		@NilIfError public var product: Product?
+		@NilIfError public var orderId: Int?
 	}
 
 	// MARK: - Product
 
 	struct Product: Codable {
-		public var features: [String]?
-		public var trialDuration: Int?
+		@NilIfError public var features: [String]?
+		@NilIfError public var trialDuration: Int?
 		public var productId: String
-		public var plus: Bool?
-		public var feature, trialPeriodDuration, type, commonPeriodDuration: String?
-		public var duration: Int?
-		public var debug: Bool?
+		@NilIfError public var plus: Bool?
+		@NilIfError public var feature: String?
+		@NilIfError public var trialPeriodDuration: String?
+		@NilIfError public var type: String?
+		@NilIfError public var commonPeriodDuration: String?
+		@NilIfError public var duration: Int?
+		@NilIfError public var debug: Bool?
 		public var price: Price
 	}
 
@@ -154,7 +159,7 @@ public extension YMO {
 
 	struct Price: Codable {
 		public var amount: Int
-		public var currency: String?
+		@NilIfError public var currency: String?
 	}
 
 	// MARK: - NonAutoRenewableRemainder

@@ -30,7 +30,7 @@ public extension YMO {
         public init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: Yandex.Music.Objects.Library.CodingKeys.self)
             self.uid = try container.decode(Int.self, forKey: .uid)
-            self.revision = try container.decodeIfPresent(Int.self, forKey: .revision)
+            self.revision = try? container.decodeIfPresent(Int.self, forKey: .revision)
             self.tracks = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.TrackShort>.self, forKey: .tracks)?.array ?? []
         }
 	}

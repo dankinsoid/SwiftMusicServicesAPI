@@ -5,6 +5,59 @@ import VDCodable
 public var safeDecodeArrayOnError: (Error, String) -> Void = { _, _ in }
 
 @propertyWrapper
+public struct NilIfError<Value> {
+	
+	public var wrappedValue: Value?
+	
+	public init(wrappedValue: Value? = nil) {
+		self.wrappedValue = wrappedValue
+	}
+}
+
+extension NilIfError: Equatable where Value: Equatable {}
+extension NilIfError: Hashable where Value: Hashable {}
+extension NilIfError: Sendable where Value: Sendable {}
+extension NilIfError: Decodable where Value: Decodable {
+	
+	public init(from decoder: Decoder) throws {
+		do {
+			wrappedValue = try Value(from: decoder)
+		} catch {
+			wrappedValue = nil
+		}
+	}
+}
+
+extension NilIfError: Encodable where Value: Encodable {
+
+	public func encode(to encoder: Encoder) throws {
+		try wrappedValue.encode(to: encoder)
+	}
+}
+
+extension KeyedDecodingContainer {
+	
+	public func decode<T>(_ type: NilIfError<T>.Type, forKey key: Key) throws -> NilIfError<T> where T: Decodable {
+		NilIfError(wrappedValue: try? decodeIfPresent(T.self, forKey: key))
+	}
+
+	public func decodeIfPresent<T>(_ type: NilIfError<T>.Type, forKey key: Key) throws -> NilIfError<T>? where T: Decodable {
+		NilIfError(wrappedValue: try? decodeIfPresent(T.self, forKey: key))
+	}
+}
+
+extension KeyedEncodingContainer {
+
+	public mutating func encode<T>(_ value: NilIfError<T>, forKey key: Key) throws where T: Encodable {
+		try encodeIfPresent(value.wrappedValue, forKey: key)
+	}
+
+	public mutating func encodeIfPresent<T>(_ value: NilIfError<T>?, forKey key: Key) throws where T: Encodable {
+		try encodeIfPresent(value?.wrappedValue, forKey: key)
+	}
+}
+
+@propertyWrapper
 public struct SafeDecodeArray<Element>: RandomAccessCollection, MutableCollection, RangeReplaceableCollection, ExpressibleByArrayLiteral {
 
     public typealias Index = Int
