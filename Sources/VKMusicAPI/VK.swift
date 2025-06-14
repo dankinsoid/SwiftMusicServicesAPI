@@ -156,11 +156,11 @@ private struct VKRedirectMiddleware: HTTPClientMiddleware {
                 return try await next(request, configs)
             }
             redirectedURLs.insert(url)
-            guard let setCookie = response.headerFields[.setCookie] else {
-                response = try await client.url(url).call(.httpResponse).1
-                continue
-            }
-            for string in setCookie.components(separatedBy: ", ").flatMap({ $0.components(separatedBy: "; ") }) {
+					guard let setCookie = response.headerFields[.setCookie] else {
+						response = try await client.url(url).call(.httpResponse).1
+						continue
+					}
+					for string in parseSetCookieHeader(setCookie).flatMap({ $0.components(separatedBy: "; ") }) {
                 let comp = string.components(separatedBy: "=")
                 guard comp.count > 1 else { continue }
                 newRemixsid = find(cookie: "remixsid", comp: comp, request: &request)
@@ -175,6 +175,37 @@ private struct VKRedirectMiddleware: HTTPClientMiddleware {
         }
         return (value, resp)
     }
+
+	private func parseSetCookieHeader(_ header: String) -> [String] {
+		var result: [String] = []
+		var index = header.startIndex
+		var current = ""
+		
+		while index < header.endIndex {
+			let char = header[index]
+			
+			if char == "," {
+				// Посмотри назад, был ли это разделитель куков или внутри expires
+				let suffix = current.suffix(10).lowercased()
+				if suffix.contains("expires=") {
+					current.append(char)
+				} else {
+					result.append(current.trimmingCharacters(in: .whitespaces))
+					current = ""
+				}
+			} else {
+				current.append(char)
+			}
+			
+			index = header.index(after: index)
+		}
+		
+		if !current.trimmingCharacters(in: .whitespaces).isEmpty {
+			result.append(current.trimmingCharacters(in: .whitespaces))
+		}
+		
+		return result
+	}
     
     private func redirect<T>(data: T, response: HTTPResponse) -> URL? {
         let result: URL
