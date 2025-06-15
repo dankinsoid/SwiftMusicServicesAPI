@@ -71,6 +71,7 @@ let package = Package(
     .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.4.0"),
     .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
     .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.0.0"),
+		.package(url: "https://github.com/dankinsoid/CodableProxies.git", from: "1.1.3")
   ],
   targets: [
     .target(
@@ -79,6 +80,7 @@ let package = Package(
         .product(name: "VDCodable", package: "VDCodable"),
         .product(name: "SwiftAPIClient", package: "swift-api-client"),
         "CryptoSwift",
+				"CodableProxies"
       ]
     ),
     .target(

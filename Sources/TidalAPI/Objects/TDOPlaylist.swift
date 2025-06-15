@@ -5,8 +5,8 @@ public extension Tidal.Objects {
 	
 	struct UserPlaylist: Codable, Equatable {
 		
-		@NilIfError public var type: UserPlaylistType?
-		@NilIfError public var created: Date?
+		public var type: UserPlaylistType?
+		public var created: Date?
 		public var playlist: Playlist
 		
 		public init(type: UserPlaylistType? = nil, created: Date? = nil, playlist: Playlist) {
@@ -18,7 +18,7 @@ public extension Tidal.Objects {
 	
 	struct WithETag<Value> {
 		
-		@NilIfError public var eTag: String?
+		public var eTag: String?
 		public var value: Value
 		
 		public init(eTag: String? = nil, value: Value) {
@@ -32,20 +32,20 @@ public extension Tidal.Objects {
 		public var uuid: String
 		public var title: String
 		public var numberOfTracks: Int
-		@NilIfError public var numberOfVideos: Int?
-		@NilIfError public var creatorID: Int?
-		@NilIfError public var description: String?
-		@NilIfError public var duration: Int?
-		@NilIfError public var lastUpdated: Date?
-		@NilIfError public var created: Date?
-		@NilIfError public var type: PlaylistType?
-		@NilIfError public var publicPlaylist: Bool?
-		@NilIfError public var url: URL?
-		@NilIfError public var image: String?
-		@NilIfError public var popularity: Int?
-		@NilIfError public var squareImage: String?
+		public var numberOfVideos: Int?
+		public var creatorID: Int?
+		public var description: String?
+		public var duration: Int?
+		public var lastUpdated: Date?
+		public var created: Date?
+		public var type: PlaylistType?
+		public var publicPlaylist: Bool?
+		public var url: URL?
+		public var image: String?
+		public var popularity: Int?
+		public var squareImage: String?
 		//        public var promotedArtists: [String]
-		@NilIfError public var lastItemAddedAt: Date?
+		public var lastItemAddedAt: Date?
 		
 		public init(
 			uuid: String,

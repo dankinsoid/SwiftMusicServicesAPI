@@ -5,8 +5,8 @@ public extension Tidal.Objects {
 	
 	struct UserTrack: Codable, Equatable {
 		
-		@NilIfError public var type: PlaylistItemType?
-		@NilIfError public var created: Date?
+		public var type: PlaylistItemType?
+		public var created: Date?
 		public var item: Track
 		
 		public init(type: PlaylistItemType? = nil, created: Date? = nil, item: Track) {
@@ -21,32 +21,32 @@ public extension Tidal.Objects {
 		public var id: Int
 		public var title: String
 		public var duration: Double
-		@NilIfError public var replayGain: Double?
-		@NilIfError public var peak: Double?
-		@NilIfError public var allowStreaming: Bool?
-		@NilIfError public var streamReady: Bool?
-		@NilIfError public var streamStartDate: Date?
-		@NilIfError public var premiumStreamingOnly: Bool?
-		@NilIfError public var trackNumber: Int?
-		@NilIfError public var volumeNumber: Int?
-		@NilIfError public var version: String?
-		@NilIfError public var popularity: Int?
-		@NilIfError public var copyright: String?
-		@NilIfError public var url: URL?
-		@NilIfError public var isrc: String?
-		@NilIfError public var editable: Bool?
-		@NilIfError public var explicit: Bool?
-		@NilIfError public var audioQuality: String?
-		@NilIfError public var audioModes: [String]?
-		@NilIfError public var artist: Artist?
-		@NilIfError public var artists: [Artist]?
-		@NilIfError public var album: Album?
-		@NilIfError public var mixes: Mixes?
+		public var replayGain: Double?
+		public var peak: Double?
+		public var allowStreaming: Bool?
+		public var streamReady: Bool?
+		public var streamStartDate: Date?
+		public var premiumStreamingOnly: Bool?
+		public var trackNumber: Int?
+		public var volumeNumber: Int?
+		public var version: String?
+		public var popularity: Int?
+		public var copyright: String?
+		public var url: URL?
+		public var isrc: String?
+		public var editable: Bool?
+		public var explicit: Bool?
+		public var audioQuality: String?
+		public var audioModes: [String]?
+		public var artist: Artist?
+		public var artists: [Artist]?
+		public var album: Album?
+		public var mixes: Mixes?
 		
 		// Playlist item
-		@NilIfError public var dateAdded: Date?
-		@NilIfError public var index: Int?
-		@NilIfError public var itemUuid: String?
+		public var dateAdded: Date?
+		public var index: Int?
+		public var itemUuid: String?
 		
 		public init(
 			id: Int,
@@ -111,7 +111,7 @@ public extension Tidal.Objects {
 		
 		public var id: Int
 		public var name: String
-		@NilIfError public var type: ArtistType?
+		public var type: ArtistType?
 		
 		public init(id: Int, name: String, type: ArtistType? = nil) {
 			self.id = id
@@ -145,8 +145,8 @@ public extension Tidal.Objects {
 		
 		public var id: Int
 		public var title: String
-		@NilIfError public var cover: String?
-		@NilIfError public var videoCover: String?
+		public var cover: String?
+		public var videoCover: String?
 		
 		public init(id: Int, title: String, cover: String? = nil, videoCover: String? = nil) {
 			self.id = id
