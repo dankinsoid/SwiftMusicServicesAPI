@@ -1,7 +1,14 @@
 import Foundation
 import SwiftAPIClient
 
-extension Amazon {
+extension Amazon.API {
+	
+	public var user: User {
+		User(client: client)
+	}
+}
+
+extension Amazon.API {
 	
 	public struct User {
 
