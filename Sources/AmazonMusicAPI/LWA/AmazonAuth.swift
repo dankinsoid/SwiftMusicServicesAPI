@@ -69,7 +69,6 @@ extension Amazon {
         }
 
         /// - Returns: An auth code.
-        /// - Throws: ``YouTube.OAuth.Error``
         public func codeFrom(redirected url: String) throws -> String? {
             guard let components = URLComponents(string: url) else { return nil }
             let items = components.queryItems ?? []
@@ -309,15 +308,12 @@ extension Amazon.Objects {
         public var access_token: String
         /// The refresh token that can be used to request a new access token. Maximum size of 2048 bytes.
         public var refresh_token: String
-        /// Will always be bearer.
-        public var token_type: String
         /// The number of seconds the access token is valid.
         public var expires_in: Double
         
-        public init(access_token: String, refresh_token: String, token_type: String, expires_in: Double) {
+        public init(access_token: String, refresh_token: String, expires_in: Double) {
             self.access_token = access_token
             self.refresh_token = refresh_token
-            self.token_type = token_type
             self.expires_in = expires_in
         }
     }

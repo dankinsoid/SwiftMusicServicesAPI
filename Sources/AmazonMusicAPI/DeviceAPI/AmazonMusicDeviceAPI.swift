@@ -17,25 +17,16 @@ extension Amazon.Music {
             clientSecret: String,
             redirectURI: String,
             cache: SecureCacheService
-        ) {
-            self.client = client
-                .url(Self.baseURL)
-                .tokenRefresher(cacheService: cache) { refreshToken, _, _ in
-                    let token = try await Amazon.Auth(
-                        client: client,
-                        clientID: clientID,
-                        clientSecret: clientSecret,
-                        redirectURI: redirectURI
-                    )
-                    .refreshToken(cache: cache)
-                    return (token.access_token, token.refresh_token, Date(timeIntervalSinceNow: token.expires_in))
-                } auth: { token in
-                    .bearer(token: token)
-                }
-                .errorDecoder(.decodable(Amazon.Objects.Error.self))
-            
-            self.cache = cache
-        }
+				) {
+					self.client = client.amazon(
+						baseURL: Self.baseURL,
+						clientID: clientID,
+						clientSecret: clientSecret,
+						redirectURI: redirectURI,
+						cache: cache
+					)
+					self.cache = cache
+				}
         
         public init(
             client: APIClient,
@@ -58,7 +49,7 @@ extension Amazon.Music {
                 ].compactMapValues { $0 })
             )
         }
-    
+
         public func update(accessToken: String, refreshToken: String, expiresIn: Double?) async {
             try? await cache.save(accessToken, for: .accessToken)
             try? await cache.save(refreshToken, for: .refreshToken)
