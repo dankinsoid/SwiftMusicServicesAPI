@@ -7,8 +7,9 @@ import Logging
 public struct VK {
 
 	public final class API {
+	
 		public static var baseURL = URL(string: "https://m.vk.com")!
-        private static let userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15"
+		private static let userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_7_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1"
 
 		private(set) public var client = APIClient()
         private let lock = ReadWriteLock()
@@ -129,6 +130,7 @@ public extension VK {
 private struct VKRedirectMiddleware: HTTPClientMiddleware {
 
     weak var api: VK.API?
+
     private var client: APIClient {
         (api?.client ?? APIClient())
             .configs(\.insideRedirect, true)

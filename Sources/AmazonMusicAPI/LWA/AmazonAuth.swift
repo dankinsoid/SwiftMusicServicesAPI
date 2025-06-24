@@ -166,9 +166,8 @@ extension Amazon {
             authResponse: Amazon.Objects.DeviceAuthorizationResponse,
             cache: SecureCacheService
         ) async throws -> Amazon.Objects.TokenResponse {
-            var date = Date()
-            var codeExpireDate = Date(timeIntervalSinceNow: authResponse.expires_in)
-            while date < codeExpireDate {
+            let codeExpireDate = Date(timeIntervalSinceNow: authResponse.expires_in)
+            while Date() < codeExpireDate {
                 try Task.checkCancellation()
                 switch try await token(deviceAuthResponse: authResponse, cache: cache) {
                 case .pending:

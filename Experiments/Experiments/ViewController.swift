@@ -17,7 +17,7 @@ final class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate
         configuration.preferences = WKPreferences()
         configuration.websiteDataStore = .nonPersistent()
         configuration.userContentController = contentController
-        configuration.applicationNameForUserAgent = "Version/17.4.1 Safari/605.1.15"
+        configuration.applicationNameForUserAgent = "Version/18.4 Mobile/15E148 Safari/604.1"
         
         webView = createWebView(configuration: configuration)
 
