@@ -148,7 +148,7 @@ private extension DecodingError {
             return "Expected \(any) at \(context.humanReadable)"
         case let .valueNotFound(any, context):
             return "Value of \(any) not found at \(context.humanReadable)"
-        case let .keyNotFound(codingKey, context):
+        case let .keyNotFound(_, context):
             return "Key \(context.humanReadable) not found"
         case let .dataCorrupted(context):
             return "Data corrupted at \(context.humanReadable)"
