@@ -4,13 +4,13 @@ import SwiftAPIClient
 
 extension Amazon.Music {
 	
-	public final class BrwoserAPI {
+	public final class BrowserAPI {
 		
 		public static let baseURL = URL(string: "https://music.amazon.com")!
 		public static let requiredAuthCookies: Set<String> = ["at-main", "sess-at-main", "session-id", "session-token", "ubid-main", "x-main"]
 		private(set) public var client: APIClient
 		private let lock = ReadWriteLock()
-
+		
 		public var webCookies: [String: String] {
 			get {
 				lock.withReaderLock { _webCookies }
@@ -24,7 +24,7 @@ extension Amazon.Music {
 				}
 			}
 		}
-
+		
 		public var userAgent: String {
 			get {
 				lock.withReaderLock { _userAgent }
@@ -38,23 +38,32 @@ extension Amazon.Music {
 				}
 			}
 		}
-
-		public var config: Amazon.Objects.Config? {
+		
+		var config: Amazon.Objects.Config? {
 			get {
 				lock.withReaderLock { _config }
 			}
 			set {
 				lock.withWriterLockVoid {
 					_config = newValue
+					_configDate = Date()
 				}
 			}
 		}
-
+		
+		var isConfigExpired: Bool {
+			let configDate = lock.withReaderLock { _configDate }
+			guard let configDate, let config else { return true }
+			let expiresIn = config.accessTokenExpiresIn.flatMap { TimeInterval($0) } ?? 0
+			return Date().timeIntervalSince(configDate) > expiresIn - 60 // 1 minute before expiration
+		}
+		
 		public let cache: SecureCacheService
 		private var _webCookies: [String: String] = [:]
 		private var _userAgent = defaultUserAgent
 		private var _config: Amazon.Objects.Config?
-
+		private var _configDate: Date?
+		
 		public init(
 			client: APIClient = APIClient(),
 			cache: SecureCacheService,
@@ -83,11 +92,49 @@ extension Amazon.Music {
 				self.webCookies = ((try? await cache.load(for: .cookies) as [String: String]?) ?? [:]).merging(webCookies) { _, n in n }
 			}
 		}
+
+		public var musicClient: APIClient {
+			client.url("https://na.mesk.skill.music.a2z.com/api")
+				.httpClientMiddleware(BodyMiddleware(api: self))
+		}
+	}
+
+	private struct BodyMiddleware: HTTPClientMiddleware {
+
+		weak var api: Amazon.Music.BrowserAPI?
+
+		func execute<T>(
+			request: HTTPRequestComponents,
+			configs: APIClient.Configs,
+			next: @escaping (HTTPRequestComponents, APIClient.Configs) async throws -> (T, HTTPResponse)
+		) async throws -> (T, HTTPResponse) {
+			var request = request
+			if let api, request.method != .get, request.body == nil, configs.isAuthEnabled {
+				let config = try await api.congif()
+				request.body = try .data(
+					configs.bodyEncoder.encode(
+						Amazon.Objects.DefaultBody(
+							headers: Amazon.Objects.Headers(
+								accessToken: config.accessToken,
+								csrf: config.csrf,
+								xAmznDeviceId: config.deviceId,
+								xAmznUserAgent: api.userAgent,
+								xAmznSessionId: config.sessionId
+							)
+						)
+					)
+				)
+				print(String(data: request.body!.data!, encoding: .utf8)!)
+				request.headers.append(.contentType(.application(.json)))
+				request.headers.append(.contentEncoding("gzip"))
+			}
+			return try await next(request, configs)
+		}
 	}
 
 	private struct SetCookiesMiddleware: HTTPClientMiddleware {
 
-		weak var api: Amazon.Music.BrwoserAPI?
+		weak var api: Amazon.Music.BrowserAPI?
 
 		func execute<T>(
 			request: HTTPRequestComponents,
