@@ -5,13 +5,16 @@ import SwiftAPIClient
 final class AmazonMusicTests: XCTestCase {
 	
 	let api = Amazon.Music.BrowserAPI(
-		client: APIClient().loggingComponents([.full]),
+		client: APIClient().loggingComponents([.url]),
 		cache: MockSecureCacheService(),
 		webCookies: [:]
 	)
 	
 	func testHome() async throws {
-		api.userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
-		try await print(api.showHome())
+		let playlists = try await api.showLibraryHome().asPlaylists
+		for playlist in playlists {
+			let tracks = try await api.showLibraryPlaylist(id: playlist.id).asTracks
+			print(tracks)
+		}
 	}
 }

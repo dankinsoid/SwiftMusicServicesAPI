@@ -111,20 +111,17 @@ extension Amazon.Music {
 			var request = request
 			if let api, request.method != .get, request.body == nil, configs.isAuthEnabled {
 				let config = try await api.congif()
-				request.body = try .data(
-					configs.bodyEncoder.encode(
-						Amazon.Objects.DefaultBody(
-							headers: Amazon.Objects.Headers(
-								accessToken: config.accessToken,
-								csrf: config.csrf,
-								xAmznDeviceId: config.deviceId,
-								xAmznUserAgent: api.userAgent,
-								xAmznSessionId: config.sessionId
-							)
-						)
+				var body = try Amazon.Objects.DefaultBody(
+					headers: Amazon.Objects.Headers(
+						accessToken: config.accessToken,
+						csrf: config.csrf,
+						xAmznDeviceId: config.deviceId,
+						xAmznUserAgent: api.userAgent,
+						xAmznSessionId: config.sessionId
 					)
 				)
-				print(String(data: request.body!.data!, encoding: .utf8)!)
+				try configs.amazonBody(&body, configs)
+				request.body = try .data(configs.bodyEncoder.encode(body))
 				request.headers.append(.contentType(.application(.json)))
 				request.headers.append(.contentEncoding("gzip"))
 			}
@@ -195,4 +192,27 @@ private func parseSetCookieHeader(_ header: String) -> [String: String] {
 		}
 
 		return result
+}
+
+extension APIClient.Configs {
+	
+	public var amazonBody: (inout Amazon.Objects.DefaultBody, APIClient.Configs) throws -> Void {
+		get { self[\.amazonBody] ?? { _, _ in } }
+		set { self[\.amazonBody] = newValue }
+	}
+}
+
+extension APIClient {
+
+	public func amazonBody(
+		_ body: @escaping (inout Amazon.Objects.DefaultBody, APIClient.Configs) throws -> Void
+	) -> APIClient {
+		configs { configs in
+			let current = configs.amazonBody
+			configs.amazonBody = {
+				try current(&$0, $1)
+				try body(&$0, $1)
+			}
+		}
+	}
 }

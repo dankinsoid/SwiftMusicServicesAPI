@@ -1,20 +1,38 @@
 import Foundation
+import SwiftAPIClient
 import SwiftMusicServicesApi
 
 extension Amazon.Objects {
 
 	public struct DefaultBody: Codable {
-
-		public var headers: String
-		public var userHash: String?
+		
+		private var values: [String: String] = [:]
 
 		public init(
-			headers: Headers,
-			userHash: String? = nil
+			headers: Headers
 		) throws {
-			let encoder = JSONEncoder()
-			self.headers = try String(data: encoder.encode(headers), encoding: .utf8).unwrap(throwing: InvalidUTF8Error())
-			self.userHash = userHash
+			values = [:]
+			try set(headers, for: "headers")
+		}
+	
+		public mutating func removeValue(for key: String) {
+			values.removeValue(forKey: key)
+		}
+
+		public mutating func set(_ value: some Encodable, for key: String, encoder: ContentEncoder = .json) throws {
+			values[key] = try String(data: encoder.encode(value), encoding: .utf8).unwrap(throwing: InvalidUTF8Error())
+		}
+	
+		public mutating func set(_ value: String, for key: String) {
+			values[key] = value
+		}
+
+		public init(from decoder: any Decoder) throws {
+			values = (try? [String: String].init(from: decoder)) ?? [:]
+		}
+		
+		public func encode(to encoder: any Encoder) throws {
+			try values.encode(to: encoder)
 		}
 	}
 	
