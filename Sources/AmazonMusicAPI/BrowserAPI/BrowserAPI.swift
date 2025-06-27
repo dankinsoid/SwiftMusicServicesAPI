@@ -8,7 +8,7 @@ extension Amazon.Music {
 		
 		public static let baseURL = URL(string: "https://music.amazon.com")!
 		public static let requiredAuthCookies: Set<String> = ["at-main", "sess-at-main", "session-id", "session-token", "ubid-main", "x-main"]
-		private(set) public var client: APIClient
+		public var client: APIClient
 		private let lock = ReadWriteLock()
 		
 		public var webCookies: [String: String] {
