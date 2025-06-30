@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Videos {
+public extension Tidal.API.V2.Videos {
 
 	/**
 	 Get single video.
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.Videos {
 
 	 **GET** /videos/{id}
 	 */
-	func getById(id: String, countryCode: String, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.VideosSingleDataDocument {
+	func getById(id: String, countryCode: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.VideosSingleDataDocument {
 		try await client
 			.path("/videos/\(id)")
 			.method(.get)

@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Albums {
+public extension Tidal.API.V2.Albums {
 
 	/**
 	 Get artists relationship ("to-many").
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.Albums {
 
 	 **GET** /albums/{id}/relationships/artists
 	 */
-	func getByIdRelationshipsArtists(id: String, countryCode: String, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.AlbumsMultiDataRelationshipDocument {
+	func getByIdRelationshipsArtists(id: String, countryCode: String? = nil, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.AlbumsMultiDataRelationshipDocument {
 		try await client
 			.path("/albums/\(id)/relationships/artists")
 			.method(.get)

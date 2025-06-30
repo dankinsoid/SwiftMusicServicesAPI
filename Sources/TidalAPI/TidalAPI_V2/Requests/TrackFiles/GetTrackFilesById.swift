@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.TrackFiles {
+public extension Tidal.API.V2.TrackFiles {
 
 	/**
 	 Get single trackFile.

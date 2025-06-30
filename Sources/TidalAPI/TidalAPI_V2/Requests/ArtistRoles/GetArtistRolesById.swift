@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.ArtistRoles {
+public extension Tidal.API.V2.ArtistRoles {
 
 	/**
 	 Get single artistRole.

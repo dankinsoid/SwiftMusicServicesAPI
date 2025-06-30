@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Artworks {
+public extension Tidal.API.V2.Artworks {
 
 	/**
 	 Get owners relationship ("to-many").

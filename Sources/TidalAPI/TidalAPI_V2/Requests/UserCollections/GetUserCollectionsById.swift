@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.UserCollections {
+public extension Tidal.API.V2.UserCollections {
 
 	/**
 	 Get single userCollection.
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.UserCollections {
 
 	 **GET** /userCollections/{id}
 	 */
-	func getById(id: String, locale: String, countryCode: String, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserCollectionsSingleDataDocument {
+	func getById(id: String, locale: String, countryCode: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserCollectionsSingleDataDocument {
 		try await client
 			.path("/userCollections/\(id)")
 			.method(.get)

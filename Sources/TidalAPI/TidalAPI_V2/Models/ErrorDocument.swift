@@ -4,7 +4,7 @@ import SwiftAPIClient
 public extension TDO {
 
 	/** JSON:API error document object */
-	struct ErrorDocument: Codable, Equatable, Sendable {
+	struct ErrorDocument: Codable, Equatable, Sendable, Swift.Error {
 
 		/** array of error objects */
 		public var errors: [ErrorObject]?

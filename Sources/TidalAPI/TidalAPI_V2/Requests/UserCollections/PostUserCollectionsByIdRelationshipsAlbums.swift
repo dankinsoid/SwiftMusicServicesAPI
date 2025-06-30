@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.UserCollections {
+public extension Tidal.API.V2.UserCollections {
 
 	/**
 	 Add to albums relationship ("to-many").
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.UserCollections {
 
 	 **POST** /userCollections/{id}/relationships/albums
 	 */
-	func postByIdRelationshipsAlbums(id: String, countryCode: String, body: TDO.UserCollectionAlbumsRelationshipAddOperationPayload, fileID: String = #fileID, line: UInt = #line) async throws {
+	func postByIdRelationshipsAlbums(id: String, countryCode: String? = nil, body: TDO.UserCollectionAlbumsRelationshipAddOperationPayload, fileID: String = #fileID, line: UInt = #line) async throws {
 		try await client
 			.path("/userCollections/\(id)/relationships/albums")
 			.method(.post)

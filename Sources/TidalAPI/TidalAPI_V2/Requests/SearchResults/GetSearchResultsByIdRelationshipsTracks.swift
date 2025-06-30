@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.SearchResults {
+public extension Tidal.API.V2.SearchResults {
 
 	/**
 	 Get tracks relationship ("to-many").
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.SearchResults {
 
 	 **GET** /searchResults/{id}/relationships/tracks
 	 */
-	func getByIdRelationshipsTracks(id: String, countryCode: String, explicitFilter: String? = nil, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchResultsMultiDataRelationshipDocument {
+	func getByIdRelationshipsTracks(id: String, countryCode: String? = nil, explicitFilter: String? = nil, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchResultsMultiDataRelationshipDocument {
 		try await client
 			.path("/searchResults/\(id)/relationships/tracks")
 			.method(.get)

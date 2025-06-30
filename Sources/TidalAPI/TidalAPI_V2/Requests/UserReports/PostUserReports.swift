@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.UserReports {
+public extension Tidal.API.V2.UserReports {
 
 	/**
 	 Create single userReport.

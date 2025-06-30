@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.SearchSuggestions {
+public extension Tidal.API.V2.SearchSuggestions {
 
 	/**
 	 Get directHits relationship ("to-many").
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.SearchSuggestions {
 
 	 **GET** /searchSuggestions/{id}/relationships/directHits
 	 */
-	func getByIdRelationshipsDirectHits(id: String, countryCode: String, explicitFilter: String? = nil, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchSuggestionsMultiDataRelationshipDocument {
+	func getByIdRelationshipsDirectHits(id: String, countryCode: String? = nil, explicitFilter: String? = nil, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchSuggestionsMultiDataRelationshipDocument {
 		try await client
 			.path("/searchSuggestions/\(id)/relationships/directHits")
 			.method(.get)

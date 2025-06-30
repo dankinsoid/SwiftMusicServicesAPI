@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Tracks {
+public extension Tidal.API.V2.Tracks {
 
 	/**
 	 Get single track.
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.Tracks {
 
 	 **GET** /tracks/{id}
 	 */
-	func getById(id: String, countryCode: String, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.TracksSingleDataDocument {
+	func getById(id: String, countryCode: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.TracksSingleDataDocument {
 		try await client
 			.path("/tracks/\(id)")
 			.method(.get)

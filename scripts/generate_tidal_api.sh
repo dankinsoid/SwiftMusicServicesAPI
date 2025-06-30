@@ -59,7 +59,7 @@ echo -e "${YELLOW}🔧 Generating Swift API client...${NC}"
 if swaggen generate "$TEMP_SPEC_FILE" \
     --template "$TEMPLATE_DIR" \
     --destination "$OUTPUT_DIR" \
-    --option name:TidalAPI_V2 \
+    --option name:Tidal.API.V2 \
     --option modelNamespace:TDO \
     --option enumUndecodedCase:true \
     --option mutableModels:true \

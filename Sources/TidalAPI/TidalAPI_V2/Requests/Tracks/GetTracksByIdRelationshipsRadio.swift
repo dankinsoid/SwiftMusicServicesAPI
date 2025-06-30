@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Tracks {
+public extension Tidal.API.V2.Tracks {
 
 	/**
 	 Get radio relationship ("to-many").

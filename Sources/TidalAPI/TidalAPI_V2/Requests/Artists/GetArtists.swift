@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Artists {
+public extension Tidal.API.V2.Artists {
 
 	/**
 	 Get multiple artists.
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.Artists {
 
 	 **GET** /artists
 	 */
-	func get(countryCode: String, include: [String]? = nil, filterhandle: [String]? = nil, filterid: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.ArtistsMultiDataDocument {
+	func get(countryCode: String? = nil, include: [String]? = nil, filterhandle: [String]? = nil, filterid: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.ArtistsMultiDataDocument {
 		try await client
 			.path("/artists")
 			.method(.get)

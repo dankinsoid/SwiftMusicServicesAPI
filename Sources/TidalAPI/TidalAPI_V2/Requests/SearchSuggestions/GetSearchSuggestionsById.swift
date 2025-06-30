@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.SearchSuggestions {
+public extension Tidal.API.V2.SearchSuggestions {
 
 	/**
 	 Get single searchSuggestion.
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.SearchSuggestions {
 
 	 **GET** /searchSuggestions/{id}
 	 */
-	func getById(id: String, countryCode: String, explicitFilter: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchSuggestionsSingleDataDocument {
+	func getById(id: String, countryCode: String? = nil, explicitFilter: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchSuggestionsSingleDataDocument {
 		try await client
 			.path("/searchSuggestions/\(id)")
 			.method(.get)

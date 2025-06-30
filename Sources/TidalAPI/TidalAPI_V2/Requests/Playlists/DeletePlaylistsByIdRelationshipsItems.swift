@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Playlists {
+public extension Tidal.API.V2.Playlists {
 
 	/**
 	 Delete from items relationship ("to-many").

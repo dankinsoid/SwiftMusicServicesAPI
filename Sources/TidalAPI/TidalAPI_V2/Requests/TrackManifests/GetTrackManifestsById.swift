@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.TrackManifests {
+public extension Tidal.API.V2.TrackManifests {
 
 	/**
 	 Get single trackManifest.

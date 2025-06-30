@@ -10,13 +10,11 @@ public enum Tidal {
 
 public typealias TDO = Tidal.Objects
 
-extension Tidal.API {
-	
-	public typealias V2 = TidalAPI_V2
+public extension Tidal.API {
 
-    public static let desktopClientID = "mhPVJJEBNRzVjr2p"
+    static let desktopClientID = "mhPVJJEBNRzVjr2p"
 
-    public struct V1 {
+    struct V1 {
 
         public var client: APIClient
         public let cache: SecureCacheService
@@ -31,7 +29,7 @@ extension Tidal.API {
         ) {
             self.client = client
                 .url("https://api.tidal.com/v1")
-                .tokenRefresher(cacheService: cache) { refreshToken, _, _ in
+                .tokenRefresher(cacheService: cache) { _, _, _ in
                     let token = try await Tidal.Auth(client: client, clientID: clientID, clientSecret: clientSecret, redirectURI: redirectURI)
                         .refreshToken(cache: cache)
                     return (token.access_token, token.refresh_token, token.expiresAt)
@@ -43,7 +41,7 @@ extension Tidal.API {
                 .bodyDecoder(.json(dateDecodingStrategy: .tidal, dataDecodingStrategy: .base64))
                 .errorDecoder(.decodable(Tidal.Objects.Error.self))
                 .bodyEncoder(.formURL(arrayEncodingStrategy: .commaSeparator))
-                .finalizeRequest { request, configs in
+                .finalizeRequest { request, _ in
                     if request.headers[.authorization] == nil, let name = HTTPField.Name("x-tidal-token") {
                         request.headers[name] = clientID
                     }
@@ -51,7 +49,7 @@ extension Tidal.API {
                 .httpResponseValidator(.statusCode)
             self.cache = cache
         }
-        
+
         public init(
             client: APIClient = APIClient(),
             clientID: String,
@@ -69,7 +67,7 @@ extension Tidal.API {
                     .accessToken: tokens?.access_token,
                     .refreshToken: tokens?.refresh_token,
                     .expiryDate: (tokens?.expiresAt).map(DateFormatter.secureCacheService.string),
-                    .countryCode: tokens?.user?.countryCode ?? defaultCountryCode
+                    .countryCode: tokens?.user?.countryCode ?? defaultCountryCode,
                 ].compactMapValues { $0 })
             )
         }
@@ -102,7 +100,7 @@ public extension Tidal.API {
         url(type: "images", path, width: width, height: height)
     }
 
-    static func videoUrl(_ path: String, width: Int, height: Int) -> URL?  {
+    static func videoUrl(_ path: String, width: Int, height: Int) -> URL? {
         url(type: "videos", path, width: width, height: height)
     }
 }
@@ -112,7 +110,7 @@ public extension SecureCacheServiceKey {
     static let countryCode = SecureCacheServiceKey("countryCode")
 }
 
-private struct CountryCodeRequestMiddleware: HTTPClientMiddleware {
+struct CountryCodeRequestMiddleware: HTTPClientMiddleware {
 
     let cache: SecureCacheService
     let defaultCountryCode: String
@@ -130,9 +128,9 @@ private struct CountryCodeRequestMiddleware: HTTPClientMiddleware {
     }
 }
 
-extension JSONDecoder.DateDecodingStrategy {
+public extension JSONDecoder.DateDecodingStrategy {
 
-    public static let tidal: JSONDecoder.DateDecodingStrategy = .custom { decoder in
+    static let tidal: JSONDecoder.DateDecodingStrategy = .custom { decoder in
         let container = try decoder.singleValueContainer()
         let dateString: String
         do {
@@ -145,7 +143,6 @@ extension JSONDecoder.DateDecodingStrategy {
             return date
         }
         throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date format: \(dateString)")
-       
     }
 }
 

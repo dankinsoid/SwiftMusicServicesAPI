@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.UserEntitlements {
+public extension Tidal.API.V2.UserEntitlements {
 
 	/**
 	 Get single userEntitlement.

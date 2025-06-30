@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Tracks {
+public extension Tidal.API.V2.Tracks {
 
 	/**
 	 Get multiple tracks.
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.Tracks {
 
 	 **GET** /tracks
 	 */
-	func get(countryCode: String, include: [String]? = nil, isrc: [String]? = nil, id: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.TracksMultiDataDocument {
+	func get(countryCode: String? = nil, include: [String]? = nil, isrc: [String]? = nil, id: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.TracksMultiDataDocument {
 		try await client
 			.path("/tracks")
 			.method(.get)

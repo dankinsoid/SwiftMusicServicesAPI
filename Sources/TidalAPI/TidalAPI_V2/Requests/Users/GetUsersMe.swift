@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Users {
+public extension Tidal.API.V2.Users {
 
 	/**
 	 Get current user's user(s).

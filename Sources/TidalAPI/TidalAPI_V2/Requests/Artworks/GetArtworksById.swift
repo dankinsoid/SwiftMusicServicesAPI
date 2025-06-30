@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Artworks {
+public extension Tidal.API.V2.Artworks {
 
 	/**
 	 Get single artwork.
@@ -12,7 +12,7 @@ public extension TidalAPI_V2.Artworks {
 
 	 **GET** /artworks/{id}
 	 */
-	func getById(id: String, countryCode: String, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.ArtworksSingleDataDocument {
+	func getById(id: String, countryCode: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.ArtworksSingleDataDocument {
 		try await client
 			.path("/artworks/\(id)")
 			.method(.get)

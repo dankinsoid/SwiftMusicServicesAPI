@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.UserCollections {
+public extension Tidal.API.V2.UserCollections {
 
 	/**
 	 Add to playlists relationship ("to-many").

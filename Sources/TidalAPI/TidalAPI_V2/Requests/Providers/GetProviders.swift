@@ -3,7 +3,7 @@
 import Foundation
 import SwiftAPIClient
 
-public extension TidalAPI_V2.Providers {
+public extension Tidal.API.V2.Providers {
 
 	/**
 	 Get multiple providers.
