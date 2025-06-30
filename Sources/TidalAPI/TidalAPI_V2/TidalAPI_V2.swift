@@ -26,7 +26,7 @@ public extension Tidal.API {
 				.tokenRefresher(cacheService: cache) { _, _, _ in
 					let token = try await Auth(client: client, clientID: clientID, clientSecret: clientSecret, redirectURI: redirectURI)
 						.refreshToken(cache: cache)
-					return (token.accessToken, token.refreshToken, token.expiresAt)
+					return (token.access_token, token.refresh_token, token.expiresAt)
 				} auth: {
 					.bearer(token: $0)
 				}
@@ -42,6 +42,41 @@ public extension Tidal.API {
 				}
 				.httpResponseValidator(.statusCode)
 			self.cache = cache
+		}
+
+		public init(
+			client: APIClient = APIClient(),
+			clientID: String,
+			clientSecret: String,
+			redirectURI: String,
+			defaultCountryCode: String = "US",
+			tokens: Tidal.Objects.TokenResponse?
+		) {
+			self.init(
+				client: client,
+				clientID: clientID,
+				clientSecret: clientSecret,
+				redirectURI: redirectURI,
+				cache: MockSecureCacheService([
+					.accessToken: tokens?.access_token,
+					.refreshToken: tokens?.refresh_token,
+					.expiryDate: (tokens?.expiresAt).map(DateFormatter.secureCacheService.string),
+					.countryCode: tokens?.user?.countryCode ?? defaultCountryCode,
+				].compactMapValues { $0 })
+			)
+		}
+
+		public func setTokens(_ tokens: Tidal.Objects.TokenResponse) async {
+			try? await cache.save(tokens.access_token, for: .accessToken)
+			if let refreshToken = tokens.refresh_token {
+				try? await cache.save(refreshToken, for: .refreshToken)
+			}
+			if let expiryDate = tokens.expiresAt {
+				try? await cache.save(expiryDate, for: .expiryDate)
+			}
+			if let countryCode = tokens.user?.countryCode {
+				try? await cache.save(countryCode, for: .countryCode)
+			}
 		}
 	}
 }

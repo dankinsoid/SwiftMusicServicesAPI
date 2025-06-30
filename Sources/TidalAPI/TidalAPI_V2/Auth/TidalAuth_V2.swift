@@ -39,19 +39,26 @@ public extension Tidal.API.V2 {
         /// Client credentials flow - Access tokens without user context
         public func clientCredentials(
             cache: SecureCacheService
-        ) async throws -> TokenResponse {
+        ) async throws -> Tidal.Objects.TokenResponse {
             let response = try await client("token")
                 .auth(.basic(username: clientID, password: clientSecret))
                 .body(["grant_type": "client_credentials"])
                 .post
-                .call(.http, as: .decodable(TokenResponse.self))
+                .call(.http, as: .decodable(V2TokenResponse.self))
 
-            try? await cache.save(response.accessToken, for: .accessToken)
-            if let expiresAt = response.expiresAt {
+            let tidalResponse = Tidal.Objects.TokenResponse(
+                access_token: response.accessToken,
+                refresh_token: response.refreshToken,
+                token_type: response.tokenType,
+                expires_in: response.expiresIn
+            )
+
+            try? await cache.save(tidalResponse.access_token, for: .accessToken)
+            if let expiresAt = tidalResponse.expiresAt {
                 try? await cache.save(expiresAt, for: .expiryDate)
             }
 
-            return response
+            return tidalResponse
         }
 
         /// Generate authorization URL for user login flow
@@ -108,7 +115,7 @@ public extension Tidal.API.V2 {
             code: String,
             codeVerifier: String? = nil,
             cache: SecureCacheService
-        ) async throws -> TokenResponse {
+        ) async throws -> Tidal.Objects.TokenResponse {
             let verifier = codeVerifier ?? self.codeVerifier
 
             let response = try await client("token")
@@ -120,24 +127,31 @@ public extension Tidal.API.V2 {
                     "code_verifier": verifier,
                 ])
                 .post
-                .call(.http, as: .decodable(TokenResponse.self))
+                .call(.http, as: .decodable(V2TokenResponse.self))
 
-            try? await cache.save(response.accessToken, for: .accessToken)
-            if let refreshToken = response.refreshToken {
+            let tidalResponse = Tidal.Objects.TokenResponse(
+                access_token: response.accessToken,
+                refresh_token: response.refreshToken,
+                token_type: response.tokenType,
+                expires_in: response.expiresIn
+            )
+
+            try? await cache.save(tidalResponse.access_token, for: .accessToken)
+            if let refreshToken = tidalResponse.refresh_token {
                 try? await cache.save(refreshToken, for: .refreshToken)
             }
-            if let expiresAt = response.expiresAt {
+            if let expiresAt = tidalResponse.expiresAt {
                 try? await cache.save(expiresAt, for: .expiryDate)
             }
 
-            return response
+            return tidalResponse
         }
 
         /// Refresh access token using refresh token
         public func refreshToken(
             refreshToken: String? = nil,
             cache: SecureCacheService
-        ) async throws -> TokenResponse {
+        ) async throws -> Tidal.Objects.TokenResponse {
             let token: String
             if let refreshToken {
                 token = refreshToken
@@ -151,31 +165,39 @@ public extension Tidal.API.V2 {
                     "refresh_token": token,
                 ])
                 .post
-                .call(.http, as: .decodable(TokenResponse.self))
+                .call(.http, as: .decodable(V2TokenResponse.self))
 
-            try? await cache.save(response.accessToken, for: .accessToken)
-            if let newRefreshToken = response.refreshToken {
+            let tidalResponse = Tidal.Objects.TokenResponse(
+                access_token: response.accessToken,
+                refresh_token: response.refreshToken,
+                token_type: response.tokenType,
+                expires_in: response.expiresIn
+            )
+
+            try? await cache.save(tidalResponse.access_token, for: .accessToken)
+            if let newRefreshToken = tidalResponse.refresh_token {
                 try? await cache.save(newRefreshToken, for: .refreshToken)
             }
-            if let expiresAt = response.expiresAt {
+            if let expiresAt = tidalResponse.expiresAt {
                 try? await cache.save(expiresAt, for: .expiryDate)
             }
 
-            return response
+            return tidalResponse
         }
     }
 }
 
-// MARK: - Models
+// MARK: - Private Models
 
-public extension Tidal.API.V2.Auth {
-
-    struct TokenResponse: Codable, Equatable, Sendable {
-        public let accessToken: String
-        public let tokenType: String
-        public let expiresIn: Double?
-        public let refreshToken: String?
-        public let scope: String?
+private extension Tidal.API.V2.Auth {
+    
+    /// Internal model for OAuth 2.1 token response parsing
+    struct V2TokenResponse: Codable {
+        let accessToken: String
+        let tokenType: String
+        let expiresIn: Double?
+        let refreshToken: String?
+        let scope: String?
 
         private enum CodingKeys: String, CodingKey {
             case accessToken = "access_token"
@@ -184,11 +206,12 @@ public extension Tidal.API.V2.Auth {
             case refreshToken = "refresh_token"
             case scope
         }
-
-        public var expiresAt: Date? {
-            expiresIn.map { Date(timeIntervalSinceNow: $0) }
-        }
     }
+}
+
+// MARK: - Public Models
+
+public extension Tidal.API.V2.Auth {
 
     enum AuthError: Error, LocalizedError {
         case invalidRedirectURL
