@@ -4,12 +4,15 @@ import SwiftMusicServicesApi
 
 public enum Tidal {
 
-
     public enum API {}
     public enum Objects {}
 }
 
+public typealias TDO = Tidal.Objects
+
 extension Tidal.API {
+	
+	public typealias V2 = TidalAPI_V2
 
     public static let desktopClientID = "mhPVJJEBNRzVjr2p"
 

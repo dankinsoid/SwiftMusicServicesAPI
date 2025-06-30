@@ -2,22 +2,22 @@ import Foundation
 import SwiftMusicServicesApi
 
 public extension Tidal.Objects {
-	
-	struct UserTrack: Codable, Equatable {
-		
+
+	struct UserTrack: Codable, Equatable, Sendable {
+
 		public var type: PlaylistItemType?
 		public var created: Date?
 		public var item: Track
-		
+
 		public init(type: PlaylistItemType? = nil, created: Date? = nil, item: Track) {
 			self.type = type
 			self.created = created
 			self.item = item
 		}
 	}
-	
-	struct Track: Codable, Equatable, Identifiable {
-		
+
+	struct Track: Codable, Equatable, Sendable, Identifiable {
+
 		public var id: Int
 		public var title: String
 		public var duration: Double
@@ -42,12 +42,12 @@ public extension Tidal.Objects {
 		public var artists: [Artist]?
 		public var album: Album?
 		public var mixes: Mixes?
-		
+
 		// Playlist item
 		public var dateAdded: Date?
 		public var index: Int?
 		public var itemUuid: String?
-		
+
 		public init(
 			id: Int,
 			title: String,
@@ -106,116 +106,116 @@ public extension Tidal.Objects {
 			self.itemUuid = itemUuid
 		}
 	}
-	
-	struct Artist: Codable, Equatable, Identifiable {
-		
+
+	struct Artist: Codable, Equatable, Sendable, Identifiable {
+
 		public var id: Int
 		public var name: String
 		public var type: ArtistType?
-		
+
 		public init(id: Int, name: String, type: ArtistType? = nil) {
 			self.id = id
 			self.name = name
 			self.type = type
 		}
 	}
-	
-	struct ArtistType: Codable, Hashable, LosslessStringConvertible {
-		
+
+	struct ArtistType: Codable, Hashable, LosslessStringConvertible, Sendable {
+
 		public var value: String
 		public var description: String { value }
-		
+
 		public static let main = ArtistType("MAIN")
 		public static let featured = ArtistType("FEATURED")
-		
+
 		public init(_ value: String) {
 			self.value = value
 		}
-		
+
 		public init(from decoder: any Decoder) throws {
 			try self.init(String(from: decoder))
 		}
-		
+
 		public func encode(to encoder: any Encoder) throws {
 			try value.encode(to: encoder)
 		}
 	}
-	
-	struct Album: Codable, Equatable, Identifiable {
-		
+
+	struct Album: Codable, Equatable, Sendable, Identifiable {
+
 		public var id: Int
 		public var title: String
 		public var cover: String?
 		public var videoCover: String?
-		
+
 		public init(id: Int, title: String, cover: String? = nil, videoCover: String? = nil) {
 			self.id = id
 			self.title = title
 			self.cover = cover
 			self.videoCover = videoCover
 		}
-		
+
 		public func coverURL(size: Int = 160) -> URL? {
 			let size = coverSize(size)
 			return Tidal.API.imageUrl(cover ?? "0dfd3368-3aa1-49a3-935f-10ffb39803c0", width: size, height: size)
 		}
-		
+
 		public func videoCoverURL(size: Int = 160) -> URL? {
 			videoCover.flatMap {
 				let size = coverSize(size)
 				return Tidal.API.videoUrl($0, width: size, height: size)
 			}
 		}
-		
+
 		private func coverSize(_ size: Int) -> Int {
 			max(8, min(128, Int(pow(2, ceil(log2(Double(size) / 10)))))) * 10
 		}
 	}
-	
+
 	struct MixKind: Codable, Hashable, CodingKey, LosslessStringConvertible {
-		
+
 		public var value: String
 		public var description: String { value }
 		public var stringValue: String { value }
 		public var intValue: Int? { Int(value) }
-		
+
 		public static let trackMix = MixKind("TRACK_MIX")
 		public static let masterTrackMix = MixKind("MASTER_TRACK_MIX")
-		
+
 		public init(_ value: String) {
 			self.value = value
 		}
-		
+
 		public init(stringValue: String) {
 			self.init(stringValue)
 		}
-		
+
 		public init(intValue: Int) {
 			self.init("\(intValue)")
 		}
-		
+
 		public init(from decoder: any Decoder) throws {
 			try self.init(String(from: decoder))
 		}
-		
+
 		public func encode(to encoder: any Encoder) throws {
 			try value.encode(to: encoder)
 		}
 	}
-	
-	struct Mixes: ExpressibleByDictionaryLiteral, Codable, Equatable, CustomStringConvertible {
-		
+
+	struct Mixes: ExpressibleByDictionaryLiteral, Codable, Equatable, CustomStringConvertible, Sendable {
+
 		public var values: [MixKind: String]
 		public var description: String { values.description }
-		
-		public init(_ values: [MixKind : String]) {
+
+		public init(_ values: [MixKind: String]) {
 			self.values = values
 		}
-		
+
 		public init(dictionaryLiteral elements: (MixKind, String)...) {
-			self.values = Dictionary(uniqueKeysWithValues: elements)
+			values = Dictionary(uniqueKeysWithValues: elements)
 		}
-		
+
 		public init(from decoder: any Decoder) throws {
 			let container = try decoder.container(keyedBy: MixKind.self)
 			values = [:]
@@ -223,7 +223,7 @@ public extension Tidal.Objects {
 				values[key] = try container.decode(String.self, forKey: key)
 			}
 		}
-		
+
 		public func encode(to encoder: any Encoder) throws {
 			var container = encoder.container(keyedBy: MixKind.self)
 			for (key, value) in values {
@@ -231,22 +231,22 @@ public extension Tidal.Objects {
 			}
 		}
 	}
-	
-	struct PlaylistItemType: Hashable, Codable {
-		
+
+	struct PlaylistItemType: Hashable, Codable, Sendable {
+
 		public var value: String
-		
+
 		public static let track = PlaylistItemType("track")
 		public static let video = PlaylistItemType("video")
-		
+
 		public init(_ value: String) {
 			self.value = value
 		}
-		
+
 		public init(from decoder: any Decoder) throws {
 			try self.init(String(from: decoder))
 		}
-		
+
 		public func encode(to encoder: any Encoder) throws {
 			try value.encode(to: encoder)
 		}

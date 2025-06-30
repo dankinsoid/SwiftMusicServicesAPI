@@ -1,0 +1,34 @@
+
+// swiftlint:disable all
+import Foundation
+import SwiftAPIClient
+
+public extension TidalAPI_V2.Playlists {
+
+	/**
+	 Get multiple playlists.
+
+	 Retrieves multiple playlists by available filters, or without if applicable.
+
+	 **GET** /playlists
+	 */
+	func get(countryCode: String, pageCursor: String? = nil, include: [String]? = nil, ownersId: [String]? = nil, id: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.PlaylistsMultiDataDocument {
+		try await client
+			.path("/playlists")
+			.method(.get)
+			.query([
+				"countryCode": countryCode,
+				"page[cursor]": pageCursor,
+				"include": include,
+				"filter[r.owners.id]": ownersId,
+				"filter[id]": id,
+			])
+			.auth(enabled: true)
+			.call(
+				.http,
+				as: .decodable,
+				fileID: fileID,
+				line: line
+			)
+	}
+}

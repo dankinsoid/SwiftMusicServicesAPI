@@ -1,8 +1,8 @@
 import Foundation
 
-extension Tidal.Objects {
+public extension Tidal.Objects {
 
-    public struct User: Equatable, Codable, Identifiable {
+    struct User: Equatable, Codable, Identifiable, Sendable {
 
         public var id: Int
         public var email: String?
@@ -32,7 +32,7 @@ extension Tidal.Objects {
         public var newsletter: Bool?
         public var dateOfBirth: Date?
         private var userId: Int?
-        
+
         public init(
             id: Int,
             email: String? = nil,
@@ -90,37 +90,37 @@ extension Tidal.Objects {
             self.newsletter = newsletter
             self.dateOfBirth = dateOfBirth
         }
-        
+
         public init(from decoder: any Decoder) throws {
             let container: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
-            self.id = try container.decodeIfPresent(Int.self, forKey: .id) ?? container.decode(Int.self, forKey: .userId)
-            self.email = try? container.decodeIfPresent(String.self, forKey: .email)
-            self.countryCode = try? container.decodeIfPresent(String.self, forKey: .countryCode)
-            self.fullName = try? container.decodeIfPresent(String.self, forKey: .fullName)
-            self.firstName = try? container.decodeIfPresent(String.self, forKey: .firstName)
-            self.lastName = try? container.decodeIfPresent(String.self, forKey: .lastName)
-            self.nickname = try? container.decodeIfPresent(String.self, forKey: .nickname)
-            self.username = try? container.decodeIfPresent(String.self, forKey: .username)
-            self.address = try? container.decodeIfPresent(String.self, forKey: .address)
-            self.city = try? container.decodeIfPresent(String.self, forKey: .city)
-            self.postalcode = try? container.decodeIfPresent(String.self, forKey: .postalcode)
-            self.usState = try? container.decodeIfPresent(String.self, forKey: .usState)
-            self.phoneNumber = try? container.decodeIfPresent(String.self, forKey: .phoneNumber)
-            self.birthday = try? container.decodeIfPresent(String.self, forKey: .birthday)
-            self.gender = try? container.decodeIfPresent(String.self, forKey: .gender)
-            self.imageId = try? container.decodeIfPresent(String.self, forKey: .imageId)
-            self.channelId = try? container.decodeIfPresent(Int.self, forKey: .channelId)
-            self.parentId = try? container.decodeIfPresent(Int.self, forKey: .parentId)
-            self.acceptedEULA = try? container.decodeIfPresent(Bool.self, forKey: .acceptedEULA)
-            self.created = try? container.decodeIfPresent(Date.self, forKey: .created)
-            self.updated = try? container.decodeIfPresent(Date.self, forKey: .updated)
-            self.facebookUid = try? container.decodeIfPresent(Int.self, forKey: .facebookUid)
-            self.appleUid = try? container.decodeIfPresent(String.self, forKey: .appleUid)
-            self.newUser = try? container.decodeIfPresent(Bool.self, forKey: .newUser)
-            self.picture = try? container.decodeIfPresent(String.self, forKey: .picture)
-            self.newsletter = try? container.decodeIfPresent(Bool.self, forKey: .newsletter)
-            self.dateOfBirth = try? container.decodeIfPresent(Date.self, forKey: .dateOfBirth)
-            self.userId = try? container.decodeIfPresent(Int.self, forKey: .userId)
+            id = try container.decodeIfPresent(Int.self, forKey: .id) ?? container.decode(Int.self, forKey: .userId)
+            email = try? container.decodeIfPresent(String.self, forKey: .email)
+            countryCode = try? container.decodeIfPresent(String.self, forKey: .countryCode)
+            fullName = try? container.decodeIfPresent(String.self, forKey: .fullName)
+            firstName = try? container.decodeIfPresent(String.self, forKey: .firstName)
+            lastName = try? container.decodeIfPresent(String.self, forKey: .lastName)
+            nickname = try? container.decodeIfPresent(String.self, forKey: .nickname)
+            username = try? container.decodeIfPresent(String.self, forKey: .username)
+            address = try? container.decodeIfPresent(String.self, forKey: .address)
+            city = try? container.decodeIfPresent(String.self, forKey: .city)
+            postalcode = try? container.decodeIfPresent(String.self, forKey: .postalcode)
+            usState = try? container.decodeIfPresent(String.self, forKey: .usState)
+            phoneNumber = try? container.decodeIfPresent(String.self, forKey: .phoneNumber)
+            birthday = try? container.decodeIfPresent(String.self, forKey: .birthday)
+            gender = try? container.decodeIfPresent(String.self, forKey: .gender)
+            imageId = try? container.decodeIfPresent(String.self, forKey: .imageId)
+            channelId = try? container.decodeIfPresent(Int.self, forKey: .channelId)
+            parentId = try? container.decodeIfPresent(Int.self, forKey: .parentId)
+            acceptedEULA = try? container.decodeIfPresent(Bool.self, forKey: .acceptedEULA)
+            created = try? container.decodeIfPresent(Date.self, forKey: .created)
+            updated = try? container.decodeIfPresent(Date.self, forKey: .updated)
+            facebookUid = try? container.decodeIfPresent(Int.self, forKey: .facebookUid)
+            appleUid = try? container.decodeIfPresent(String.self, forKey: .appleUid)
+            newUser = try? container.decodeIfPresent(Bool.self, forKey: .newUser)
+            picture = try? container.decodeIfPresent(String.self, forKey: .picture)
+            newsletter = try? container.decodeIfPresent(Bool.self, forKey: .newsletter)
+            dateOfBirth = try? container.decodeIfPresent(Date.self, forKey: .dateOfBirth)
+            userId = try? container.decodeIfPresent(Int.self, forKey: .userId)
         }
     }
 }

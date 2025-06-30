@@ -1,0 +1,134 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build All",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    },
+    {
+      "label": "Build Spotify",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build", "--target", "SpotifyAPI"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    },
+    {
+      "label": "Build Apple Music",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build", "--target", "AppleMusicAPI"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    },
+    {
+      "label": "Build Amazon Music",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build", "--target", "AmazonMusicAPI"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    },
+    {
+      "label": "Build YouTube",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build", "--target", "YouTubeAPI"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    },
+    {
+      "label": "Build Yandex Music",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build", "--target", "YandexMusicAPI"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    },
+    {
+      "label": "Build VK Music",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build", "--target", "VKMusicAPI"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    },
+    {
+      "label": "Build SoundCloud",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build", "--target", "SoundCloudAPI"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    },
+    {
+      "label": "Build Tidal",
+      "type": "shell",
+      "command": "swift",
+      "args": ["build", "--target", "TidalAPI"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$swift"]
+    }
+  ]
+}

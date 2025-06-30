@@ -2,9 +2,9 @@ import Foundation
 import SwiftAPIClient
 @_exported import SwiftMusicServicesApi
 
-extension Tidal {
+public extension Tidal {
 
-    public final class Auth {
+    final class Auth {
 
         public static let baseURL = URL(string: "https://auth.tidal.com/v1/oauth2")!
         public static let redirectURIWeb = "https://account.tidal.com/login/tidal/return"
@@ -70,12 +70,12 @@ extension Tidal {
                         "language": language,
                         "restrictSignup": restrictSignup,
                         "code_challenge": codeChallenge,
-                        "code_challenge_method": codeChallengeMethod
+                        "code_challenge_method": codeChallengeMethod,
                     ],
                     queryEncoder: .urlQuery(arrayEncodingStrategy: .separator(" "))
                 )
         }
-    
+
         /// Requests an authorization code from Tidal.
         ///
         /// - Parameters:
@@ -142,7 +142,7 @@ extension Tidal {
                         "code_verifier": codeVerifier,
                         "client_unique_key": clientUniqueKey,
                         "scope": scope,
-                        "code": code
+                        "code": code,
                     ])
                     .post
                     .call(.http, as: .decodable(Tidal.Objects.TokenResponse.self))
@@ -170,7 +170,7 @@ extension Tidal {
                 .body([
                     "grant_type": "refresh_token",
                     "client_id": clientID,
-                    "refresh_token": cache.load(for: .refreshToken)
+                    "refresh_token": cache.load(for: .refreshToken),
                 ])
                 .post
                 .call(.http, as: .decodable(Tidal.Objects.TokenResponse.self))
@@ -188,15 +188,15 @@ extension Tidal {
     }
 }
 
-extension Tidal.Objects.Error {
+public extension Tidal.Objects.Error {
 
-    public static let authorizationPending = Self(error: "authorization_pending")
-    public static let expiredToken = Self(error: "expired_token")
+    static let authorizationPending = Self(error: "authorization_pending")
+    static let expiredToken = Self(error: "expired_token")
 }
 
-extension Tidal.Objects {
+public extension Tidal.Objects {
 
-    public struct PostCodePair: Codable {
+    struct PostCodePair: Codable {
         public var response_type: Tidal.Objects.ResponseType
         public var client_id: String
         public var scope: [Tidal.Objects.Scope]
@@ -206,8 +206,8 @@ extension Tidal.Objects {
             self.scope = scope
         }
     }
-    
-    public struct Scope: Hashable, ExpressibleByStringLiteral, LosslessStringConvertible, Codable, ExpressibleByArrayLiteral {
+
+    struct Scope: Hashable, ExpressibleByStringLiteral, LosslessStringConvertible, Codable, ExpressibleByArrayLiteral {
 
         public static let rUsr = Self("r_usr")
         public static let wUsr = Self("w_usr")
@@ -224,10 +224,10 @@ extension Tidal.Objects {
         }
     }
 
-    public struct ResponseType: Hashable, ExpressibleByStringLiteral, LosslessStringConvertible, Codable {
-        
+    struct ResponseType: Hashable, ExpressibleByStringLiteral, LosslessStringConvertible, Codable {
+
         public static let deviceCode = Self("device_code")
-        
+
         public var value: String
         public var description: String { value }
         public init(_ value: String) { self.value = value }
@@ -235,9 +235,9 @@ extension Tidal.Objects {
         public init(stringLiteral value: String) { self.init(value) }
         public func encode(to encoder: any Encoder) throws { try value.encode(to: encoder) }
     }
-    
-    public struct DeviceAuthorizationResponse: Codable, Equatable {
-        
+
+    struct DeviceAuthorizationResponse: Codable, Equatable, Sendable {
+
         /// The code to display to the user.
         public var user_code: String
         /// Required to submit a Device Token Request to Login with Tidal, to obtain the user’s access and refresh token.
@@ -248,7 +248,7 @@ extension Tidal.Objects {
         public var expires_in: Double
         /// The length of time in seconds you should wait between each Device Token Request.
         public var interval: Double
-        
+
         public init(user_code: String, device_code: String, verification_uri: String, expires_in: Double, interval: Double) {
             self.user_code = user_code
             self.device_code = device_code
@@ -257,12 +257,12 @@ extension Tidal.Objects {
             self.interval = interval
         }
     }
-    
-    public enum DeviceTokenResponse: Codable, Equatable {
-        
+
+    enum DeviceTokenResponse: Codable, Equatable, Sendable {
+
         case pending
         case success(TokenResponse)
-        
+
         public init(from decoder: any Decoder) throws {
             do {
                 self = try .success(Tidal.Objects.TokenResponse(from: decoder))
@@ -278,7 +278,7 @@ extension Tidal.Objects {
                 }
             }
         }
-        
+
         public func encode(to encoder: any Encoder) throws {
             switch self {
             case .pending:
@@ -289,7 +289,7 @@ extension Tidal.Objects {
         }
     }
 
-    public struct TokenResponse: Codable, Equatable {
+    struct TokenResponse: Codable, Equatable, Sendable {
 
         /// The access token for the user. Maximum size of 2048 bytes.
         public var access_token: String

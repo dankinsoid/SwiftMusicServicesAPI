@@ -2,33 +2,33 @@ import Foundation
 import SwiftMusicServicesApi
 
 public extension Tidal.Objects {
-	
-	struct UserPlaylist: Codable, Equatable {
-		
+
+	struct UserPlaylist: Codable, Equatable, Sendable {
+
 		public var type: UserPlaylistType?
 		public var created: Date?
 		public var playlist: Playlist
-		
+
 		public init(type: UserPlaylistType? = nil, created: Date? = nil, playlist: Playlist) {
 			self.type = type
 			self.created = created
 			self.playlist = playlist
 		}
 	}
-	
+
 	struct WithETag<Value> {
-		
+
 		public var eTag: String?
 		public var value: Value
-		
+
 		public init(eTag: String? = nil, value: Value) {
 			self.eTag = eTag
 			self.value = value
 		}
 	}
-	
-	struct Playlist: Codable, Equatable {
-		
+
+	struct Playlist: Codable, Equatable, Sendable {
+
 		public var uuid: String
 		public var title: String
 		public var numberOfTracks: Int
@@ -46,7 +46,7 @@ public extension Tidal.Objects {
 		public var squareImage: String?
 		//        public var promotedArtists: [String]
 		public var lastItemAddedAt: Date?
-		
+
 		public init(
 			uuid: String,
 			title: String,
@@ -82,7 +82,7 @@ public extension Tidal.Objects {
 			self.squareImage = squareImage
 			self.lastItemAddedAt = lastItemAddedAt
 		}
-		
+
 		public func squareImageUrl(size: Int = 160) -> URL? {
 			guard let squareImage else { return nil }
 			// Valid size: 160x160, 320x320, 480x480, 640x640, 750x750, 1080x1080
@@ -90,7 +90,7 @@ public extension Tidal.Objects {
 			let size = validSizes.first { $0 >= size } ?? 160
 			return Tidal.API.imageUrl(squareImage, width: size, height: size)
 		}
-		
+
 		public func imageUrl(width: Int, height: Int) -> URL? {
 			guard let image else { return squareImageUrl(size: max(width, height)) }
 			// Valid sizes: 160x107, 480x320, 750x500, 1080x720
@@ -104,42 +104,42 @@ public extension Tidal.Objects {
 			return Tidal.API.imageUrl(image, width: width, height: height)
 		}
 	}
-	
-	struct PlaylistType: Hashable, Codable, LosslessStringConvertible {
-		
+
+	struct PlaylistType: Hashable, Codable, LosslessStringConvertible, Sendable {
+
 		public var value: String
 		public var description: String { value }
-		
+
 		public static let user = PlaylistType("USER")
-		
+
 		public init(_ value: String) {
 			self.value = value
 		}
-		
+
 		public init(from decoder: any Decoder) throws {
 			try self.init(String(from: decoder))
 		}
-		
+
 		public func encode(to encoder: any Encoder) throws {
 			try value.encode(to: encoder)
 		}
 	}
-	
-	struct UserPlaylistType: Hashable, Codable, LosslessStringConvertible {
-		
+
+	struct UserPlaylistType: Hashable, Codable, LosslessStringConvertible, Sendable {
+
 		public var value: String
 		public var description: String { value }
-		
+
 		public static let userCreated = UserPlaylistType("USER_CREATED")
-		
+
 		public init(_ value: String) {
 			self.value = value
 		}
-		
+
 		public init(from decoder: any Decoder) throws {
 			try self.init(String(from: decoder))
 		}
-		
+
 		public func encode(to encoder: any Encoder) throws {
 			try value.encode(to: encoder)
 		}

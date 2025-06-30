@@ -1,30 +1,30 @@
 import Foundation
-import SwiftMusicServicesApi
 import SwiftAPIClient
+import SwiftMusicServicesApi
 
 public extension Tidal.API.V1 {
-    
+
     var tracks: Tracks {
         Tracks(client: client("tracks"))
     }
-    
+
     struct Tracks {
-        
+
         public let client: APIClient
-        
+
         public func callAsFunction(_ id: Int) -> Tidal.API.V1.Track {
             Tidal.API.V1.Track(client: client(id))
         }
     }
-    
+
     struct Track {
-        
+
         public let client: APIClient
     }
 }
 
 public extension Tidal.API.V1.Tracks {
-    
+
     func isrc(
         _ isrc: String,
         auth: Bool = true,
@@ -47,7 +47,7 @@ public extension Tidal.API.V1.Track {
             .query([
                 "audioquality": quality,
                 "playbackmode": mode,
-                "assetpresentation": assetPresentation
+                "assetpresentation": assetPresentation,
             ])
             .call()
     }
@@ -57,7 +57,7 @@ public extension Tidal.API.V1.Track {
             .query([
                 "audioquality": "LOW",
                 "playbackmode": "STREAM",
-                "assetpresentation": "PREVIEW"
+                "assetpresentation": "PREVIEW",
             ])
             .call()
     }
@@ -65,7 +65,7 @@ public extension Tidal.API.V1.Track {
 
 public extension Tidal.Objects {
 
-    struct PlaybackInfo: Codable, Equatable {
+    struct PlaybackInfo: Codable, Equatable, Sendable {
 
         public var trackId: Int
         public var assetPresentation: AssetPresentation
@@ -73,7 +73,7 @@ public extension Tidal.Objects {
         public var audioQuality: AudioQuality
         public var manifestMimeType: MimeType
         public var manifest: Data
-        
+
         public init(
             trackId: Int,
             assetPresentation: AssetPresentation,
@@ -109,14 +109,14 @@ public extension Tidal.Objects {
         public struct MimeType: StringWrapper {
 
             public var description: String
-            public init(_ value: String) { self.description = value }
+            public init(_ value: String) { description = value }
 
             public static let vndTidalBts = MimeType("application/vnd.tidal.bts")
             public static let dashXml = MimeType("application/dash+xml")
         }
-        
-        public struct VndTidalBtsManifest: Codable, Equatable {
-            
+
+        public struct VndTidalBtsManifest: Codable, Equatable, Sendable {
+
             public var mimeType: String
             public var codecs: String
             public var encryptionType: String
@@ -137,9 +137,9 @@ public extension Tidal.Objects {
     }
 
     struct AudioQuality: StringWrapper {
-        
+
         public var description: String
-        public init(_ value: String) { self.description = value }
+        public init(_ value: String) { description = value }
 
         /// 96kbps AAC
         public static let low = AudioQuality("LOW")
@@ -150,9 +150,9 @@ public extension Tidal.Objects {
         /// 24bit/96kHz MQA encoded FLAC
         public static let hiRes = AudioQuality("HI_RES")
     }
-    
+
     enum PlaybackMode: String, CaseIterable, Equatable, Codable {
-        
+
         case stream = "STREAM"
         case offline = "OFFLINE"
     }
@@ -160,7 +160,7 @@ public extension Tidal.Objects {
     struct AudioMode: StringWrapper {
 
         public var description: String
-        public init(_ value: String) { self.description = value }
+        public init(_ value: String) { description = value }
 
         public static let stereo = AudioMode("STEREO")
     }
@@ -168,7 +168,7 @@ public extension Tidal.Objects {
     struct AssetPresentation: StringWrapper {
 
         public var description: String
-        public init(_ value: String) { self.description = value }
+        public init(_ value: String) { description = value }
 
         public static let full = AssetPresentation("FULL")
         public static let preview = AssetPresentation("PREVIEW")
@@ -176,6 +176,6 @@ public extension Tidal.Objects {
 }
 
 private enum ManifestDecodingError: Error {
-    
+
     case invalidString
 }
