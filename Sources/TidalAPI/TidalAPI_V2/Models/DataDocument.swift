@@ -3,7 +3,7 @@ import SwiftAPIClient
 
 public extension TDO {
 
-	struct DataDocument<Data: Codable>: Codable {
+	struct DataDocument<Data> {
 
 		public var data: Data?
 		public var included: Included?
@@ -21,6 +21,7 @@ public extension TDO {
 	}
 }
 
+extension TDO.DataDocument: Encodable where Data: Encodable {}
+extension TDO.DataDocument: Decodable where Data: Decodable {}
 extension TDO.DataDocument: Equatable where Data: Equatable {}
-
 extension TDO.DataDocument: Sendable where Data: Sendable {}
