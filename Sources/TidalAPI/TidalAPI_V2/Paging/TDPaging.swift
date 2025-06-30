@@ -1,10 +1,14 @@
 import Foundation
 import SwiftAPIClient
 
-extension Tidal.API.V2 {
+public extension Tidal.API.V2 {
 
+	/// Creates a paging sequence for single-item responses.
+	/// - Parameter limit: Maximum items to fetch. May be exceeded by the last page since Tidal API doesn't support limits.
+	/// - Parameter request: Request closure returning a DataDocument
+	/// - Note: Count is computed as 1 if data exists, 0 if nil
 	@_disfavoredOverload
-	public func paging<Output: Decodable>(
+	func paging<Output: Decodable>(
 		limit: Int? = nil,
 		_ request: @escaping () async throws -> TDO.DataDocument<Output>
 	) -> Paging<Output> {
@@ -15,7 +19,11 @@ extension Tidal.API.V2 {
 		)
 	}
 
-	public func paging<Output: Decodable & Collection>(
+	/// Creates a paging sequence for collection responses.
+	/// - Parameter limit: Maximum items to fetch. May be exceeded by the last page since Tidal API doesn't support limits.
+	/// - Parameter request: Request closure returning a DataDocument with collection data
+	/// - Note: Count is computed as the collection's count property
+	func paging<Output: Decodable & Collection>(
 		limit: Int? = nil,
 		_ request: @escaping () async throws -> TDO.DataDocument<Output>
 	) -> Paging<Output> {
@@ -25,17 +33,24 @@ extension Tidal.API.V2 {
 			request: request
 		)
 	}
-	
-	public struct Paging<Output: Decodable>: AsyncSequence {
+
+	/// Async sequence for paginated Tidal API responses.
+	/// - Warning: The limit may be exceeded by the last page since Tidal API doesn't support client-side limits.
+	struct Paging<Output: Decodable>: AsyncSequence {
 
 		public typealias Element = TDO.DataDocument<Output>
 
 		public let client: APIClient
+		/// Current remaining item limit. May be exceeded by the last page.
 		public var limit: Int
 		public let request: () async throws -> TDO.DataDocument<Output>
+		/// Computes item count from response data
 		private let count: (TDO.DataDocument<Output>) -> Int
-		private(set) public var nextPath: String?
+		/// Next page URL path from API response links
+		public private(set) var nextPath: String?
 
+		/// Initializer for single-item responses
+		/// - Note: Count computed as 1 if data exists, 0 if nil
 		@_disfavoredOverload
 		public init(
 			of type: Output.Type = Output.self,
@@ -46,9 +61,11 @@ extension Tidal.API.V2 {
 			self.client = client
 			self.limit = limit ?? .max
 			self.request = request
-			self.count = { $0.data == nil ? 0 : 1 }
+			count = { $0.data == nil ? 0 : 1 }
 		}
 
+		/// Initializer for collection responses
+		/// - Note: Count computed as collection's count property
 		public init(
 			of type: Output.Type = Output.self,
 			client: APIClient,
@@ -58,7 +75,7 @@ extension Tidal.API.V2 {
 		) where Output: Collection {
 			self.client = client
 			self.limit = limit ?? .max
-			self.count = { $0.data?.count ?? 0 }
+			count = { $0.data?.count ?? 0 }
 			self.request = request
 		}
 
@@ -66,12 +83,16 @@ extension Tidal.API.V2 {
 			AsyncIterator(paging: self)
 		}
 
+		/// Async iterator for paging through API responses
 		public struct AsyncIterator: AsyncIteratorProtocol {
 
 			var paging: Paging<Output>?
 
+			/// Whether more pages are available based on remaining limit
 			public var hasMore: Bool { (paging?.limit ?? 0) > 0 }
 
+			/// Fetches the next page of results
+			/// - Warning: May exceed the original limit on the final page
 			public mutating func next() async throws -> TDO.DataDocument<Output>? {
 				guard var paging, paging.limit > 0 else { return nil }
 
@@ -81,12 +102,11 @@ extension Tidal.API.V2 {
 				} else {
 					result = try await paging.request()
 				}
-	
+
 				let newLimit = paging.limit - paging.count(result)
 				paging.limit = newLimit
 				if newLimit > 0, let nextPath = result.links?.next {
 					paging.nextPath = nextPath
-					paging.limit = newLimit
 					self.paging = paging
 				} else {
 					self.paging = nil
