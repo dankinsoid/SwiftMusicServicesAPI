@@ -51,7 +51,7 @@ public extension TDO {
 
 		public init(
 			barcodeId: String,
-			duration: String,
+			duration: ISO8601Duration,
 			explicit: Bool,
 			mediaTags: [String],
 			numberOfItems: Int,

@@ -42,7 +42,7 @@ public extension TDO {
 		}
 
 		public init(
-			duration: String,
+			duration: ISO8601Duration,
 			explicit: Bool,
 			isrc: String,
 			popularity: Double,

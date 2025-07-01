@@ -5,8 +5,8 @@ public extension TDO {
 
 	struct ExternalLink: Codable, Equatable, Sendable {
 
-		public var href: String
-		public var meta: ExternalLinkMeta
+		public var href: URL
+		public var meta: ExternalLinkMeta?
 
 		public enum CodingKeys: String, CodingKey {
 
@@ -15,8 +15,8 @@ public extension TDO {
 		}
 
 		public init(
-			href: String,
-			meta: ExternalLinkMeta
+			href: URL,
+			meta: ExternalLinkMeta? = nil
 		) {
 			self.href = href
 			self.meta = meta

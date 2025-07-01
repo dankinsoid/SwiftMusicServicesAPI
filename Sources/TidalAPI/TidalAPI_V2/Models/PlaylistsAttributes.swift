@@ -49,7 +49,7 @@ public extension TDO {
 			name: String,
 			playlistType: PlaylistType,
 			description: String? = nil,
-			duration: String? = nil,
+			duration: ISO8601Duration? = nil,
 			numberOfItems: Int? = nil
 		) {
 			self.accessType = accessType

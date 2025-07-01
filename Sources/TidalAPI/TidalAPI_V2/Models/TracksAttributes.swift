@@ -9,12 +9,12 @@ public extension TDO {
 		/** Duration (ISO 8601) */
 		public var duration: ISO8601Duration
 		/** Explicit content */
-		public var explicit: Bool
+		public var explicit: Bool?
 		/** International Standard Recording Code (ISRC) */
-		public var isrc: String
-		public var mediaTags: [String]
+		public var isrc: String?
+		public var mediaTags: [String]?
 		/** Popularity (0.0 - 1.0) */
-		public var popularity: Double
+		public var popularity: Double?
 		/** Track title */
 		public var title: String
 		/** Access type */
@@ -27,6 +27,7 @@ public extension TDO {
 		public var copyright: String?
 		/** Track links external to TIDAL API */
 		public var externalLinks: [ExternalLink]?
+		public var imageLinks: [ImageLink]?
 		public var genreTags: [String]?
 		/** Key */
 		public var key: Key?
@@ -38,39 +39,19 @@ public extension TDO {
 		/** Track version, complements title */
 		public var version: String?
 
-		public enum CodingKeys: String, CodingKey {
-
-			case duration
-			case explicit
-			case isrc
-			case mediaTags
-			case popularity
-			case title
-			case accessType
-			case availability
-			case bpm
-			case copyright
-			case externalLinks
-			case genreTags
-			case key
-			case keyScale
-			case spotlighted
-			case toneTags
-			case version
-		}
-
 		public init(
-			duration: String,
-			explicit: Bool,
-			isrc: String,
-			mediaTags: [String],
-			popularity: Double,
+			duration: ISO8601Duration,
+			explicit: Bool? = nil,
+			isrc: String? = nil,
+			mediaTags: [String] = [],
+			popularity: Double? = nil,
 			title: String,
 			accessType: AccessType? = nil,
 			availability: [Availability]? = nil,
 			bpm: Float? = nil,
 			copyright: String? = nil,
 			externalLinks: [ExternalLink]? = nil,
+			imageLinks: [ImageLink]? = nil,
 			genreTags: [String]? = nil,
 			key: Key? = nil,
 			keyScale: KeyScale? = nil,
@@ -89,6 +70,7 @@ public extension TDO {
 			self.bpm = bpm
 			self.copyright = copyright
 			self.externalLinks = externalLinks
+			self.imageLinks = imageLinks
 			self.genreTags = genreTags
 			self.key = key
 			self.keyScale = keyScale
