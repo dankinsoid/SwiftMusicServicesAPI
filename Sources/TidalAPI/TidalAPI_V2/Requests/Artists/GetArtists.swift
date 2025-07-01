@@ -12,15 +12,15 @@ public extension Tidal.API.V2.Artists {
 
 	 **GET** /artists
 	 */
-	func get(countryCode: String? = nil, include: [String]? = nil, filterhandle: [String]? = nil, filterid: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.ArtistsMultiDataDocument {
+	func get(countryCode: String? = nil, include: [Include]? = nil, handle: [String]? = nil, id: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.ArtistsMultiDataDocument {
 		try await client
 			.path("/artists")
 			.method(.get)
 			.query([
 				"countryCode": countryCode,
 				"include": include,
-				"filter[handle]": filterhandle,
-				"filter[id]": filterid,
+				"filter[handle]": handle,
+				"filter[id]": id,
 			])
 			.auth(enabled: true)
 			.call(
@@ -29,5 +29,9 @@ public extension Tidal.API.V2.Artists {
 				fileID: fileID,
 				line: line
 			)
+	}
+
+	enum Include: String, CaseIterable, Codable, Sendable, Equatable {
+		case albums, radio, roles, similarArtists, trackProviders, tracks, videos
 	}
 }

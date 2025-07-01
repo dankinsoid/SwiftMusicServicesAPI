@@ -12,15 +12,15 @@ public extension Tidal.API.V2.Videos {
 
 	 **GET** /videos
 	 */
-	func get(countryCode: String? = nil, include: [String]? = nil, filterisrc: [String]? = nil, filterid: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.VideosMultiDataDocument {
+	func get(countryCode: String? = nil, include: [Include]? = nil, isrc: [String]? = nil, id: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.VideosMultiDataDocument {
 		try await client
 			.path("/videos")
 			.method(.get)
 			.query([
 				"countryCode": countryCode,
 				"include": include,
-				"filter[isrc]": filterisrc,
-				"filter[id]": filterid,
+				"filter[isrc]": isrc,
+				"filter[id]": id,
 			])
 			.auth(enabled: true)
 			.call(
@@ -29,5 +29,9 @@ public extension Tidal.API.V2.Videos {
 				fileID: fileID,
 				line: line
 			)
+	}
+
+	enum Include: String, CaseIterable, Codable, Sendable, Equatable {
+		case albums, artists, providers
 	}
 }

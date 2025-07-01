@@ -12,7 +12,7 @@ public extension Tidal.API.V2.UserRecommendations {
 
 	 **GET** /userRecommendations/{id}
 	 */
-	func getById(id: String, countryCode: String? = nil, locale: String, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserRecommendationsSingleDataDocument {
+	func getById(id: String, countryCode: String? = nil, locale: String, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserRecommendationsSingleDataDocument {
 		try await client
 			.path("/userRecommendations/\(id)")
 			.method(.get)
@@ -28,5 +28,9 @@ public extension Tidal.API.V2.UserRecommendations {
 				fileID: fileID,
 				line: line
 			)
+	}
+
+	enum Include: String, CaseIterable, Codable, Sendable, Equatable {
+		case discoveryMixes, myMixes, newArrivalMixes
 	}
 }

@@ -12,7 +12,7 @@ public extension Tidal.API.V2.Videos {
 
 	 **GET** /videos/{id}
 	 */
-	func getById(id: String, countryCode: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.VideosSingleDataDocument {
+	func getById(id: String, countryCode: String? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.VideosSingleDataDocument {
 		try await client
 			.path("/videos/\(id)")
 			.method(.get)

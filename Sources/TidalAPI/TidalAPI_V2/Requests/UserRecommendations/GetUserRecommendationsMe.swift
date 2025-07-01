@@ -13,7 +13,7 @@ public extension Tidal.API.V2.UserRecommendations {
 
 	     **GET** /userRecommendations/me
 	     */
-	func getMe(countryCode: String? = nil, locale: String, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserRecommendationsSingleDataDocument {
+	func getMe(countryCode: String? = nil, locale: String, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserRecommendationsSingleDataDocument {
 		try await client
 			.path("/userRecommendations/me")
 			.method(.get)

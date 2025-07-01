@@ -12,7 +12,7 @@ public extension Tidal.API.V2.UserCollections {
 
 	 **GET** /userCollections/{id}
 	 */
-	func getById(id: String, locale: String, countryCode: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserCollectionsSingleDataDocument {
+	func getById(id: String, locale: String, countryCode: String? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserCollectionsSingleDataDocument {
 		try await client
 			.path("/userCollections/\(id)")
 			.method(.get)
@@ -28,5 +28,9 @@ public extension Tidal.API.V2.UserCollections {
 				fileID: fileID,
 				line: line
 			)
+	}
+
+	enum Include: String, CaseIterable, Codable, Sendable, Equatable {
+		case albums, artists, playlists
 	}
 }
