@@ -12,7 +12,7 @@ public extension Tidal.API.V2.UserCollections {
 
 	 **GET** /userCollections/{id}/relationships/albums
 	 */
-	func getByIdRelationshipsAlbums(id: String, countryCode: String? = nil, locale: String, pageCursor: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserCollectionsAlbumsMultiDataRelationshipDocument {
+	func getByIdRelationshipsAlbums(id: String, countryCode: String? = nil, locale: String, pageCursor: String? = nil, include: Bool = false, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/userCollections/\(id)/relationships/albums")
 			.method(.get)
@@ -20,7 +20,7 @@ public extension Tidal.API.V2.UserCollections {
 				"countryCode": countryCode,
 				"locale": locale,
 				"page[cursor]": pageCursor,
-				"include": include,
+				"include": include ? ["albums"] : nil,
 			])
 			.auth(enabled: true)
 			.call(

@@ -12,7 +12,7 @@ public extension Tidal.API.V2.SearchResults {
 
 	 **GET** /searchResults/{id}
 	 */
-	func getById(id: String, countryCode: String? = nil, explicitFilter: String? = nil, include: [TDO.SearchInclude]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchResultsSingleDataDocument {
+	func getById(id: String, countryCode: String? = nil, explicitFilter: String? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchResultsSingleDataDocument {
 		try await client
 			.path("/searchResults/\(id)")
 			.method(.get)
@@ -29,11 +29,8 @@ public extension Tidal.API.V2.SearchResults {
 				line: line
 			)
 	}
-}
 
-public extension TDO {
-	
-	enum SearchInclude: String, Codable, CaseIterable, Sendable, Equatable {
+	enum Include: String, Codable, CaseIterable, Sendable, Equatable {
 
 		case albums
 		case artists

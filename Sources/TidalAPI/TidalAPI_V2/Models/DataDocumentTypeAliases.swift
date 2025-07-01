@@ -25,7 +25,7 @@ public extension TDO {
 
     // MARK: - Single Data Relationship Document Type Aliases
 
-    typealias SingletonDataRelationshipDoc = DataDocument<[ResourceIdentifier]>
+    typealias SingletonDataRelationshipDoc = DataDocument<ResourceIdentifier>
 
     // MARK: - Multi Data Document Type Aliases
 
@@ -50,21 +50,4 @@ public extension TDO {
     // MARK: - Multi Data Relationship Document Type Aliases
 
     typealias MultiDataRelationshipDoc = DataDocument<[ResourceIdentifier]>
-    typealias AlbumsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias AlbumsItemsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias ArtistsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias ArtistsTrackProvidersMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias ArtworksMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias PlaylistsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias PlaylistsItemsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias SearchResultsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias SearchSuggestionsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias TracksMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias UserCollectionsAlbumsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias UserCollectionsArtistsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias UserCollectionsPlaylistsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias UserCollectionsTracksMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias UserRecommendationsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias UserReportsMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
-    typealias VideosMultiDataRelationshipDocument = DataDocument<[ResourceIdentifier]>
 }

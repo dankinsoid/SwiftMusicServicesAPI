@@ -7,7 +7,7 @@ public extension TDO {
 
 		public var artists: MultiDataRelationshipDoc
 		public var coverArt: MultiDataRelationshipDoc
-		public var items: AlbumsItemsMultiDataRelationshipDocument
+		public var items: MultiDataRelationshipDoc
 		public var providers: MultiDataRelationshipDoc
 		public var similarAlbums: MultiDataRelationshipDoc
 
@@ -23,7 +23,7 @@ public extension TDO {
 		public init(
 			artists: MultiDataRelationshipDoc,
 			coverArt: MultiDataRelationshipDoc,
-			items: AlbumsItemsMultiDataRelationshipDocument,
+			items: MultiDataRelationshipDoc,
 			providers: MultiDataRelationshipDoc,
 			similarAlbums: MultiDataRelationshipDoc
 		) {

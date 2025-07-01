@@ -5,9 +5,9 @@ public extension TDO {
 
 	struct UserCollectionsRelationships: Codable, Equatable, Sendable {
 
-		public var albums: UserCollectionsAlbumsMultiDataRelationshipDocument
-		public var artists: UserCollectionsArtistsMultiDataRelationshipDocument
-		public var playlists: UserCollectionsPlaylistsMultiDataRelationshipDocument
+		public var albums: MultiDataRelationshipDoc
+		public var artists: MultiDataRelationshipDoc
+		public var playlists: MultiDataRelationshipDoc
 
 		public enum CodingKeys: String, CodingKey {
 
@@ -17,9 +17,9 @@ public extension TDO {
 		}
 
 		public init(
-			albums: UserCollectionsAlbumsMultiDataRelationshipDocument,
-			artists: UserCollectionsArtistsMultiDataRelationshipDocument,
-			playlists: UserCollectionsPlaylistsMultiDataRelationshipDocument
+			albums: MultiDataRelationshipDoc,
+			artists: MultiDataRelationshipDoc,
+			playlists: MultiDataRelationshipDoc
 		) {
 			self.albums = albums
 			self.artists = artists

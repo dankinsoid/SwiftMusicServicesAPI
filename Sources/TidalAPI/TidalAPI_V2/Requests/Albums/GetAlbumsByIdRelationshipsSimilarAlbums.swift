@@ -12,13 +12,13 @@ public extension Tidal.API.V2.Albums {
 
 	 **GET** /albums/{id}/relationships/similarAlbums
 	 */
-	func getByIdRelationshipsSimilar(id: String, countryCode: String? = nil, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.AlbumsMultiDataRelationshipDocument {
+	func getByIdRelationshipsSimilar(id: String, countryCode: String? = nil, include: Bool = false, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/albums/\(id)/relationships/similarAlbums")
 			.method(.get)
 			.query([
 				"countryCode": countryCode,
-				"include": include,
+				"include": include ? ["similarAlbums"] : nil,
 				"page[cursor]": pageCursor,
 			])
 			.auth(enabled: true)

@@ -12,12 +12,12 @@ public extension Tidal.API.V2.UserReports {
 
 	 **GET** /userReports/{id}/relationships/reportedResources
 	 */
-	func getByIdRelationshipsReportedResources(id: String, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserReportsMultiDataRelationshipDocument {
+	func getByIdRelationshipsReportedResources(id: String, include: Bool = false, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/userReports/\(id)/relationships/reportedResources")
 			.method(.get)
 			.query([
-				"include": include,
+				"include": include ? ["reportedResources"] : nil,
 				"page[cursor]": pageCursor,
 			])
 			.auth(enabled: true)

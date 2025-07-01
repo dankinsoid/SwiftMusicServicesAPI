@@ -12,14 +12,14 @@ public extension Tidal.API.V2.Tracks {
 
 	 **GET** /tracks/{id}/relationships/similarTracks
 	 */
-	func getByIdRelationshipsSimilar(id: String, countryCode: String? = nil, pageCursor: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.TracksMultiDataRelationshipDocument {
+	func getByIdRelationshipsSimilar(id: String, countryCode: String? = nil, pageCursor: String? = nil, include: Bool = false, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/tracks/\(id)/relationships/similarTracks")
 			.method(.get)
 			.query([
 				"countryCode": countryCode,
 				"page[cursor]": pageCursor,
-				"include": include,
+				"include": include ? ["similarTracks"] : nil,
 			])
 			.auth(enabled: true)
 			.call(

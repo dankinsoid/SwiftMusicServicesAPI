@@ -6,7 +6,7 @@ public extension TDO {
 	struct PlaylistsRelationships: Codable, Equatable, Sendable {
 
 		public var coverArt: MultiDataRelationshipDoc
-		public var items: PlaylistsItemsMultiDataRelationshipDocument
+		public var items: MultiDataRelationshipDoc
 		public var owners: MultiDataRelationshipDoc
 
 		public enum CodingKeys: String, CodingKey {
@@ -18,7 +18,7 @@ public extension TDO {
 
 		public init(
 			coverArt: MultiDataRelationshipDoc,
-			items: PlaylistsItemsMultiDataRelationshipDocument,
+			items: MultiDataRelationshipDoc,
 			owners: MultiDataRelationshipDoc
 		) {
 			self.coverArt = coverArt

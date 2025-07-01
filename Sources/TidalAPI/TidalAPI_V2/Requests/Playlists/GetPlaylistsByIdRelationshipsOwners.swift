@@ -12,13 +12,13 @@ public extension Tidal.API.V2.Playlists {
 
 	 **GET** /playlists/{id}/relationships/owners
 	 */
-	func getByIdRelationshipsOwners(id: String, countryCode: String? = nil, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.PlaylistsMultiDataRelationshipDocument {
+	func getByIdRelationshipsOwners(id: String, countryCode: String? = nil, include: Bool = false, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/playlists/\(id)/relationships/owners")
 			.method(.get)
 			.query([
 				"countryCode": countryCode,
-				"include": include,
+				"include": include ? ["owners"] : nil,
 				"page[cursor]": pageCursor,
 			])
 			.auth(enabled: true)

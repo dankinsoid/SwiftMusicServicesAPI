@@ -12,12 +12,12 @@ public extension Tidal.API.V2.Artworks {
 
 	 **GET** /artworks/{id}/relationships/owners
 	 */
-	func getByIdRelationshipsOwners(id: String, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.ArtworksMultiDataRelationshipDocument {
+	func getByIdRelationshipsOwners(id: String, include: Bool = false, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/artworks/\(id)/relationships/owners")
 			.method(.get)
 			.query([
-				"include": include,
+				"include": include ? ["owners"] : nil,
 				"page[cursor]": pageCursor,
 			])
 			.auth(enabled: true)

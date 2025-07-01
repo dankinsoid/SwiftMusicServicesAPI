@@ -11,7 +11,7 @@ public extension TDO {
 		public var radio: MultiDataRelationshipDoc
 		public var roles: MultiDataRelationshipDoc
 		public var similarArtists: MultiDataRelationshipDoc
-		public var trackProviders: ArtistsTrackProvidersMultiDataRelationshipDocument
+		public var trackProviders: MultiDataRelationshipDoc
 		public var tracks: MultiDataRelationshipDoc
 		public var videos: MultiDataRelationshipDoc
 
@@ -35,7 +35,7 @@ public extension TDO {
 			radio: MultiDataRelationshipDoc,
 			roles: MultiDataRelationshipDoc,
 			similarArtists: MultiDataRelationshipDoc,
-			trackProviders: ArtistsTrackProvidersMultiDataRelationshipDocument,
+			trackProviders: MultiDataRelationshipDoc,
 			tracks: MultiDataRelationshipDoc,
 			videos: MultiDataRelationshipDoc
 		) {

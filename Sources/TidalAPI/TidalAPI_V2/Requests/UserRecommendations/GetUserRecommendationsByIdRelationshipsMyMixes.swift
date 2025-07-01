@@ -12,14 +12,14 @@ public extension Tidal.API.V2.UserRecommendations {
 
 	 **GET** /userRecommendations/{id}/relationships/myMixes
 	 */
-	func getByIdRelationshipsMyMixes(id: String, countryCode: String? = nil, locale: String, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserRecommendationsMultiDataRelationshipDocument {
+	func getByIdRelationshipsMyMixes(id: String, countryCode: String? = nil, locale: String, include: Bool = false, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/userRecommendations/\(id)/relationships/myMixes")
 			.method(.get)
 			.query([
 				"countryCode": countryCode,
 				"locale": locale,
-				"include": include,
+				"include": include ? ["myMixes"] : nil,
 				"page[cursor]": pageCursor,
 			])
 			.auth(enabled: true)

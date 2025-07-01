@@ -12,13 +12,13 @@ public extension Tidal.API.V2.Artists {
 
 	 **GET** /artists/{id}/relationships/trackProviders
 	 */
-	func getByIdRelationshipsTrackProviders(id: String, pageCursor: String? = nil, include: [String]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.ArtistsTrackProvidersMultiDataRelationshipDocument {
+	func getByIdRelationshipsTrackProviders(id: String, pageCursor: String? = nil, include: Bool = false, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/artists/\(id)/relationships/trackProviders")
 			.method(.get)
 			.query([
 				"page[cursor]": pageCursor,
-				"include": include,
+				"include": include ? ["trackProviders"] : nil,
 			])
 			.auth(enabled: true)
 			.call(

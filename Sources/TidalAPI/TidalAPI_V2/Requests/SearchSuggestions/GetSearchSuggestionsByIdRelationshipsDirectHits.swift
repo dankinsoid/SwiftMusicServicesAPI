@@ -12,14 +12,14 @@ public extension Tidal.API.V2.SearchSuggestions {
 
 	 **GET** /searchSuggestions/{id}/relationships/directHits
 	 */
-	func getByIdRelationshipsDirectHits(id: String, countryCode: String? = nil, explicitFilter: String? = nil, include: [String]? = nil, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchSuggestionsMultiDataRelationshipDocument {
+	func getByIdRelationshipsDirectHits(id: String, countryCode: String? = nil, explicitFilter: String? = nil, include: Bool = false, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/searchSuggestions/\(id)/relationships/directHits")
 			.method(.get)
 			.query([
 				"countryCode": countryCode,
 				"explicitFilter": explicitFilter,
-				"include": include,
+				"include": include ? ["directHits"] : nil,
 				"page[cursor]": pageCursor,
 			])
 			.auth(enabled: true)
