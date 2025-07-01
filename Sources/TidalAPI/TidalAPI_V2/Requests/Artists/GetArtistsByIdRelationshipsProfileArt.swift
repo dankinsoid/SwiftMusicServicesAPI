@@ -12,7 +12,7 @@ public extension Tidal.API.V2.Artists {
 
 	 **GET** /artists/{id}/relationships/profileArt
 	 */
-	func getByIdRelationshipsProfileArt(id: String, countryCode: String? = nil, include: Bool = false, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
+	func getByIdRelationshipsProfileArt(id: String, countryCode: String? = nil, include: Bool = true, pageCursor: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.MultiDataRelationshipDoc {
 		try await client
 			.path("/artists/\(id)/relationships/profileArt")
 			.method(.get)

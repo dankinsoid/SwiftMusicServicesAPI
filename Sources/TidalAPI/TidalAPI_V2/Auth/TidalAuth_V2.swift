@@ -232,13 +232,13 @@ public extension Tidal.API.V2.Auth {
     enum Scope: String, CaseIterable {
         case userRead = "user.read"
         case collectionRead = "collection.read"
-        case searchRead = "search.read"
-        case playlistsWrite = "playlists.write"
-        case playlistsRead = "playlists.read"
-        case entitlementsRead = "entitlements.read"
         case collectionWrite = "collection.write"
+        case playlistsRead = "playlists.read"
+        case playlistsWrite = "playlists.write"
+        case entitlementsRead = "entitlements.read"
         case playback
         case recommendationsRead = "recommendations.read"
+        case searchRead = "search.read"
         case searchWrite = "search.write"
     }
 

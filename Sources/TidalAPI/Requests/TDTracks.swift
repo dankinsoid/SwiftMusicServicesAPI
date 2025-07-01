@@ -8,14 +8,18 @@ public extension Tidal.API.V1 {
         Tracks(client: client("tracks"))
     }
 
-    struct Tracks {
-
-        public let client: APIClient
-
-        public func callAsFunction(_ id: Int) -> Tidal.API.V1.Track {
-            Tidal.API.V1.Track(client: client(id))
-        }
-    }
+	struct Tracks {
+		
+		public let client: APIClient
+		
+		public func callAsFunction(_ id: String) -> Tidal.API.V1.Track {
+			Tidal.API.V1.Track(client: client(id))
+		}
+		
+		public func callAsFunction(_ id: Int) -> Tidal.API.V1.Track {
+			Tidal.API.V1.Track(client: client(id))
+		}
+	}
 
     struct Track {
 
@@ -37,30 +41,44 @@ public extension Tidal.API.V1.Tracks {
 }
 
 public extension Tidal.API.V1.Track {
+	
+	func playbackInfoPostPaywall(
+		quality: Tidal.Objects.AudioQuality = .high,
+		mode: Tidal.Objects.PlaybackMode = .stream,
+		assetPresentation: Tidal.Objects.AssetPresentation = .full
+	) async throws -> Tidal.Objects.PlaybackInfo {
+		try await client("playbackinfopostpaywall")
+			.query([
+				"audioquality": quality,
+				"playbackmode": mode,
+				"assetpresentation": assetPresentation,
+			])
+			.call()
+	}
 
-    func playbackInfoPostPaywall(
-        quality: Tidal.Objects.AudioQuality = .high,
-        mode: Tidal.Objects.PlaybackMode = .stream,
-        assetPresentation: Tidal.Objects.AssetPresentation = .full
-    ) async throws -> Tidal.Objects.PlaybackInfo {
-        try await client("playbackinfopostpaywall")
-            .query([
-                "audioquality": quality,
-                "playbackmode": mode,
-                "assetpresentation": assetPresentation,
-            ])
-            .call()
-    }
+	func playbackInfo(
+		quality: Tidal.Objects.AudioQuality = .high,
+		mode: Tidal.Objects.PlaybackMode = .stream,
+		assetPresentation: Tidal.Objects.AssetPresentation = .full
+	) async throws -> Tidal.Objects.PlaybackInfo {
+		try await client("playbackinfo")
+			.query([
+				"audioquality": quality,
+				"playbackmode": mode,
+				"assetpresentation": assetPresentation,
+			])
+			.call()
+	}
 
-    func playbackInfoPrePaywall() async throws -> Tidal.Objects.PlaybackInfo {
-        try await client("playbackinfoprepaywall")
-            .query([
-                "audioquality": "LOW",
-                "playbackmode": "STREAM",
-                "assetpresentation": "PREVIEW",
-            ])
-            .call()
-    }
+	func playbackInfoPrePaywall() async throws -> Tidal.Objects.PlaybackInfo {
+		try await client("playbackinfoprepaywall")
+			.query([
+				"audioquality": "LOW",
+				"playbackmode": "STREAM",
+				"assetpresentation": "PREVIEW",
+			])
+			.call()
+	}
 }
 
 public extension Tidal.Objects {
