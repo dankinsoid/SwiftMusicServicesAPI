@@ -1,12 +1,13 @@
 import Foundation
 import SwiftAPIClient
+import SwiftMusicServicesApi
 
 public extension TDO {
 
 	struct TracksAttributes: Codable, Equatable, Sendable {
 
 		/** Duration (ISO 8601) */
-		public var duration: String
+		public var duration: ISO8601Duration
 		/** Explicit content */
 		public var explicit: Bool
 		/** International Standard Recording Code (ISRC) */

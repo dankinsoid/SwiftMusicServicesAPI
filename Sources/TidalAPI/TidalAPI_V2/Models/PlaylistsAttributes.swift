@@ -1,5 +1,6 @@
 import Foundation
 import SwiftAPIClient
+import SwiftMusicServicesApi
 
 public extension TDO {
 
@@ -21,7 +22,7 @@ public extension TDO {
 		/** Playlist description */
 		public var description: String?
 		/** Duration of playlist (ISO 8601) */
-		public var duration: String?
+		public var duration: ISO8601Duration?
 		/** Number of items in the playlist */
 		public var numberOfItems: Int?
 

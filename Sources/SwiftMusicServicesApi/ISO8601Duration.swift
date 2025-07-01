@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ISO8601Duration: Codable, Hashable, CustomStringConvertible {
+public struct ISO8601Duration: Codable, Hashable, CustomStringConvertible, Sendable {
 
     public var years: Int
     public var months: Int
