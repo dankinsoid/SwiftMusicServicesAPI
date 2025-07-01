@@ -12,7 +12,7 @@ public extension Tidal.API.V2.UserCollections {
 
    **GET** /userCollections
    */
-  func get(locale: String, countryCode: String? = nil, include: [Include]? = nil, id: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserCollectionsSingleDataDocument {
+  func get(locale: String, countryCode: String? = nil, include: [Include]? = nil, id: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.UserCollectionsMultiDataDocument {
     try await client
       .path("/userCollections")
       .method(.get)
