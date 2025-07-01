@@ -63,13 +63,29 @@ public extension Tidal.API.V2 {
 
         /// Generate authorization URL for user login flow
         public func authorizationURL(
-            scopes: [String] = [],
+            scopes: [Scope] = Scope.allCases,
             state: String? = nil,
             codeChallengeMethod: CodeChallengeMethod = .S256
         ) -> URL? {
             let (verifier, challenge) = generateCodeChallenge(method: codeChallengeMethod) ?? ("", "")
-            codeVerifier = verifier
+            return authorizationURL(
+                scopes: scopes,
+                state: state,
+                verifier: verifier,
+                challenge: challenge,
+                codeChallengeMethod: codeChallengeMethod
+            )
+        }
 
+        /// Generate authorization URL for user login flow
+        public func authorizationURL(
+            scopes: [Scope] = Scope.allCases,
+            state: String? = nil,
+            verifier: String,
+            challenge: String,
+            codeChallengeMethod: CodeChallengeMethod = .S256
+        ) -> URL? {
+            codeVerifier = verifier
             var components = URLComponents(url: Self.authBaseURL.appendingPathComponent("authorize"), resolvingAgainstBaseURL: false)
             components?.queryItems = [
                 URLQueryItem(name: "response_type", value: "code"),
@@ -80,7 +96,7 @@ public extension Tidal.API.V2 {
             ]
 
             if !scopes.isEmpty {
-                components?.queryItems?.append(URLQueryItem(name: "scope", value: scopes.joined(separator: " ")))
+                components?.queryItems?.append(URLQueryItem(name: "scope", value: scopes.map(\.rawValue).joined(separator: " ")))
             }
 
             if let state {
@@ -190,7 +206,7 @@ public extension Tidal.API.V2 {
 // MARK: - Private Models
 
 private extension Tidal.API.V2.Auth {
-    
+
     /// Internal model for OAuth 2.1 token response parsing
     struct V2TokenResponse: Codable {
         let accessToken: String
@@ -212,6 +228,19 @@ private extension Tidal.API.V2.Auth {
 // MARK: - Public Models
 
 public extension Tidal.API.V2.Auth {
+
+    enum Scope: String, CaseIterable {
+        case userRead = "user.read"
+        case collectionRead = "collection.read"
+        case searchRead = "search.read"
+        case playlistsWrite = "playlists.write"
+        case playlistsRead = "playlists.read"
+        case entitlementsRead = "entitlements.read"
+        case collectionWrite = "collection.write"
+        case playback
+        case recommendationsRead = "recommendations.read"
+        case searchWrite = "search.write"
+    }
 
     enum AuthError: Error, LocalizedError {
         case invalidRedirectURL
