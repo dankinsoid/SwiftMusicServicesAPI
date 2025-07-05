@@ -62,7 +62,7 @@ public extension Tidal.API.V1.Playlist {
                 "onArtifactNotFound": artifactNotFoundPolicy,
                 "onDupes": duplicationPolicy
             ])
-            .header("If-None-Match", tag ?? "*")
+            .header("If-Match", tag ?? "*")
             .post()
     }
 }
