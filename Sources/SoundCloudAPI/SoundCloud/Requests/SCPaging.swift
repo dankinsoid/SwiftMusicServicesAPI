@@ -29,45 +29,50 @@ public struct SCPaging<T: Decodable>: AsyncSequence {
         return result ?? SoundCloud.Objects.Page(collection: [])
     }
 
-    public struct AsyncIterator: AsyncIteratorProtocol {
+	public struct AsyncIterator: AsyncIteratorProtocol {
+		
+		public typealias Element = SoundCloud.Objects.Page<T>
 
-        public typealias Element = SoundCloud.Objects.Page<T>
-        let firstClient: APIClient
-        var client: APIClient?
-        var limit: Int
-        var next: URL?
-        var didFetch = 0
-        var query: (String, [Int])?
+		let firstClient: APIClient
+		var client: APIClient?
+		var limit: Int
+		var next: URL?
+		var didFetch = 0
+		var query: (String, [Int])?
+		
+		public mutating func next() async throws -> SoundCloud.Objects.Page<T>? {
+			if didFetch == 0 {
+				addQuery()
+			}
+			guard let client, didFetch < limit else { return nil }
+			let page = try await client.call(.http, as: .decodable(SoundCloud.Objects.Page<T>.self))
+			didFetch += page.collection.count
 
-        public mutating func next() async throws -> SoundCloud.Objects.Page<T>? {
-            if didFetch == 0 {
-                addQuery()
-            }
-            guard let client, didFetch < limit else { return nil }
-            let page = try await client.call(.http, as: .decodable(SoundCloud.Objects.Page<T>.self))
-            didFetch += page.collection.count
-    
-            if let next = page.next {
-                self.client = firstClient.url(next)
-            } else if let query, !query.1.isEmpty {
-                addQuery()
-            } else {
-                self.client = nil
-            }
+			if let next = page.next {
+				self.client = firstClient.url(next)
+			} else if let query, !query.1.isEmpty {
+				addQuery()
+			} else {
+				self.client = nil
+			}
 
-            return page
-        }
-        
-			private mutating func addQuery() {
-				if var query, !query.1.isEmpty {
+			return page
+		}
+
+		private mutating func addQuery() {
+			if var query {
+				if query.1.isEmpty {
+					client = nil
+				} else {
 					let limit = 50
 					let prefix = Array(query.1.prefix(limit))
 					query.1.removeFirst(Swift.min(limit, query.1.count))
 					self.query = query
-					self.client = firstClient.query(query.0, prefix)
+					client = firstClient.query(query.0, prefix)
 				}
 			}
-    }
+		}
+	}
 }
 
 extension AsyncSequence {
