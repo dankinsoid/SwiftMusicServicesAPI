@@ -24,7 +24,7 @@ public extension Tidal.API {
             clientID: String,
             clientSecret: String,
             redirectURI: String,
-            defaultCountryCode: String = "en_US",
+            defaultCountryCode: String = "US",
             cache: SecureCacheService
         ) {
             self.client = client
@@ -44,11 +44,6 @@ public extension Tidal.API {
 								.finalizeRequest { request, _ in
 									if request.headers[.authorization] == nil, let name = HTTPField.Name("x-tidal-token") {
 										request.headers[name] = clientID
-									}
-									request = request.configureURLComponents { components in
-										if !components.path.hasSuffix("/") {
-											components.path += "/"
-										}
 									}
 								}
                 .httpResponseValidator(.statusCode)
