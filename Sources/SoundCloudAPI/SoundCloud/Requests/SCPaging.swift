@@ -60,8 +60,9 @@ public struct SCPaging<T: Decodable>: AsyncSequence {
         
 			private mutating func addQuery() {
 				if var query, !query.1.isEmpty {
-					let prefix = Array(query.1.prefix(100))
-					query.1.removeFirst(Swift.min(50, query.1.count))
+					let limit = 50
+					let prefix = Array(query.1.prefix(limit))
+					query.1.removeFirst(Swift.min(limit, query.1.count))
 					self.query = query
 					self.client = firstClient.query(query.0, prefix)
 				}
