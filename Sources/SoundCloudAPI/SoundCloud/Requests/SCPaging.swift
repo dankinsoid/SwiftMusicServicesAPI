@@ -54,19 +54,18 @@ public struct SCPaging<T: Decodable>: AsyncSequence {
             } else {
                 self.client = nil
             }
-            self.client = page.next.map { client.url($0) }
 
             return page
         }
         
-        private mutating func addQuery() {
-            if var query, !query.1.isEmpty {
-                let prefix = Array(query.1.prefix(100))
-                query.1.removeFirst(Swift.min(100, query.1.count))
-                self.query = query
-                self.client = firstClient.query(query.0, prefix)
-            }
-        }
+			private mutating func addQuery() {
+				if var query, !query.1.isEmpty {
+					let prefix = Array(query.1.prefix(100))
+					query.1.removeFirst(Swift.min(50, query.1.count))
+					self.query = query
+					self.client = firstClient.query(query.0, prefix)
+				}
+			}
     }
 }
 
