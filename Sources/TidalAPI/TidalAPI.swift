@@ -41,11 +41,16 @@ public extension Tidal.API {
                 .bodyDecoder(.json(dateDecodingStrategy: .tidal, dataDecodingStrategy: .base64))
                 .errorDecoder(.decodable(Tidal.Objects.Error.self))
                 .bodyEncoder(.formURL(arrayEncodingStrategy: .commaSeparator))
-                .finalizeRequest { request, _ in
-                    if request.headers[.authorization] == nil, let name = HTTPField.Name("x-tidal-token") {
-                        request.headers[name] = clientID
-                    }
-                }
+								.finalizeRequest { request, _ in
+									if request.headers[.authorization] == nil, let name = HTTPField.Name("x-tidal-token") {
+										request.headers[name] = clientID
+									}
+									request = request.configureURLComponents { components in
+										if !components.path.hasSuffix("/") {
+											components.path += "/"
+										}
+									}
+								}
                 .httpResponseValidator(.statusCode)
             self.cache = cache
         }

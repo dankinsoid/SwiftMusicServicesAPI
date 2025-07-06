@@ -39,6 +39,11 @@ public extension Tidal.API {
 					if request.headers[.authorization] == nil, let name = HTTPField.Name("x-tidal-token") {
 						request.headers[name] = clientID
 					}
+					request = request.configureURLComponents { components in
+						if !components.path.hasSuffix("/") {
+							components.path += "/"
+						}
+					}
 				}
 				.httpResponseValidator(.statusCode)
 			self.cache = cache
