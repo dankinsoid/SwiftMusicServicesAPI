@@ -24,47 +24,44 @@ public extension Tidal.API.V1 {
 }
 
 public extension Tidal.API.V1.Playlist {
-
-    func items(
-        auth: Bool = true,
-        limit: Int? = nil,
-        offset: Int = 0
-    ) -> TidalPaging<Tidal.Objects.UserTrack> {
-        TidalPaging(
-            client: client("items").auth(enabled: auth),
-            limit: limit,
-            offset: offset
-        )
-    }
-
-    func get() async throws -> Tidal.Objects.WithETag<Tidal.Objects.Playlist> {
-        let (playlist, response) = try await client
-            .call(
-                .httpResponse,
-                as: .decodable(Tidal.Objects.Playlist.self)
-            )
-        return Tidal.Objects.WithETag(eTag: response.headerFields[.eTag], value: playlist)
-    }
-    
-    func add(
-        trackIDs: [Int],
-        eTag: String? = nil,
-        duplicationPolicy: Tidal.Objects.DuplicationPolicy = .skip,
-        artifactNotFoundPolicy: Tidal.Objects.NotFoundPolicy = .skip
-    ) async throws {
-        var tag = eTag
-        if tag == nil {
-            tag = try await get().eTag
-        }
-        return try await client("items")
-            .body([
-                "itemIds": trackIDs,
-                "onArtifactNotFound": artifactNotFoundPolicy,
-                "onDupes": duplicationPolicy
-            ])
-            .header("If-Match", tag ?? "*")
-            .post()
-    }
+	
+	func items(
+		auth: Bool = true,
+		limit: Int? = nil,
+		offset: Int = 0
+	) -> TidalPaging<Tidal.Objects.UserTrack> {
+		TidalPaging(
+			client: client("items").auth(enabled: auth),
+			limit: limit,
+			offset: offset
+		)
+	}
+	
+	func get() async throws -> Tidal.Objects.WithETag<Tidal.Objects.Playlist> {
+		let (playlist, response) = try await client
+			.call(
+				.httpResponse,
+				as: .decodable(Tidal.Objects.Playlist.self)
+			)
+		return Tidal.Objects.WithETag(eTag: response.headerFields[.eTag], value: playlist)
+	}
+	
+	func add(
+		trackIDs: [Int],
+		eTag: String? = nil,
+		duplicationPolicy: Tidal.Objects.DuplicationPolicy = .skip,
+		artifactNotFoundPolicy: Tidal.Objects.NotFoundPolicy = .skip
+	) async throws {
+		let tag = try await get().eTag
+		return try await client("items")
+			.body([
+				"itemIds": trackIDs,
+				"onArtifactNotFound": artifactNotFoundPolicy,
+				"onDupes": duplicationPolicy
+			])
+			.header("If-None-Match", tag ?? "*")
+			.post()
+	}
 }
 
 extension Tidal.Objects {
