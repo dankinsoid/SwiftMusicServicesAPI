@@ -185,16 +185,16 @@ private struct EditPlaylist: Equatable, Codable {
     
     var title: String?
     var description: String?
-    var tracks: [Track]?
+    var tracks: [Int]?
 	
 	init(title: String? = nil, description: String? = nil, tracks: [Int]? = nil) {
 		self.title = title
 		self.description = description
-		self.tracks = tracks?.map(Track.init)
+		self.tracks = tracks//?.map { Track(id: "\($0)") }
 	}
 	
 	struct Track: Codable, Equatable, Identifiable {
-		var id: Int
+		var id: String
 	}
 }
 
