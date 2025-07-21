@@ -185,7 +185,17 @@ private struct EditPlaylist: Equatable, Codable {
     
     var title: String?
     var description: String?
-    var tracks: [Int]?
+    var tracks: [Track]?
+	
+	init(title: String? = nil, description: String? = nil, tracks: [Int]? = nil) {
+		self.title = title
+		self.description = description
+		self.tracks = tracks?.map(Track.init)
+	}
+	
+	struct Track: Codable, Equatable, Identifiable {
+		var id: Int
+	}
 }
 
 private struct FileURL: Codable {
