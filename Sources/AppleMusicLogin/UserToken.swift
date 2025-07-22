@@ -21,7 +21,7 @@ public extension AppleMusic.API {
 			}
 		}
 
-		static func userTokens(keyId: String, teamId: String, key: String, completion: @escaping (Result<AppleMusic.Objects.Tokens, Error>) -> Void) {
+		static func userTokens(keyId: String, teamId: String, key: String, completion: @escaping (__shared sending Result<AppleMusic.Objects.Tokens, Error>) -> Void) {
 			do {
 				let developerToken = try developerToken(keyId: keyId, teamId: teamId, key: key)
 				userTokens(developerToken: developerToken, completion: completion)
@@ -36,7 +36,7 @@ public extension AppleMusic.API {
 			}
 		}
 
-		static func userTokens(developerToken token: String, completion: @escaping (Result<AppleMusic.Objects.Tokens, Error>) -> Void) {
+		static func userTokens(developerToken token: String, completion: @escaping (__shared sending Result<AppleMusic.Objects.Tokens, Error>) -> Void) {
 			SKCloudServiceController().requestUserToken(forDeveloperToken: token) { result, error in
 				if let string = result {
 					completion(.success(AppleMusic.Objects.Tokens(token: token, userToken: string)))
