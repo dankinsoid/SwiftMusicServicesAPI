@@ -20,6 +20,10 @@ public extension Spotify.API {
                 "redirect_uri": redirectURI,
                 "code_verifier": codeVerifier,
             ])
+						.configs {
+							$0.loggingComponents.remove(.body)
+							$0.loggingComponents.remove(.cURL)
+						}
             .headers(.accept(""), removeCurrent: true)
             .auth(basicAuth)
             .post()

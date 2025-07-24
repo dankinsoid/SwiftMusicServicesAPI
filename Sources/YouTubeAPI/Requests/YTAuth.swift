@@ -32,6 +32,10 @@ extension YouTube {
                 .bodyDecoder(.json(keyDecodingStrategy: .convertFromSnakeCase))
                 .errorDecoder(.decodable(YTO.ErrorResponse.self))
                 .httpResponseValidator(.statusCode)
+								.configs {
+									$0.loggingComponents.remove(.body)
+									$0.loggingComponents.remove(.cURL)
+								}
             self.clientID = clientID
             self.clientSecret = clientSecret
             self.redirectURI = redirectURI

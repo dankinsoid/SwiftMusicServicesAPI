@@ -50,6 +50,7 @@ public extension YouTube {
 						components.headers[key] = apiKey
 					}
 				}
+				.logMaskedHeaders([HTTPField.Name("x-goog-api-key")!])
 			self.cache = cache
 		}
 

@@ -46,6 +46,7 @@ public extension Tidal.API {
 										request.headers[name] = clientID
 									}
 								}
+								.logMaskedHeaders([HTTPField.Name("x-tidal-token")!])
                 .httpResponseValidator(.statusCode)
             self.cache = cache
         }

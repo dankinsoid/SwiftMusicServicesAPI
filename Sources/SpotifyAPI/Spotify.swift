@@ -129,6 +129,10 @@ private extension Spotify.API {
             .headers(.accept(""), removeCurrent: true)
             .auth(.basic(username: clientID, password: clientSecret))
             .auth(enabled: true)
+						.configs {
+							$0.loggingComponents.remove(.body)
+							$0.loggingComponents.remove(.cURL)
+						}
             .post()
         return (response.accessToken, response.refreshToken, Date(timeIntervalSinceNow: response.expiresIn))
     }

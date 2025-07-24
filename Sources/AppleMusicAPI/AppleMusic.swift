@@ -19,6 +19,7 @@ public enum AppleMusic {
 				.httpResponseValidator(.statusCode)
 				.queryEncoder(.urlQuery(arrayEncodingStrategy: .commaSeparator, nestedEncodingStrategy: .brackets))
 				.errorDecoder(.decodable(AppleMusic.Objects.ErrorResponse.self))
+				.logMaskedHeaders([.musicUserToken])
 				.httpClientMiddleware(AppleMusicMiddleware(storage: storage))
 		}
 	}
@@ -27,7 +28,7 @@ public enum AppleMusic {
 private struct AppleMusicMiddleware: HTTPClientMiddleware {
 
 	let storage: SecureCacheService
-	
+
 	func execute<T>(
 		request: SwiftAPIClient.HTTPRequestComponents,
 		configs: SwiftAPIClient.APIClient.Configs,

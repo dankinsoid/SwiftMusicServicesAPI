@@ -34,6 +34,10 @@ public extension Tidal {
                 .errorDecoder(.decodable(Tidal.Objects.Error.self))
                 .auth(.basic(username: clientID, password: clientSecret))
                 .httpResponseValidator(.statusCode)
+								.configs {
+									$0.loggingComponents.remove(.body)
+									$0.loggingComponents.remove(.cURL)
+								}
             self.clientID = clientID
             self.clientSecret = clientSecret
             self.redirectURI = redirectURI

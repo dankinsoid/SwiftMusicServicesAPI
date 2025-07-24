@@ -39,6 +39,10 @@ public extension SoundCloud {
                 .queryEncoder(.urlQuery(keyEncodingStrategy: .convertToSnakeCase))
                 .errorDecoder(.decodable(SCO.Error.self))
                 .httpResponseValidator(.statusCode)
+								.configs {
+									$0.loggingComponents.remove(.body)
+									$0.loggingComponents.remove(.cURL)
+								}
                 .finalizeRequest { req, _ in
                     req = req.query("client_id", clientID)
                 }
