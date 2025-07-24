@@ -37,7 +37,7 @@ private struct AppleMusicMiddleware: HTTPClientMiddleware {
 		var request = request
 		if !request.headers.contains(.authorization) {
 			guard let developerToken = try await storage.load(for: .developerToken) else {
-					throw TokenNotFound()
+					throw TokenNotFound(name: "developerToken")
 			}
 			request.headers.append(.authorization(bearerToken: developerToken))
 		}
