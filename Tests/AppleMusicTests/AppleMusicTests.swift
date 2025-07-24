@@ -6,7 +6,7 @@ final class AppleMusicTests: XCTestCase {
 
     let api = AppleMusic.API(
         client: APIClient().loggingComponents([.full]),
-        token: AppleMusic.Objects.Tokens(token: "", userToken: "")
+				storage: MockSecureCacheService()
     )
 
     func testGetTracks() async throws {

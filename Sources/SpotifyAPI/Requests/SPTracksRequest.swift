@@ -23,22 +23,22 @@ public extension Spotify.API {
 
 	struct TracksOutput: Codable {
 		@SafeDecodeArray public var tracks: [SPTrack]
-
-        public init(tracks: [SPTrack]) {
-            _tracks = SafeDecodeArray(tracks)
-        }
+		
+		public init(tracks: [SPTrack]) {
+			_tracks = SafeDecodeArray(tracks)
+		}
 	}
 
-	func myTracks(limit: Int? = nil, offset: Int? = nil, market: String? = nil) -> AsyncThrowingStream<[SPSavedTrack], Error> {
-        pagingRequest(
+	func myTracks(limit: Int? = nil, offset: Int? = nil, market: String? = nil) -> Spotify.API.Paging<SPPaging<SPSavedTrack>> {
+		pagingRequest(
 			of: SPPaging<SPSavedTrack>.self,
 			parameters: (),
 			limit: limit
-        ) { [client] in
-            try await client.path("me", "tracks")
-                .query(SavedInput(limit: limit ?? 50, offset: offset, market: market))
-                .get()
-        }
+		) { [client] in
+			try await client.path("me", "tracks")
+				.query(SavedInput(limit: limit ?? 50, offset: offset, market: market))
+				.get()
+		}
 	}
 
 	struct SavedInput: Encodable {

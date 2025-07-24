@@ -26,16 +26,16 @@ public extension Spotify.API {
 		limit: Int? = nil,
 		offset: Int? = nil,
 		includeExternal: SearchInput.External? = nil
-	) -> AsyncThrowingStream<[SearchOutput], Error> {
-        pagingRequest(
+	) -> Spotify.API.Paging<Spotify.API.SearchOutput> {
+		pagingRequest(
 			of: SearchOutput.self,
 			parameters: type
-        ) { [client] in
-            try await client("search")
-                .query(
-                    SearchInput(q: q, type: [type], market: market, limit: limit, offset: offset, includeExternal: includeExternal)
-                ).get()
-        }
+		) { [client] in
+			try await client("search")
+				.query(
+					SearchInput(q: q, type: [type], market: market, limit: limit, offset: offset, includeExternal: includeExternal)
+				).get()
+		}
 	}
 
 	struct SearchInput: Encodable {

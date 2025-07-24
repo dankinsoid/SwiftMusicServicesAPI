@@ -8,16 +8,16 @@ public extension Spotify.API {
 	func playlists(
 		limit: Int? = nil,
 		offset: Int? = 0
-	) -> AsyncThrowingStream<[SPPlaylistSimplified], Error> {
-        pagingRequest(
+	) -> Spotify.API.Paging<SPPaging<SPPlaylistSimplified>> {
+		pagingRequest(
 			of: SPPaging<SPPlaylistSimplified>.self,
 			parameters: (),
 			limit: limit
-        ) { [client] in
-            try await client("me", "playlists")
-                .query(PlaylistsInput(limit: limit ?? 50, offset: offset))
-                .get()
-        }
+		) { [client] in
+			try await client("me", "playlists")
+				.query(PlaylistsInput(limit: limit ?? 50, offset: offset))
+				.get()
+		}
 	}
 
 	struct PlaylistsInput: Encodable {
@@ -36,23 +36,23 @@ public extension Spotify.API {
 		limit: Int? = nil,
 		offset: Int? = 0,
 		market: String? = nil
-	) -> AsyncThrowingStream<[SPPlaylistTrack], Error> {
-        pagingRequest(
+	) -> Spotify.API.Paging<SPPaging<SPPlaylistTrack>> {
+		pagingRequest(
 			of: SPPaging<SPPlaylistTrack>.self,
 			parameters: (),
 			limit: limit
-        ) { [client] in
-            try await client("playlists", id, "tracks")
-                .query(SavedInput(limit: limit ?? 100, offset: offset, market: market))
-                .get()
-        }
+		) { [client] in
+			try await client("playlists", id, "tracks")
+				.query(SavedInput(limit: limit ?? 100, offset: offset, market: market))
+				.get()
+		}
 	}
 
 	func playlist(
 		id: String,
 		input: PlaylistInput
 	) async throws -> SPPlaylist {
-        try await client("playlists", id).query(input).get()
+		try await client("playlists", id).query(input).get()
 	}
 
 	struct PlaylistInput: Encodable {
@@ -73,14 +73,14 @@ public extension Spotify.API {
 		id: String,
 		input: AddPlaylistInput
 	) async throws -> AddPlaylistOutput {
-        try await client("playlists", id, "tracks").body(input)
-            .errorHandler { error, _, context in
-                if let data = context.response, let string = String(data: data, encoding: .utf8) {
-                    Logger(label: "Spotify-API").error("\(string)")
-                }
-                throw error
-            }
-            .post()
+		try await client("playlists", id, "tracks").body(input)
+			.errorHandler { error, _, context in
+				if let data = context.response, let string = String(data: data, encoding: .utf8) {
+					Logger(label: "Spotify-API").error("\(string)")
+				}
+				throw error
+			}
+			.post()
 	}
 
 	struct AddPlaylistInput: Encodable {
