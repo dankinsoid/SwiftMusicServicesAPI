@@ -22,17 +22,17 @@ final class YandexMusicTests: XCTestCase {
 
     func testPlaylists() async throws {
         let account = try await api.account()
-        print(account.account.uid)
+        print(account.account.uid!)
         let list = try await api.playlistsList(userID: account.account.uid ?? 0)
         print(list.count)
         let playlist = try await api.playlists(userID: account.account.uid ?? 0, playlistsKinds: [list[0].kind])[0]
         dump(playlist)
         let plList = try await playlist.copy(
-            tracks: api.tracks(ids: playlist.tracks.map(\.id))
+					tracks: api.tracks(ids: playlist.tracks.map(\.id)).collect()
         )
         let likedTracks = try await api.likedTracks(userID: account.account.uid ?? 0).library.tracks
         print(likedTracks.count)
-        let likes = try await api.tracks(ids: likedTracks.map(\.id))
+			let likes = try await api.tracks(ids: likedTracks.map(\.id)).collect()
         print(likes.count)
     }
     
@@ -61,7 +61,7 @@ final class YandexMusicTests: XCTestCase {
     }
     
     func testTrackByID() async throws {
-        try await dump(api.tracks(ids: ["f3b136c0-5f33-4cd5-8db1-48dc41465d5f", "81897915"]))
+			try await dump(api.tracks(ids: ["f3b136c0-5f33-4cd5-8db1-48dc41465d5f", "81897915"]).collect())
     }
 }
 //
