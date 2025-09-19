@@ -11,17 +11,20 @@ final class AppleMusicTests: XCTestCase {
 
     func testGetTracks() async throws {
         let songs = try await api.mySongs(limit: 10).collect()
-        print(songs.count)
+//        print(songs.count)
     }
 
     func testSearch() async throws {
-        let search = try await api.search(storefront: "AE", input: AppleMusic.API.SearchInput(term: "Swift", types: [.songs]))
-        dump(search)
+        let search1 = try await api.search(storefront: "AE", input: AppleMusic.API.SearchInput(term: "Isabella Dances", types: [.songs]))
+				let search2 = try await api.search(storefront: "US", input: AppleMusic.API.SearchInput(term: "Isabella Dances", types: [.songs]))
+			print(search1.map { ($0.id, $0.attributes!.artistName!, $0.attributes!.name!) },
+						search2.map { ($0.id, $0.attributes!.artistName!, $0.attributes!.name!) })
     }
 
     func testSearchByISRC() async throws {
-        let search = try await api.songsByISRC(storefront: "AE", isrcs: ["USUM71900767"]).collect()
-        dump(search)
+        let search1 = try await api.songsByISRC(storefront: "AE", isrcs: ["USUM71900767"]).collect()
+				let search2 = try await api.songsByISRC(storefront: "US", isrcs: ["USUM71900767"]).collect()
+        dump(search1)
     }
 
     func testAddPlaylist() async throws {

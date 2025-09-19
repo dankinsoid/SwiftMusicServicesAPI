@@ -28,6 +28,7 @@ public extension YMO {
 		public var secondName: String?
 		public var fullName: String?
 		public var region: Int?
+		public var regionCode: String?
 		public var registeredAt: Date?
 		public var serviceAvailable: Bool?
 		public var firstName: String?
@@ -36,10 +37,11 @@ public extension YMO {
 		public var hostedUser: Bool?
 		public var uid: Int?
 		public var login: String?
+		public var nonOwnerFamilyMember: Bool?
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
 
-			case displayName, birthday, secondName, fullName, region, registeredAt, serviceAvailable, firstName, now
+			case displayName, birthday, secondName, fullName, region, registeredAt, serviceAvailable, firstName, now, regionCode, nonOwnerFamilyMember
 			case passportPhones = "passport-phones"
 			case hostedUser, uid, login
 		}
@@ -47,7 +49,7 @@ public extension YMO {
     
     struct Settings: Codable {
 
-        public var uid: Int
+			public var uid: Int
 			public var lastFmScrobblingEnabled: Bool?
 			public var facebookScrobblingEnabled: Bool?
 			public var shuffleEnabled: Bool?

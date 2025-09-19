@@ -17,7 +17,8 @@ final class YandexMusicTests: XCTestCase {
     
     func testLikes() async throws {
         let likes = try await api.likedTracks(userID: 43474620)
-        print(likes.library.tracks.count)
+			let tracks = try await api.tracks(ids: likes.library.tracks.map(\.id)).collect()
+//        print(tracks[0])
     }
 
     func testPlaylists() async throws {

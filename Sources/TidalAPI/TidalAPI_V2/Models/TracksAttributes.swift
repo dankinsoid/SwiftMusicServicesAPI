@@ -24,7 +24,6 @@ public extension TDO {
 		/** Beats per minute */
 		public var bpm: Float?
 		/** Copyright */
-		public var copyright: String?
 		/** Track links external to TIDAL API */
 		public var externalLinks: [ExternalLink]?
 		public var imageLinks: [ImageLink]?
@@ -49,7 +48,6 @@ public extension TDO {
 			accessType: AccessType? = nil,
 			availability: [Availability]? = nil,
 			bpm: Float? = nil,
-			copyright: String? = nil,
 			externalLinks: [ExternalLink]? = nil,
 			imageLinks: [ImageLink]? = nil,
 			genreTags: [String]? = nil,
@@ -68,7 +66,6 @@ public extension TDO {
 			self.accessType = accessType
 			self.availability = availability
 			self.bpm = bpm
-			self.copyright = copyright
 			self.externalLinks = externalLinks
 			self.imageLinks = imageLinks
 			self.genreTags = genreTags
