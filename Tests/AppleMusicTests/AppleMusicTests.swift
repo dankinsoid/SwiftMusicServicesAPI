@@ -28,14 +28,30 @@ final class AppleMusicTests: XCTestCase {
     }
 
     func testAddPlaylist() async throws {
-        let addedPlaylist = try await api.addPlaylist(
-            input: AppleMusic.API.AddPlaylistInput(
-                name: "Test Playlist",
+        let addedPlaylist = try await api.add(
+            playlist: AppleMusic.API.AddPlaylistInput(
+                name: "Test Playlist 10",
                 description: "This is a test playlist",
                 trackIDs: ["1679036746"]
             )
         )
-        .collect()
+			let front = try await api.storefront()
+			let song = try await api.equivalent(of: "1679036746", for: "jp")
+			try await api.addTracks(
+				playlistID: addedPlaylist.id,
+				tracks: .init(
+					data: [
+						AppleMusic.Objects.Item(
+							attributes: nil,
+							relationships: nil,
+							id: song.id,
+							type: .songs,
+							href: nil
+						)
+					],
+					next: nil
+				)
+			)
         dump(addedPlaylist)
     }
 

@@ -11,14 +11,20 @@ public extension AppleMusic.API {
 	}
 
 	func addPlaylist(input: AddPlaylistInput) -> Pages<AppleMusic.Objects.Item> {
-        pages { client in
-            try await client.path("v1", "me", "library", "playlists").body(input).post()
-        }
+		pages { client in
+			try await client.path("v1", "me", "library", "playlists").body(input).post()
+		}
 	}
 
-    func add(playlist input: AddPlaylistInput) async throws {
-        try await client.path("v1", "me", "library", "playlists").body(input).post()
-    }
+	func add(playlist input: AddPlaylistInput) async throws -> AppleMusic.Objects.Item {
+		try await client.path("v1", "me", "library", "playlists")
+			.body(input)
+			.post
+			.call(.http, as: .decodable(AppleMusic.Objects.Response<AppleMusic.Objects.Item>.self))
+			.data
+			.first
+			.unwrap(throwing: "No playlist returned")
+	}
 
 	struct AddPlaylistInput: Encodable {
 		public var attributes: Attributes
