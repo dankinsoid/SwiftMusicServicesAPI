@@ -1,8 +1,11 @@
+import SwiftAPIClient
+import SwiftMusicServicesApi
+
 public struct SPTrackSimplified: Codable {
 	/// The artists who performed the track. Each artist object includes a link in href to more detailed information about the artist.
 	public var artists: [SPArtist]?
 	/// A list of the countries in which the track can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.
-	public var availableMarkets: [String]?
+	public var availableMarkets: Set<CountryCode>?
 	/// The disc number (usually 1 unless the album consists of more than one disc).
 	public var discNumber: Int?
 	/// The track length in milliseconds.
@@ -34,7 +37,7 @@ public struct SPTrackSimplified: Codable {
 	/// Whether or not the track is from a local file.
 	public var isLocal: Bool?
 
-	public init(artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, discNumber: Int? = nil, durationMs: Int, explicit: Bool? = nil, externalUrls: SPExternalURL? = nil, href: String, id: String, isPlayable: Bool? = nil, linkedFrom: SPTrackLink? = nil, restrictions: SPRestrictions? = nil, name: String, previewUrl: String, trackNumber: Int, type: String, uri: String, isLocal: Bool? = nil) {
+	public init(artists: [SPArtist]? = nil, availableMarkets: Set<CountryCode>? = nil, discNumber: Int? = nil, durationMs: Int, explicit: Bool? = nil, externalUrls: SPExternalURL? = nil, href: String, id: String, isPlayable: Bool? = nil, linkedFrom: SPTrackLink? = nil, restrictions: SPRestrictions? = nil, name: String, previewUrl: String, trackNumber: Int, type: String, uri: String, isLocal: Bool? = nil) {
 		self.artists = artists
 		self.availableMarkets = availableMarkets
 		self.discNumber = discNumber
@@ -53,4 +56,26 @@ public struct SPTrackSimplified: Codable {
 		self.uri = uri
 		self.isLocal = isLocal
 	}
+}
+
+extension SPTrackSimplified: Mockable {
+	public static let mock = SPTrackSimplified(
+		artists: [SPArtist.mock],
+		availableMarkets: [.US, .CA, .GB],
+		discNumber: 1,
+		durationMs: 240_000,
+		explicit: false,
+		externalUrls: ["spotify": "https://open.spotify.com/track/mock_id_123"],
+		href: "https://api.spotify.com/v1/tracks/mock_id_123",
+		id: "mock_id_123",
+		isPlayable: true,
+		linkedFrom: nil,
+		restrictions: nil,
+		name: "Mock Track",
+		previewUrl: "https://example.com/preview.mp3",
+		trackNumber: 1,
+		type: "track",
+		uri: "spotify:track:mock_id_123",
+		isLocal: false
+	)
 }

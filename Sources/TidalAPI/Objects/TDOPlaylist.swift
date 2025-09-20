@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 import SwiftMusicServicesApi
 
 public extension Tidal.Objects {
@@ -16,7 +17,7 @@ public extension Tidal.Objects {
 		}
 	}
 
-	struct WithETag<Value> {
+	struct WithETag<Value: Sendable>: Sendable {
 
 		public var eTag: String?
 		public var value: Value
@@ -144,4 +145,33 @@ public extension Tidal.Objects {
 			try value.encode(to: encoder)
 		}
 	}
+}
+
+extension Tidal.Objects.Playlist: Mockable {
+	public static let mock = Tidal.Objects.Playlist(
+		uuid: "mock-tidal-playlist-uuid",
+		title: "Mock Tidal Playlist",
+		numberOfTracks: 15,
+		numberOfVideos: 3,
+		creatorID: 123_456,
+		description: "A mock Tidal playlist for testing",
+		duration: 3600,
+		lastUpdated: Date(),
+		created: Date(),
+		type: Tidal.Objects.PlaylistType.user,
+		publicPlaylist: true,
+		url: URL(string: "https://tidal.com/playlist/mock-playlist"),
+		image: "mock-image-uuid",
+		popularity: 85,
+		squareImage: "mock-square-image-uuid",
+		lastItemAddedAt: Date()
+	)
+}
+
+extension Tidal.Objects.UserPlaylist: Mockable {
+	public static let mock = Tidal.Objects.UserPlaylist(
+		type: Tidal.Objects.UserPlaylistType.userCreated,
+		created: Date(),
+		playlist: Tidal.Objects.Playlist.mock
+	)
 }

@@ -1,9 +1,10 @@
 import Foundation
+import SwiftAPIClient
 import SwiftMusicServicesApi
 
 public extension Yandex.Music.Objects {
 	struct Base<T: Encodable>: Encodable {
-        public var ids: [String]
+		public var ids: [String]
 		public var object: T
 
 		public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -31,26 +32,26 @@ public extension Yandex.Music.Objects {
 	struct Result<T: Decodable>: Decodable {
 		public var result: ResultValue
 		public var invocationInfo: InvocationInfo?
-        
-        public enum ResultValue: Decodable {
-            case bool(Bool)
-            case value(T)
-            
-            public init(from decoder: Decoder) throws {
-                do {
-                    let value = try T(from: decoder)
-                    self = .value(value)
-                } catch {
-                    let value = try? Bool(from: decoder)
-                    self = .bool(value ?? false)
-                }
-            }
-            
-            public var value: T? {
-                guard case .value(let value) = self else { return nil }
-                return value
-            }
-        }
+
+		public enum ResultValue: Decodable {
+			case bool(Bool)
+			case value(T)
+
+			public init(from decoder: Decoder) throws {
+				do {
+					let value = try T(from: decoder)
+					self = .value(value)
+				} catch {
+					let value = try? Bool(from: decoder)
+					self = .bool(value ?? false)
+				}
+			}
+
+			public var value: T? {
+				guard case let .value(value) = self else { return nil }
+				return value
+			}
+		}
 	}
 
 	struct Results<T: Decodable>: Decodable {
@@ -58,13 +59,13 @@ public extension Yandex.Music.Objects {
 		public var perPage: Int
 		public var order: Int
 		@SafeDecodeArray public var results: [T]
-        
-        public init(total: Int, perPage: Int, order: Int, results: [T]) {
-            self.total = total
-            self.perPage = perPage
-            self.order = order
-            self._results = SafeDecodeArray(results)
-        }
+
+		public init(total: Int, perPage: Int, order: Int, results: [T]) {
+			self.total = total
+			self.perPage = perPage
+			self.order = order
+			_results = SafeDecodeArray(results)
+		}
 	}
 
 	struct InvocationInfo: Codable {
@@ -106,5 +107,21 @@ public extension Yandex.Music.Objects {
 	}
 }
 
-//extension YMO.Result: Encodable where T: Encodable {}
+// extension YMO.Result: Encodable where T: Encodable {}
 extension YMO.Results: Encodable where T: Encodable {}
+
+extension Yandex.Music.Objects.InvocationInfo: Mockable {
+	public static let mock = Yandex.Music.Objects.InvocationInfo(
+		hostname: "mock.yandex.com",
+		requestId: "mock_request_123",
+		execDurationMillis: "100"
+	)
+}
+
+extension Yandex.Music.Objects.Visibility: Mockable {
+	public static let mock = Yandex.Music.Objects.Visibility.public
+}
+
+extension Yandex.Music.Objects.Operation: Mockable {
+	public static let mock = Yandex.Music.Objects.Operation.insert
+}

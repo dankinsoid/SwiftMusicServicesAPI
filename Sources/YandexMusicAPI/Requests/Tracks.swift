@@ -1,6 +1,7 @@
 import Foundation
-import SwiftAPIClient
 import SimpleCoders
+import SwiftAPIClient
+import SwiftMusicServicesApi
 
 public extension Yandex.Music.API {
 
@@ -9,27 +10,27 @@ public extension Yandex.Music.API {
 	}
 
 	struct TracksSequence: AsyncSequence {
-	
+
 		public typealias Element = [YMO.Track]
-		
+
 		let ids: [String]
 		let withPositions: Bool
 		let client: APIClient
-		
+
 		public func makeAsyncIterator() -> AsyncIterator {
 			AsyncIterator(ids: ids, withPositions: withPositions, client: client)
 		}
-		
+
 		public struct AsyncIterator: AsyncIteratorProtocol {
-			
+
 			public typealias Element = [YMO.Track]
-			
+
 			let ids: [String]
 			let withPositions: Bool
 			let client: APIClient
-			let maxSize: Int = 100
+			let maxSize = 100
 			var offset = 0
-			
+
 			public mutating func next() async throws -> [YMO.Track]? {
 				guard offset < ids.count else { return nil }
 				let chunk = Array(ids[offset ..< Swift.min(offset + maxSize, ids.count)])
@@ -110,9 +111,9 @@ extension Yandex.Music.API {
 	private func getXML(at key: String, xml: String) throws -> String {
 		let all = xml.components(separatedBy: "<\(key)>")
 		guard !all.isEmpty,
-					let result = all.dropFirst()
-					.compactMap({ $0.components(separatedBy: "</\(key)>").first })
-					.first
+		      let result = all.dropFirst()
+		      .compactMap({ $0.components(separatedBy: "</\(key)>").first })
+		      .first
 		else {
 			throw DecodingError.keyNotFound(
 				SimpleCoders.PlainCodingKey(key),

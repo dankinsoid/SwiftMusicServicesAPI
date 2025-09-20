@@ -1,4 +1,6 @@
-public struct SPArtist: Codable {
+import SwiftAPIClient
+
+public struct SPArtist: Codable, Sendable, Equatable {
 	/// Known external URLs for this artist.
 	public var externalUrls: SPExternalURL?
 	/// Information about the followers of the artist.
@@ -32,4 +34,19 @@ public struct SPArtist: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPArtist: Mockable {
+	public static let mock = SPArtist(
+		externalUrls: ["spotify": "https://open.spotify.com/artist/mock_id_123"],
+		followers: SPFollowers.mock,
+		genres: ["Mock Genre", "Test Genre"],
+		href: "https://api.spotify.com/v1/artists/mock_id_123",
+		id: "mock_id_123",
+		images: [SPImage.mock],
+		name: "Mock Artist",
+		popularity: 75,
+		type: "artist",
+		uri: "spotify:artist:mock_id_123"
+	)
 }

@@ -33,3 +33,12 @@ public extension TDO {
 		}
 	}
 }
+
+extension TDO.SearchResultsResource: Mockable {
+	
+	public static let mock = TDO.SearchResultsResource(
+		id: "searchResults-123456",
+		attributes: nil,
+		relationships: nil
+	)
+}

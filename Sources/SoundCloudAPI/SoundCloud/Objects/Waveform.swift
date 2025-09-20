@@ -1,17 +1,17 @@
 import Foundation
 
-extension SoundCloud.Objects {
+public extension SoundCloud.Objects {
 
-    public struct Waveform: Codable, Equatable {
-        
-        public var samples: [Double]
-        
-        public init(samples: [Double]) {
-            self.samples = samples
-        }
-        
-        public var width: Int { samples.count }
-        public var minHeight: Double { samples.min() ?? 0 }
-        public var maxHeight: Double { samples.max() ?? 0 }
-    }
+	struct Waveform: Codable, Equatable {
+
+		public var samples: [Double]
+
+		public init(samples: [Double]) {
+			self.samples = samples
+		}
+
+		public var width: Int { samples.count }
+		public var minHeight: Double { samples.min() ?? 0 }
+		public var maxHeight: Double { samples.max() ?? 0 }
+	}
 }

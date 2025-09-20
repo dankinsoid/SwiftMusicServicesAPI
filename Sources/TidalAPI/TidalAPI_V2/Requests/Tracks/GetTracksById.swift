@@ -12,7 +12,7 @@ public extension Tidal.API.V2.Tracks {
 
 	 **GET** /tracks/{id}
 	 */
-	func getById(id: String, countryCode: String? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.TracksSingleDataDocument {
+	func getById(id: String, countryCode: CountryCode? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.TracksSingleDataDocument {
 		try await client
 			.path("/tracks/\(id)")
 			.method(.get)

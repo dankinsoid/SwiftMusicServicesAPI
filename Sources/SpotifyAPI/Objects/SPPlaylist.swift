@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPPlaylist: Codable {
 	/// Returns true if context is not search and the owner allows other users to modify the playlist. Otherwise returns false.
 	public var collaborative: Bool?
@@ -43,4 +45,14 @@ public struct SPPlaylist: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPPlaylist: Mockable {
+	public static let mock = SPPlaylist(
+		href: "https://api.spotify.com/v1/playlists/mock_playlist_123",
+		id: "mock_playlist_123",
+		name: "Mock Playlist",
+		owner: SPUser.mock,
+		uri: "spotify:playlist:mock_playlist_123"
+	)
 }

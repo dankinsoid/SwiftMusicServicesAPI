@@ -1,36 +1,36 @@
 import Foundation
 import SwiftAPIClient
 
-public struct SCPaging<T: Decodable>: AsyncSequence {
+public struct SCPaging<T: Codable>: AsyncSequence {
 
-    public typealias Element = SoundCloud.Objects.Page<T>
-    let client: APIClient
-    let limit: Int?
-    let query: (String, [Int])?
+	public typealias Element = SoundCloud.Objects.Page<T>
+	let client: APIClient
+	let limit: Int?
+	let query: (String, [Int])?
 
-    public init(client: APIClient, query: (String, [Int])? = nil, limit: Int?) {
-        self.client = client
-        self.limit = limit
-        self.query = query
-    }
-    
-    public func makeAsyncIterator() -> AsyncIterator {
-        AsyncIterator(
-            firstClient: client,
-            client: client,
-            limit: limit ?? .max,
-            query: query
-        )
-    }
+	public init(client: APIClient, query: (String, [Int])? = nil, limit: Int?) {
+		self.client = client
+		self.limit = limit
+		self.query = query
+	}
 
-    public func first() async throws -> SoundCloud.Objects.Page<T> {
-        var iterator = makeAsyncIterator()
-        let result = try await iterator.next()
-        return result ?? SoundCloud.Objects.Page(collection: [])
-    }
+	public func makeAsyncIterator() -> AsyncIterator {
+		AsyncIterator(
+			firstClient: client,
+			client: client,
+			limit: limit ?? .max,
+			query: query
+		)
+	}
+
+	public func first() async throws -> SoundCloud.Objects.Page<T> {
+		var iterator = makeAsyncIterator()
+		let result = try await iterator.next()
+		return result ?? SoundCloud.Objects.Page(collection: [])
+	}
 
 	public struct AsyncIterator: AsyncIteratorProtocol {
-		
+
 		public typealias Element = SoundCloud.Objects.Page<T>
 
 		let firstClient: APIClient
@@ -39,7 +39,7 @@ public struct SCPaging<T: Decodable>: AsyncSequence {
 		var next: URL?
 		var didFetch = 0
 		var query: (String, [Int])?
-		
+
 		public mutating func next() async throws -> SoundCloud.Objects.Page<T>? {
 			if didFetch == 0 {
 				addQuery()
@@ -75,50 +75,59 @@ public struct SCPaging<T: Decodable>: AsyncSequence {
 	}
 }
 
-extension AsyncSequence {
+public extension AsyncSequence {
 
-    public func collect<T>() async throws -> [T] where Element == SoundCloud.Objects.Page<T> {
-        try await reduce(into: []) { result, page in
-            result.append(contentsOf: page.collection)
-        }
-    }
+	func collect<T>() async throws -> [T] where Element == SoundCloud.Objects.Page<T> {
+		try await reduce(into: []) { result, page in
+			result.append(contentsOf: page.collection)
+		}
+	}
 }
 
-extension SoundCloud.Objects {
-    
-    public struct Page<T> {
-        
-        public var collection: [T]
-        public var next: URL?
-        
-        enum CodingKeys: String, CodingKey {
-            
-            case collection
-            case next = "next_href"
-        }
-        
-        public init(collection: [T], next: URL? = nil) {
-            self.collection = collection
-            self.next = next
-        }
-    }
+public extension SoundCloud.Objects {
+
+	struct Page<T> {
+
+		public var collection: [T]
+		public var next: URL?
+
+		enum CodingKeys: String, CodingKey {
+
+			case collection
+			case next = "next_href"
+		}
+
+		public init(collection: [T], next: URL? = nil) {
+			self.collection = collection
+			self.next = next
+		}
+	}
 }
 
 extension SoundCloud.Objects.Page: Decodable where T: Decodable {
 
-    public init(from decoder: Decoder) throws {
-        let container: KeyedDecodingContainer<CodingKeys>
-        do {
-            container = try decoder.container(keyedBy: CodingKeys.self)
-        } catch {
-            collection = try Array<T>(from: decoder)
-            next = nil
-            return
-        }
-        collection = try container.decode([T].self, forKey: .collection)
-        next = try container.decodeIfPresent(URL.self, forKey: .next)
-    }
+	public init(from decoder: Decoder) throws {
+		let container: KeyedDecodingContainer<CodingKeys>
+		do {
+			container = try decoder.container(keyedBy: CodingKeys.self)
+		} catch {
+			collection = try [T](from: decoder)
+			next = nil
+			return
+		}
+		collection = try container.decode([T].self, forKey: .collection)
+		next = try container.decodeIfPresent(URL.self, forKey: .next)
+	}
 }
 
 extension SoundCloud.Objects.Page: Encodable where T: Encodable {}
 extension SoundCloud.Objects.Page: Equatable where T: Equatable {}
+
+extension SoundCloud.Objects.Page: Mockable where T: Mockable {
+	public static var mock: SoundCloud.Objects.Page<T> {
+		SoundCloud.Objects.Page(
+			collection: [T.mock],
+			next: nil
+		)
+	}
+}

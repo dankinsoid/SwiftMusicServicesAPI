@@ -1,12 +1,14 @@
 import Foundation
+import SwiftAPIClient
+import SwiftMusicServicesApi
 
-public struct SPTrack: Codable {
+public struct SPTrack: Codable, Sendable, Equatable {
 	/// The album on which the track appears. The album object includes a link in href to full information about the album.
 	public var album: SPAlbum?
 	/// The artists who performed the track. Each artist object includes a link in href to more detailed information about the artist.
 	public var artists: [SPArtist]?
 	/// A list of the countries in which the track can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.
-	public var availableMarkets: [String]?
+	public var availableMarkets: Set<CountryCode>?
 	/// The disc number (usually 1 unless the album consists of more than one disc).
 	public var discNumber: Int?
 	/// The track length in milliseconds.
@@ -42,7 +44,7 @@ public struct SPTrack: Codable {
 	/// Whether or not the track is from a local file.
 	public var isLocal: Bool?
 
-	public init(album: SPAlbum? = nil, artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, discNumber: Int? = nil, durationMs: Int, explicit: Bool? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, href: String? = nil, id: String?, isPlayable: Bool? = nil, linkedFrom: SPTrackLink? = nil, restrictions: SPRestrictions? = nil, name: String, popularity: Int? = nil, previewUrl: String? = nil, trackNumber: Int? = nil, type: String? = nil, uri: String, isLocal: Bool? = nil) {
+	public init(album: SPAlbum? = nil, artists: [SPArtist]? = nil, availableMarkets: Set<CountryCode>? = nil, discNumber: Int? = nil, durationMs: Int, explicit: Bool? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, href: String? = nil, id: String?, isPlayable: Bool? = nil, linkedFrom: SPTrackLink? = nil, restrictions: SPRestrictions? = nil, name: String, popularity: Int? = nil, previewUrl: String? = nil, trackNumber: Int? = nil, type: String? = nil, uri: String, isLocal: Bool? = nil) {
 		self.album = album
 		self.artists = artists
 		self.availableMarkets = availableMarkets
@@ -66,9 +68,18 @@ public struct SPTrack: Codable {
 	}
 }
 
-extension SPTrack {
+public extension SPTrack {
 
-    public var link: URL? {
-        id.flatMap { URL(string: "https://open.spotify.com/track/\($0)") }
-    }
+	var link: URL? {
+		id.flatMap { URL(string: "https://open.spotify.com/track/\($0)") }
+	}
+}
+
+extension SPTrack: Mockable {
+	public static let mock = SPTrack(
+		durationMs: 240_000,
+		id: "4iV5W9uYEdYUVa79Axb7Rh",
+		name: "Never Gonna Give You Up",
+		uri: "spotify:track:4iV5W9uYEdYUVa79Axb7Rh"
+	)
 }

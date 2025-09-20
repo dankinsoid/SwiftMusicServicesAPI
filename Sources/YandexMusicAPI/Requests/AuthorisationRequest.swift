@@ -4,13 +4,13 @@ import SwiftAPIClient
 public extension Yandex.Music.API {
 
 	func token(input: TokenInput) async throws -> TokenOutput {
-        try await client.url(Yandex.Music.API.authURL)
-            .path("token")
-            .auth(enabled: false)
-            .bodyDecoder(YandexDecoder(isAuthorized: false))
-            .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase))
-            .body(input)
-            .post()
+		try await client.url(Yandex.Music.API.authURL)
+			.path("token")
+			.auth(enabled: false)
+			.bodyDecoder(YandexDecoder(isAuthorized: false))
+			.bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase))
+			.body(input)
+			.post()
 	}
 
 	struct TokenInput: Codable {
@@ -30,7 +30,7 @@ public extension Yandex.Music.API {
 		}
 	}
 
-	struct TokenOutput: Decodable {
+	struct TokenOutput: Codable {
 
 		public let tokenType: String? // "bearer"
 		public let accessToken: String

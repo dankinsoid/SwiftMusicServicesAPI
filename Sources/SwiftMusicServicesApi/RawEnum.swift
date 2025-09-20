@@ -54,6 +54,8 @@ public enum RawEnum<T: RawRepresentable>: RawRepresentable {
 	}
 }
 
+extension RawEnum: Sendable where T: Sendable, T.RawValue: Sendable {}
+
 extension RawEnum: Decodable where T.RawValue: Decodable {
 	public init(from decoder: Decoder) throws {
 		let rawValue = try T.RawValue(from: decoder)

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public struct E3U {
 
@@ -41,4 +42,18 @@ public struct E3U {
 	public init(lines: [E3U.Line]) {
 		self.lines = lines
 	}
+}
+
+extension E3U: Mockable {
+	public static let mock = E3U(
+		lines: [E3U.Line.mock]
+	)
+}
+
+extension E3U.Line: Mockable {
+	public static let mock = E3U.Line(
+		duration: 240,
+		artist: "Mock Artist",
+		title: "Mock Track"
+	)
 }

@@ -1,23 +1,23 @@
 import Foundation
 import SwiftAPIClient
 
-extension Amazon.API {
-	
-	public var user: User {
+public extension Amazon.API {
+
+	var user: User {
 		User(client: client)
 	}
 }
 
-extension Amazon.API {
-	
-	public struct User {
+public extension Amazon.API {
+
+	struct User {
 
 		public let client: APIClient
 
 		public init(
-				client: APIClient
+			client: APIClient
 		) {
-				self.client = client("user")
+			self.client = client("user")
 		}
 
 		public func profile() async throws -> Amazon.Objects.Profile {
@@ -26,9 +26,9 @@ extension Amazon.API {
 	}
 }
 
-extension Amazon.Objects {
+public extension Amazon.Objects {
 
-	public struct Profile: Codable {
+	struct Profile: Codable {
 
 		public var user_id: String
 		public var email: String?

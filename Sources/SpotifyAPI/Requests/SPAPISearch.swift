@@ -12,11 +12,11 @@ public extension Spotify.API {
 		offset: Int? = nil,
 		includeExternal: SearchInput.External? = nil
 	) async throws -> SearchOutput {
-        try await client("search")
-            .query(
-                SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)
-            )
-            .get()
+		try await client("search")
+			.query(
+				SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)
+			)
+			.get()
 	}
 
 	func searchQuery(
@@ -72,13 +72,21 @@ public extension Spotify.API {
 		}
 	}
 
-	struct SearchOutput: Decodable {
+	struct SearchOutput: Codable {
 
 		public var artists: SPPaging<SPArtist>?
 		public var albums: SPPaging<SPAlbumSimplified>?
 		public var tracks: SPPaging<SPTrack>?
 		public var shows: SPPaging<SPShow>?
 		public var episodes: SPPaging<SPEpisodeSimplified>?
+		
+		public init(artists: SPPaging<SPArtist>? = nil, albums: SPPaging<SPAlbumSimplified>? = nil, tracks: SPPaging<SPTrack>? = nil, shows: SPPaging<SPShow>? = nil, episodes: SPPaging<SPEpisodeSimplified>? = nil) {
+			self.artists = artists
+			self.albums = albums
+			self.tracks = tracks
+			self.shows = shows
+			self.episodes = episodes
+		}
 	}
 }
 
@@ -96,7 +104,7 @@ public struct SPQuery: Encodable {
 			}
 			result += filters.map { "\($0.key.rawValue):\($0.value)" }.joined(separator: " ")
 		}
-		return result//.replacingOccurrences(of: " ", with: "%20")
+		return result // .replacingOccurrences(of: " ", with: "%20")
 	}
 }
 
@@ -146,4 +154,15 @@ extension Spotify.API.SearchOutput: SpotifyPaging {
 		case .unknown: return nil
 		}
 	}
+}
+
+extension Spotify.API.SearchOutput: Mockable {
+	
+	public static let mock = Spotify.API.SearchOutput(
+		artists: .mock,
+		albums: .mock,
+		tracks: .mock,
+		shows: .mock,
+		episodes: .mock
+	)
 }

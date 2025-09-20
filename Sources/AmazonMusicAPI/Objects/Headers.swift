@@ -2,10 +2,10 @@ import Foundation
 import SwiftAPIClient
 import SwiftMusicServicesApi
 
-extension Amazon.Objects {
+public extension Amazon.Objects {
 
-	public struct DefaultBody: Codable {
-		
+	struct DefaultBody: Codable {
+
 		private var values: [String: String] = [:]
 
 		public init(
@@ -14,7 +14,7 @@ extension Amazon.Objects {
 			values = [:]
 			try set(headers, for: "headers")
 		}
-	
+
 		public mutating func removeValue(for key: String) {
 			values.removeValue(forKey: key)
 		}
@@ -22,25 +22,25 @@ extension Amazon.Objects {
 		public mutating func set(_ value: some Encodable, for key: String, encoder: ContentEncoder = .json) throws {
 			values[key] = try String(data: encoder.encode(value), encoding: .utf8).unwrap(throwing: InvalidUTF8Error())
 		}
-	
+
 		public mutating func set(_ value: String, for key: String) {
 			values[key] = value
 		}
 
 		public init(from decoder: any Decoder) throws {
-			values = (try? [String: String].init(from: decoder)) ?? [:]
+			values = (try? [String: String](from: decoder)) ?? [:]
 		}
-		
+
 		public func encode(to encoder: any Encoder) throws {
 			try values.encode(to: encoder)
 		}
 	}
-	
-	public struct Headers: Codable {
-		
+
+	struct Headers: Codable {
+
 		public var xAmznAuthentication: String
 		public var xAmznCsrf: String
-		
+
 		public var xAmznDeviceModel: String?
 		public var xAmznDeviceWidth: String?
 		public var xAmznDeviceFamily: String?
@@ -64,7 +64,7 @@ extension Amazon.Objects {
 		public var xAmznVideoPlayerToken: String?
 		public var xAmznFeatureFlags: String?
 		public var xAmznHasProfileId: String?
-		
+
 		public init(
 			accessToken: String,
 			csrf: CSRF,
@@ -89,13 +89,13 @@ extension Amazon.Objects {
 			xAmznPageUrl: String? = "https://music.amazon.com/my/library",
 			xAmznWeblabIdOverrides: String? = "",
 			xAmznVideoPlayerToken: String? = "",
-			xAmznFeatureFlags: String? = nil,//"hd-supported,uhd-supported",
+			xAmznFeatureFlags: String? = nil, // "hd-supported,uhd-supported",
 			xAmznHasProfileId: String? = "true"
 		) throws {
 			let encoder = JSONEncoder()
-			self.xAmznAuthentication = try String(data: encoder.encode(XAmznAuthentication(accessToken: accessToken)), encoding: .utf8)
+			xAmznAuthentication = try String(data: encoder.encode(XAmznAuthentication(accessToken: accessToken)), encoding: .utf8)
 				.unwrap(throwing: InvalidUTF8Error())
-			self.xAmznCsrf = try String(data: encoder.encode(XAmznCSRF(csrf: csrf)), encoding: .utf8)
+			xAmznCsrf = try String(data: encoder.encode(XAmznCSRF(csrf: csrf)), encoding: .utf8)
 				.unwrap(throwing: InvalidUTF8Error())
 			self.xAmznDeviceModel = xAmznDeviceModel
 			self.xAmznDeviceWidth = xAmznDeviceWidth
@@ -121,9 +121,9 @@ extension Amazon.Objects {
 			self.xAmznFeatureFlags = xAmznFeatureFlags
 			self.xAmznHasProfileId = xAmznHasProfileId
 		}
-		
+
 		public enum CodingKeys: String, CodingKey {
-			
+
 			case xAmznAuthentication = "x-amzn-authentication"
 			case xAmznDeviceModel = "x-amzn-device-model"
 			case xAmznDeviceWidth = "x-amzn-device-width"
@@ -151,12 +151,12 @@ extension Amazon.Objects {
 			case xAmznHasProfileId = "x-amzn-has-profile-id"
 		}
 	}
-	
-	public struct XAmznAuthentication: Codable {
-		
+
+	struct XAmznAuthentication: Codable {
+
 		public var interface: String
 		public var accessToken: String
-		
+
 		public init(
 			interface: String = "ClientAuthenticationInterface.v1_0.ClientTokenElement",
 			accessToken: String
@@ -165,30 +165,29 @@ extension Amazon.Objects {
 			self.accessToken = accessToken
 		}
 	}
-	
-	public struct XAmznCSRF: Codable {
-		
+
+	struct XAmznCSRF: Codable {
+
 		public var interface: String
 		public var token: String
 		public var timestamp: String
 		public var rndNonce: String
-		
+
 		public init(
 			interface: String = "CSRFInterface.v1_0.CSRFHeaderElement",
 			csrf: CSRF
 		) {
 			self.interface = interface
-			self.token = csrf.token
-			self.timestamp = csrf.ts
-			self.rndNonce = csrf.rnd
+			token = csrf.token
+			timestamp = csrf.ts
+			rndNonce = csrf.rnd
 		}
 	}
 }
 
 private struct InvalidUTF8Error: Error, LocalizedError {
-	
+
 	var description: String { "Invalid UTF-8 encoding." }
-	
+
 	init() {}
 }
-

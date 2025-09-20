@@ -4,9 +4,9 @@ import SwiftAPIClient
 public extension Yandex.Music.API {
 
 	func playlists(userID id: Int, playlistsKinds: [Int]) async throws -> [YM.Objects.Playlist<YMO.TrackShort>] {
-        try await client("users", "\(id)", "playlists")
-            .query(PlaylistsInput(kinds: playlistsKinds))
-            .post()
+		try await client("users", "\(id)", "playlists")
+			.query(PlaylistsInput(kinds: playlistsKinds))
+			.post()
 	}
 
 	struct PlaylistsInput: Encodable {
@@ -29,16 +29,16 @@ public extension Yandex.Music.API {
 public extension Yandex.Music.API {
 
 	func playlistsList(userID id: Int) async throws -> [YM.Objects.Playlist<YMO.TrackShort>] {
-        try await client("users", "\(id)", "playlists", "list").get()
+		try await client("users", "\(id)", "playlists", "list").get()
 	}
 }
 
 public extension Yandex.Music.API {
 
 	func playlistsCreate(userID id: Int, title: String, visibility: YMO.Visibility = .public) async throws -> YMO.Playlist<YMO.TrackShort> {
-        try await client("users", "\(id)", "playlists", "create")
-            .query(PlaylistsCreateInput(title: title, visibility: visibility))
-            .post()
+		try await client("users", "\(id)", "playlists", "create")
+			.query(PlaylistsCreateInput(title: title, visibility: visibility))
+			.post()
 	}
 
 	struct PlaylistsCreateInput: Encodable {
@@ -61,21 +61,21 @@ public extension Yandex.Music.API {
 
 	func playlistsAdd(userID id: Int, playlistKind pid: Int?, revision: Int, tracks: [YMO.TrackShort]) async throws -> YMO.Playlist<YMO.TrackShort> {
 		let input = PlaylistsChangeInput(
-            kind: pid ?? 0,
-            revision: revision,
-            diff: [
-                YM.API.PlaylistsChangeInput.Diff(
-                    at: 0,
-                    tracks: tracks.map {
-                        YM.API.PlaylistsChangeInput.Diff.Track(
-                            id: "\($0.id)",
-                            albumId: $0.albumId.map { "\($0)" }
-                        )
-                    }
-                )
-            ],
-            mixed: true
-        )
+			kind: pid ?? 0,
+			revision: revision,
+			diff: [
+				YM.API.PlaylistsChangeInput.Diff(
+					at: 0,
+					tracks: tracks.map {
+						YM.API.PlaylistsChangeInput.Diff.Track(
+							id: "\($0.id)",
+							albumId: $0.albumId.map { "\($0)" }
+						)
+					}
+				),
+			],
+			mixed: true
+		)
 		return try await playlistsChange(userID: id, input: input)
 	}
 
@@ -120,37 +120,37 @@ public extension Yandex.Music.API {
 }
 
 private extension Yandex.Music.API {
-    
-    func playlistsChange(userID id: Int, input: PlaylistsChangeInput, counter: Int) async throws -> YMO.Playlist<YMO.TrackShort> {
-        try await onRevisionError {
-            try await client("users", "\(id)", "playlists", "\(input.kind)", "change-relative")
-                .bodyEncoder(.formURL(nestedEncodingStrategy: .json(encode: .arraysAndObjects)))
-                .body(input)
-                .post()
-        } retry: { revision, error in
-            if counter > 0 {
-                var input = input
-                input.revision = revision
-                return try await playlistsChange(userID: id, input: input, counter: counter - 1)
-            } else {
-                throw error
-            }
-        }
-    }
 
-    func onRevisionError<T>(action: () async throws -> T, retry: (Int, Error) async throws -> T) async throws -> T {
-        do {
-            return try await action()
-        } catch let error as WrongRevisionError {
-            return try await retry(error.actual, error)
-        } catch let error as APIClientError {
-            if let wrongRevisionError = error.error as? WrongRevisionError {
-                return try await retry(wrongRevisionError.actual, error)
-            } else {
-                throw error
-            }
-        } catch {
-            throw error
-        }
-    }
+	func playlistsChange(userID id: Int, input: PlaylistsChangeInput, counter: Int) async throws -> YMO.Playlist<YMO.TrackShort> {
+		try await onRevisionError {
+			try await client("users", "\(id)", "playlists", "\(input.kind)", "change-relative")
+				.bodyEncoder(.formURL(nestedEncodingStrategy: .json(encode: .arraysAndObjects)))
+				.body(input)
+				.post()
+		} retry: { revision, error in
+			if counter > 0 {
+				var input = input
+				input.revision = revision
+				return try await playlistsChange(userID: id, input: input, counter: counter - 1)
+			} else {
+				throw error
+			}
+		}
+	}
+
+	func onRevisionError<T>(action: () async throws -> T, retry: (Int, Error) async throws -> T) async throws -> T {
+		do {
+			return try await action()
+		} catch let error as WrongRevisionError {
+			return try await retry(error.actual, error)
+		} catch let error as APIClientError {
+			if let wrongRevisionError = error.error as? WrongRevisionError {
+				return try await retry(wrongRevisionError.actual, error)
+			} else {
+				throw error
+			}
+		} catch {
+			throw error
+		}
+	}
 }

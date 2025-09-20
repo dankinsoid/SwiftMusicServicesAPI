@@ -8,17 +8,17 @@ public extension Yandex.Music.API {
 		let set = CharacterSet(charactersIn: "=\"#%/<>?@\\^`{|};: ").inverted
 		let input = TokenBySessionIDInput(track_id: track_id, cookies: cookies.addingPercentEncoding(withAllowedCharacters: set) ?? cookies)
 		return try await client
-            .url(Yandex.Music.API.mobileproxyPassportURL)
-            .path("1", "bundle", "oauth", "token_by_sessionid")
-            .query(info)
-            .auth(enabled: false)
-            .bodyDecoder(YandexDecoder(isAuthorized: false))
-            .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase, nestedEncodingStrategy: .json))
-            .header(.cookie, cookies)
-            .header("Ya-Client-Cookie", cookies)
-            .header("Ya-Client-Host", cookies)
-            .header("Host", "mobileproxy.passport.yandex.net")
-            .post()
+			.url(Yandex.Music.API.mobileproxyPassportURL)
+			.path("1", "bundle", "oauth", "token_by_sessionid")
+			.query(info)
+			.auth(enabled: false)
+			.bodyDecoder(YandexDecoder(isAuthorized: false))
+			.bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase, nestedEncodingStrategy: .json))
+			.header(.cookie, cookies)
+			.header("Ya-Client-Cookie", cookies)
+			.header("Ya-Client-Host", cookies)
+			.header("Host", "mobileproxy.passport.yandex.net")
+			.post()
 	}
 
 	struct TokenBySessionIDQuery: Codable {

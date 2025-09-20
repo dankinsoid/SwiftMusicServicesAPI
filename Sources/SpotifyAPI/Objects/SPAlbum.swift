@@ -1,10 +1,13 @@
-public struct SPAlbum: Codable {
+import SwiftAPIClient
+import SwiftMusicServicesApi
+
+public struct SPAlbum: Codable, Sendable, Equatable {
 	/// The type of the album: one of "album" , "single" , or "compilation".
 	public var albumType: String?
 	/// The artists of the album. Each artist object includes a link in href to more detailed information about the artist.
 	public var artists: [SPArtist]?
 	/// The markets in which the album is available: [ISO 3166-1 alpha-2 country codes](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2){:target="_blank"}. Note that an album is considered available in a market when at least 1 of its tracks is available in that market.
-	public var availableMarkets: [String]?
+	public var availableMarkets: Set<CountryCode>?
 	/// The copyright statements of the album.
 	public var copyrights: [SPCopyright]?
 	/// Known external IDs for the album.
@@ -38,7 +41,7 @@ public struct SPAlbum: Codable {
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the album.
 	public var uri: String?
 
-	public init(albumType: String? = nil, artists: [SPArtist]? = nil, availableMarkets: [String]? = nil, copyrights: [SPCopyright]? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, genres: [String]? = nil, href: String? = nil, id: String? = nil, images: [SPImage]? = nil, label: String? = nil, name: String? = nil, popularity: Int? = nil, releaseDate: String? = nil, releaseDatePrecision: String? = nil, restrictions: SPRestrictions? = nil, tracks: [SPTrack]? = nil, type: String? = nil, uri: String? = nil) {
+	public init(albumType: String? = nil, artists: [SPArtist]? = nil, availableMarkets: Set<CountryCode>? = nil, copyrights: [SPCopyright]? = nil, externalIds: SPExternalID? = nil, externalUrls: SPExternalURL? = nil, genres: [String]? = nil, href: String? = nil, id: String? = nil, images: [SPImage]? = nil, label: String? = nil, name: String? = nil, popularity: Int? = nil, releaseDate: String? = nil, releaseDatePrecision: String? = nil, restrictions: SPRestrictions? = nil, tracks: [SPTrack]? = nil, type: String? = nil, uri: String? = nil) {
 		self.albumType = albumType
 		self.artists = artists
 		self.availableMarkets = availableMarkets
@@ -59,4 +62,12 @@ public struct SPAlbum: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPAlbum: Mockable {
+	public static let mock = SPAlbum(
+		id: "4aawyAB9vmqN3uQ7FjRGTy",
+		name: "Global Warming",
+		uri: "spotify:album:4aawyAB9vmqN3uQ7FjRGTy"
+	)
 }

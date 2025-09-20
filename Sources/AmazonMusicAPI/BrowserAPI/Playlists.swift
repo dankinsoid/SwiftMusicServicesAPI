@@ -1,35 +1,36 @@
+import Foundation
 import SwiftAPIClient
 import VDCodable
-import Foundation
 
-extension Amazon.Music.BrowserAPI {
+public extension Amazon.Music.BrowserAPI {
 
-	public func showHome() async throws -> Amazon.Objects.Layout {
+	func showHome() async throws -> Amazon.Objects.Layout {
 		try await musicClient("showHome").post()
 	}
 
-	public func showLibraryHome() async throws -> Amazon.Objects.Layout {
+	func showLibraryHome() async throws -> Amazon.Objects.Layout {
 		try await musicClient("showLibraryHome").post()
 	}
 
-	public func showLibraryPlaylist(id: String) async throws -> Amazon.Objects.Layout {
+	func showLibraryPlaylist(id: String) async throws -> Amazon.Objects.Layout {
 		try await musicClient("showLibraryPlaylist")
-			.amazonBody { body, configs in
+			.amazonBody { body, _ in
 				body.set(id, for: "id")
 			}
 			.post()
 	}
 }
 
-extension Amazon.Objects.Layout {
-	
-	public var asPlaylists: [Amazon.Music.Playlist] {
+public extension Amazon.Objects.Layout {
+
+	var asPlaylists: [Amazon.Music.Playlist] {
 		methods.flatMap {
 			$0.template?.widgets?.flatMap {
 				$0.items?.compactMap { item -> Amazon.Music.Playlist? in
 					if let link = item.primaryLink?.deeplink,
-						 link.trimmingCharacters(in: ["/"]).hasPrefix("my/playlists/"),
-						 let id = link.components(separatedBy: ["/"]).last {
+					   link.trimmingCharacters(in: ["/"]).hasPrefix("my/playlists/"),
+					   let id = link.components(separatedBy: ["/"]).last
+					{
 						return Amazon.Music.Playlist(
 							id: id,
 							title: item.imageAltText?.text ?? item.text?.text ?? item.primaryText?.text ?? "Amazon Playlist",
@@ -43,8 +44,8 @@ extension Amazon.Objects.Layout {
 			} ?? []
 		}
 	}
-	
-	public var asTracks: [Amazon.Music.Track] {
+
+	var asTracks: [Amazon.Music.Track] {
 		methods.flatMap {
 			$0.template?.widgets?.flatMap {
 				$0.items?.compactMap { (item: Amazon.Objects.Widget.Item) -> Amazon.Music.Track? in
@@ -59,14 +60,14 @@ extension Amazon.Objects.Layout {
 								Amazon.Music.Artist(
 									name: $0.text,
 									deeplink: item.secondaryText1Link?.deeplink
-								)
+								),
 							]
 						} ?? [],
 						album: item.secondaryText2.map {
-								Amazon.Music.Album(
-									title: $0.text,
-									deeplink: item.secondaryText2Link?.deeplink
-								)
+							Amazon.Music.Album(
+								title: $0.text,
+								deeplink: item.secondaryText2Link?.deeplink
+							)
 						},
 						deeplink: item.primaryLink?.deeplink
 					)
@@ -77,9 +78,9 @@ extension Amazon.Objects.Layout {
 }
 
 private extension String {
-	
+
 	var convertDurationToSeconds: Int? {
-		let components = self.components(separatedBy: ":").reversed().prefix(3)
+		let components = components(separatedBy: ":").reversed().prefix(3)
 		guard !components.isEmpty else { return nil }
 		var seconds = 0
 		for (index, component) in components.enumerated() {
@@ -93,15 +94,15 @@ private extension String {
 	}
 }
 
-extension Amazon.Music {
-	
-	public struct Playlist: Equatable, Identifiable, Sendable, Codable {
-		
+public extension Amazon.Music {
+
+	struct Playlist: Equatable, Identifiable, Sendable, Codable {
+
 		public var id: String
 		public var title: String
 		public var image: URL?
 		public var deeplink: String?
-		
+
 		public init(id: String, title: String, image: URL? = nil, deeplink: String? = nil) {
 			self.id = id
 			self.title = title
@@ -109,9 +110,9 @@ extension Amazon.Music {
 			self.deeplink = deeplink
 		}
 	}
-	
-	public struct Track {
-		
+
+	struct Track {
+
 		public var id: String
 		public var title: String
 		public var duration: Int?
@@ -120,23 +121,23 @@ extension Amazon.Music {
 		public var album: Album?
 		public var deeplink: String?
 	}
-	
-	public struct Artist: Equatable, Sendable, Codable {
-		
+
+	struct Artist: Equatable, Sendable, Codable {
+
 		public var name: String
 		public var deeplink: String?
-		
+
 		public init(name: String, deeplink: String? = nil) {
 			self.name = name
 			self.deeplink = deeplink
 		}
 	}
-	
-	public struct Album: Equatable, Sendable, Codable {
-		
+
+	struct Album: Equatable, Sendable, Codable {
+
 		public var title: String
 		public var deeplink: String?
-		
+
 		public init(title: String, deeplink: String? = nil) {
 			self.title = title
 			self.deeplink = deeplink

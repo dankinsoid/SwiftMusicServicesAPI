@@ -12,7 +12,7 @@ public extension Tidal.API.V2.Playlists {
 
 	 **PATCH** /playlists/{id}
 	 */
-	func patchById(id: String, countryCode: String? = nil, body: TDO.PlaylistUpdateOperationPayload, fileID: String = #fileID, line: UInt = #line) async throws {
+	func patchById(id: String, countryCode: CountryCode? = nil, body: TDO.PlaylistUpdateOperationPayload, fileID: String = #fileID, line: UInt = #line) async throws {
 		try await client
 			.path("/playlists/\(id)")
 			.method(.patch)

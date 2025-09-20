@@ -1,6 +1,6 @@
 
 public enum Amazon {
-    
-    public enum Objects {}
-    public enum Music {}
+
+	public enum Objects {}
+	public enum Music {}
 }

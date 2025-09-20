@@ -12,7 +12,7 @@ public extension Tidal.API.V2.SearchResults {
 
 	 **GET** /searchResults/{id}
 	 */
-	func getById(id: String, countryCode: String? = nil, explicitFilter: String? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchResultsSingleDataDocument {
+	func getById(id: String, countryCode: CountryCode? = nil, explicitFilter: String? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.SearchResultsSingleDataDocument {
 		try await client
 			.path("/searchResults/\(id)")
 			.method(.get)

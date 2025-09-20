@@ -1,13 +1,15 @@
 // swiftlint:disable all
 import Foundation
+import SwiftMusicServicesApi
 import SwiftAPIClient
 
 /** TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data. */
 public extension Tidal.API {
 
-	struct V2 {
+	struct V2: APIClientScope {
 
 		public static let baseURL = URL(string: "https://openapi.tidal.com/v2")!
+		public static let baseURLApp = URL(string: "https://api.tidal.com/v2")!
 		public static let version = "0.1.21"
 
 		public var client: APIClient

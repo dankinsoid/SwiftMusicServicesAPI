@@ -3,22 +3,40 @@ import Foundation
 public extension AppleMusic.API {
 
 	func addPlaylist(
-        name: String,
-        description: String,
-        tracks: [AppleMusic.Objects.ShortItem]
-    ) -> Pages<AppleMusic.Objects.Item> {
+		name: String,
+		description: String,
+		tracks: [AppleMusic.Objects.ShortItem]
+	) -> Pages<AppleMusic.Objects.Item> {
 		addPlaylist(input: AddPlaylistInput(name: name, description: description, tracks: tracks))
 	}
 
 	func addPlaylist(input: AddPlaylistInput) -> Pages<AppleMusic.Objects.Item> {
-        pages { client in
-            try await client.path("v1", "me", "library", "playlists").body(input).post()
-        }
+		pages { client in
+			try await client.path("v1", "me", "library", "playlists").body(input).post()
+		}
 	}
 
-    func add(playlist input: AddPlaylistInput) async throws {
-        try await client.path("v1", "me", "library", "playlists").body(input).post()
-    }
+	func add(_ type: AppleMusic.TrackType, ids: [String]) async throws {
+		try await client.path("v1", "me", "library")
+			.query("ids", [type.rawValue: ids])
+			.post()
+	}
+	
+	func add(playlist input: AddPlaylistInput) async throws -> AppleMusic.Objects.Item {
+		try await client.path("v1", "me", "library", "playlists")
+			.body(input)
+			.post
+			.call(.http, as: .decodable(AppleMusic.Objects.Response<AppleMusic.Objects.Item>.self))
+			.data
+			.first
+			.unwrap(throwing: "No playlist returned")
+	}
+	
+	func addToFavorites(_ type: AppleMusic.TrackType, ids: [String]) async throws {
+		try await client.path("v1", "me", "library", "favorites")
+			.query("ids", ids)
+			.post()
+	}
 
 	struct AddPlaylistInput: Encodable {
 		public var attributes: Attributes
@@ -53,36 +71,36 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 
 	func addTracks(playlistID id: String, tracks: AppleMusic.Objects.Response<AppleMusic.Objects.Item>) async throws {
-        try await client
-            .path("v1", "me", "library", "playlists", id, "tracks")
-            .body(tracks)
-            .post()
+		try await client
+			.path("v1", "me", "library", "playlists", id, "tracks")
+			.body(tracks)
+			.post()
 	}
 }
 
 public extension AppleMusic.API {
 
 	func getTracks(playlistID id: String) -> Pages<AppleMusic.Objects.Item> {
-        pages { client in
-            try await client.path("v1", "me", "library", "playlists", id, "tracks").get()
-        }
+		pages { client in
+			try await client.path("v1", "me", "library", "playlists", id, "tracks").get()
+		}
 	}
 }
 
 public extension AppleMusic.API {
 
-    /// [Documentation](https://developer.apple.com/documentation/applemusicapi/get_all_library_playlists)
-    ///
-    /// Fetch all the library playlists in alphabetical order.
+	/// [Documentation](https://developer.apple.com/documentation/applemusicapi/get_all_library_playlists)
+	///
+	/// Fetch all the library playlists in alphabetical order.
 	func getMyPlaylists(
-        limit: Int? = nil,
-        include: [AppleMusic.Objects.Include]? = nil
-    ) throws -> Pages<AppleMusic.Objects.Item> {
-        pages(limit: limit) { client in
-            try await client.path("v1", "me", "library", "playlists")
-                .query(GetMyPlaylistsInput(limit: limit ?? 100, include: include))
-                .get()
-        }
+		limit: Int? = nil,
+		include: [AppleMusic.Objects.Include]? = nil
+	) throws -> Pages<AppleMusic.Objects.Item> {
+		pages(limit: limit) { client in
+			try await client.path("v1", "me", "library", "playlists")
+				.query(GetMyPlaylistsInput(limit: limit ?? 100, include: include))
+				.get()
+		}
 	}
 
 	struct GetMyPlaylistsInput: Encodable {
@@ -94,15 +112,15 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 
 	func libraryPlaylist(
-        playlistID id: String,
-        include: [AppleMusic.Objects.Include]? = [.tracks, .catalog]
-    ) throws -> Pages<AppleMusic.Objects.Item> {
-        pages { client in
-            try await client
-                .path("v1", "me", "library", "playlists", id)
-                .query(LibraryPlaylistInput(include: include))
-                .get()
-        }
+		playlistID id: String,
+		include: [AppleMusic.Objects.Include]? = [.tracks, .catalog]
+	) throws -> Pages<AppleMusic.Objects.Item> {
+		pages { client in
+			try await client
+				.path("v1", "me", "library", "playlists", id)
+				.query(LibraryPlaylistInput(include: include))
+				.get()
+		}
 	}
 
 	struct LibraryPlaylistInput: Encodable {
@@ -113,12 +131,12 @@ public extension AppleMusic.API {
 public extension AppleMusic.API {
 
 	func getPlaylists(ids: [String], storefront: String) throws -> Pages<AppleMusic.Objects.Item> {
-        pages { client in
-            try await client
-                .path("v1", "catalog", storefront, "playlists")
-                .query(GetPlaylistsInput(ids: ids))
-                .get()
-        }
+		pages { client in
+			try await client
+				.path("v1", "catalog", storefront, "playlists")
+				.query(GetPlaylistsInput(ids: ids))
+				.get()
+		}
 	}
 
 	struct GetPlaylistsInput: Encodable {

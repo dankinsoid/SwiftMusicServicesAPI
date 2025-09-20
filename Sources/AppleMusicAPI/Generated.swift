@@ -86,16 +86,6 @@ public extension AppleMusic.API.SearchInput {
 	}
 }
 
-public extension AppleMusic.API.SearchResults {
-	static func publicInit(
-		results: AppleMusic.API.SearchResults.Songs
-	) -> Self {
-		.init(
-			results: results
-		)
-	}
-}
-
 public extension AppleMusic.API.SongsByISRCInput {
 	static func publicInit(
 		isrcs: [String]

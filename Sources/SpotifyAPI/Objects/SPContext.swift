@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPContext: Codable {
 	/// The object type, e.g. "artist", "playlist", "album".
 	public var type: String
@@ -14,4 +16,13 @@ public struct SPContext: Codable {
 		self.externalUrls = externalUrls
 		self.uri = uri
 	}
+}
+
+extension SPContext: Mockable {
+	public static let mock = SPContext(
+		type: "playlist",
+		href: "https://api.spotify.com/v1/playlists/mock_id_123",
+		externalUrls: ["spotify": "https://open.spotify.com/playlist/mock_id_123"],
+		uri: "spotify:playlist:mock_id_123"
+	)
 }

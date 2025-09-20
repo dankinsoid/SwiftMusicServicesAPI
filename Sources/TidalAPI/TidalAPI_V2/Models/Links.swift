@@ -26,3 +26,11 @@ public extension TDO {
 		}
 	}
 }
+
+extension TDO.Links: Mockable {
+	
+	public static let mock = TDO.Links(
+		this: "https://api.tidal.com/v2/some/endpoint",
+		next: "https://api.tidal.com/v2/some/endpoint?page=2"
+	)
+}

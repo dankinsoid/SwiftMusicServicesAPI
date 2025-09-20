@@ -3,17 +3,17 @@ import SwiftAPIClient
 
 public extension VK.API {
 	func authorize(_ parameters: VKAuthorizeParameters) async throws {
-        try await client.url("https://login.vk.com")
-            .query(
-                VKAuthorizeAllParameters(
-                    ip_h: parameters.pre.ip,
-                    lg_h: parameters.pre.lg,
-                    email: parameters.login,
-                    pass: parameters.password
-                )
-            )
-            .configs(\.minimal, true)
-            .post()
+		try await client.url("https://login.vk.com")
+			.query(
+				VKAuthorizeAllParameters(
+					ip_h: parameters.pre.ip,
+					lg_h: parameters.pre.lg,
+					email: parameters.login,
+					pass: parameters.password
+				)
+			)
+			.configs(\.minimal, true)
+			.post()
 	}
 
 	func authorizeAndGetUser(_ parameters: VKAuthorizeParameters) async throws -> VKUser {
@@ -26,9 +26,9 @@ public extension VK.API {
 	}
 
 	func checkAuthorize() async throws -> VKAuthorizationState {
-        try await client("account")
-            .xmlHttpRequest
-            .call(.http, as: .htmlInitable)
+		try await client("account")
+			.xmlHttpRequest
+			.call(.http, as: .htmlInitable)
 	}
 }
 

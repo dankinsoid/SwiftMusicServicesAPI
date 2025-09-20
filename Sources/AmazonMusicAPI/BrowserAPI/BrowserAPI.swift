@@ -3,14 +3,14 @@ import SwiftAPIClient
 @_exported import SwiftMusicServicesApi
 
 extension Amazon.Music {
-	
-	public final class BrowserAPI {
-		
+
+	public final class BrowserAPI: @unchecked Sendable {
+
 		public static let baseURL = URL(string: "https://music.amazon.com")!
 		public static let requiredAuthCookies: Set<String> = ["at-main", "sess-at-main", "session-id", "session-token", "ubid-main", "x-main"]
 		public var client: APIClient
 		private let lock = ReadWriteLock()
-		
+
 		public var webCookies: [String: String] {
 			get {
 				lock.withReaderLock { _webCookies }
@@ -24,7 +24,7 @@ extension Amazon.Music {
 				}
 			}
 		}
-		
+
 		public var userAgent: String {
 			get {
 				lock.withReaderLock { _userAgent }
@@ -38,7 +38,7 @@ extension Amazon.Music {
 				}
 			}
 		}
-		
+
 		var config: Amazon.Objects.Config? {
 			get {
 				lock.withReaderLock { _config }
@@ -50,20 +50,20 @@ extension Amazon.Music {
 				}
 			}
 		}
-		
+
 		var isConfigExpired: Bool {
 			let configDate = lock.withReaderLock { _configDate }
 			guard let configDate, let config else { return true }
 			let expiresIn = config.accessTokenExpiresIn.flatMap { TimeInterval($0) } ?? 0
 			return Date().timeIntervalSince(configDate) > expiresIn - 60 // 1 minute before expiration
 		}
-		
+
 		public let cache: SecureCacheService
 		private var _webCookies: [String: String] = [:]
 		private var _userAgent = defaultUserAgent
 		private var _config: Amazon.Objects.Config?
 		private var _configDate: Date?
-		
+
 		public init(
 			client: APIClient = APIClient(),
 			cache: SecureCacheService,
@@ -72,7 +72,7 @@ extension Amazon.Music {
 			_webCookies = webCookies
 			self.cache = cache
 			self.client = client
-			
+
 			self.client = client
 				.url(Self.baseURL)
 				.httpResponseValidator(.statusCode)
@@ -86,10 +86,10 @@ extension Amazon.Music {
 					}
 				)
 				.httpClientMiddleware(SetCookiesMiddleware(api: self))
-			
+
 			Task { [self] in
-				userAgent = (try? await cache.load(for: .userAgent)) ?? defaultUserAgent
-				self.webCookies = ((try? await cache.load(for: .cookies) as [String: String]?) ?? [:]).merging(webCookies) { _, n in n }
+				userAgent = await (try? cache.load(for: .userAgent)) ?? defaultUserAgent
+				self.webCookies = await ((try? cache.load(for: .cookies) as [String: String]?) ?? [:]).merging(webCookies) { _, n in n }
 			}
 		}
 
@@ -148,63 +148,65 @@ extension Amazon.Music {
 }
 
 private func parseSetCookieHeader(_ header: String) -> [String: String] {
-		var result: [String: String] = [:]
-		var current = ""
+	var result: [String: String] = [:]
+	var current = ""
 
-		// Pattern: name=value (value can be anything except ;)
-		let nameValueRegex = try! NSRegularExpression(pattern: #"^([^=;]+)=([^;]*)"#, options: [])
+	// Pattern: name=value (value can be anything except ;)
+	let nameValueRegex = try! NSRegularExpression(pattern: #"^([^=;]+)=([^;]*)"#, options: [])
 
-		// Pattern: ends with Expires=..., which can contain commas
-		let expiresRegex = try! NSRegularExpression(pattern: #"(?i)expires\s*=\s*[^;]+$"#)
+	// Pattern: ends with Expires=..., which can contain commas
+	let expiresRegex = try! NSRegularExpression(pattern: #"(?i)expires\s*=\s*[^;]+$"#)
 
-		for part in header.split(separator: ",", omittingEmptySubsequences: false) {
-				let trimmed = part.trimmingCharacters(in: .whitespaces)
-				current += current.isEmpty ? trimmed : ", " + trimmed
+	for part in header.split(separator: ",", omittingEmptySubsequences: false) {
+		let trimmed = part.trimmingCharacters(in: .whitespaces)
+		current += current.isEmpty ? trimmed : ", " + trimmed
 
-				let currentRange = NSRange(current.startIndex..<current.endIndex, in: current)
+		let currentRange = NSRange(current.startIndex ..< current.endIndex, in: current)
 
-				if expiresRegex.firstMatch(in: current, options: [], range: currentRange) != nil {
-						continue // still in Expires=...
-				}
-
-				if let match = nameValueRegex.firstMatch(in: current, options: [], range: currentRange),
-					 match.numberOfRanges == 3,
-					 let nameRange = Range(match.range(at: 1), in: current),
-					 let valueRange = Range(match.range(at: 2), in: current) {
-						let name = String(current[nameRange])
-						let value = String(current[valueRange])
-						result[name] = value
-						current = ""
-				}
+		if expiresRegex.firstMatch(in: current, options: [], range: currentRange) != nil {
+			continue // still in Expires=...
 		}
 
-		// Final piece if any
-		if !current.isEmpty {
-				let currentRange = NSRange(current.startIndex..<current.endIndex, in: current)
-				if let match = nameValueRegex.firstMatch(in: current, options: [], range: currentRange),
-					 match.numberOfRanges == 3,
-					 let nameRange = Range(match.range(at: 1), in: current),
-					 let valueRange = Range(match.range(at: 2), in: current) {
-						let name = String(current[nameRange])
-						let value = String(current[valueRange])
-						result[name] = value
-				}
+		if let match = nameValueRegex.firstMatch(in: current, options: [], range: currentRange),
+		   match.numberOfRanges == 3,
+		   let nameRange = Range(match.range(at: 1), in: current),
+		   let valueRange = Range(match.range(at: 2), in: current)
+		{
+			let name = String(current[nameRange])
+			let value = String(current[valueRange])
+			result[name] = value
+			current = ""
 		}
+	}
 
-		return result
+	// Final piece if any
+	if !current.isEmpty {
+		let currentRange = NSRange(current.startIndex ..< current.endIndex, in: current)
+		if let match = nameValueRegex.firstMatch(in: current, options: [], range: currentRange),
+		   match.numberOfRanges == 3,
+		   let nameRange = Range(match.range(at: 1), in: current),
+		   let valueRange = Range(match.range(at: 2), in: current)
+		{
+			let name = String(current[nameRange])
+			let value = String(current[valueRange])
+			result[name] = value
+		}
+	}
+
+	return result
 }
 
-extension APIClient.Configs {
-	
-	public var amazonBody: (inout Amazon.Objects.DefaultBody, APIClient.Configs) throws -> Void {
+public extension APIClient.Configs {
+
+	var amazonBody: (inout Amazon.Objects.DefaultBody, APIClient.Configs) throws -> Void {
 		get { self[\.amazonBody] ?? { _, _ in } }
 		set { self[\.amazonBody] = newValue }
 	}
 }
 
-extension APIClient {
+public extension APIClient {
 
-	public func amazonBody(
+	func amazonBody(
 		_ body: @escaping (inout Amazon.Objects.DefaultBody, APIClient.Configs) throws -> Void
 	) -> APIClient {
 		configs { configs in

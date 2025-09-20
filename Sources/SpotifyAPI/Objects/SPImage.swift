@@ -1,4 +1,6 @@
-public struct SPImage: Codable {
+import SwiftAPIClient
+
+public struct SPImage: Codable, Sendable, Equatable {
 	/// The image height in pixels. If unknown: null or not returned.
 	public var height: Int?
 	/// The source URL of the image.
@@ -11,4 +13,12 @@ public struct SPImage: Codable {
 		self.url = url
 		self.width = width
 	}
+}
+
+extension SPImage: Mockable {
+	public static let mock = SPImage(
+		height: 640,
+		url: "https://example.com/image.jpg",
+		width: 640
+	)
 }

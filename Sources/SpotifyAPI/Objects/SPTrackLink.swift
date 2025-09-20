@@ -1,4 +1,6 @@
-public struct SPTrackLink: Codable {
+import SwiftAPIClient
+
+public struct SPTrackLink: Codable, Sendable, Equatable {
 	/// Known external URLs for this track.
 	public var externalUrls: SPExternalURL?
 	/// A link to the Web API endpoint providing full details of the track.
@@ -17,4 +19,14 @@ public struct SPTrackLink: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPTrackLink: Mockable {
+	public static let mock = SPTrackLink(
+		externalUrls: ["spotify": "https://open.spotify.com/track/mock_id_123"],
+		href: "https://api.spotify.com/v1/tracks/mock_id_123",
+		id: "mock_id_123",
+		type: "track",
+		uri: "spotify:track:mock_id_123"
+	)
 }

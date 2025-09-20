@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 import SwiftMusicServicesApi
 
 /// The offset-based paging object is a container for a set of objects. It contains a key called items (whose value is an array of the requested objects) along with other keys like previous, next and limit that can be useful in future calls.
@@ -20,7 +21,7 @@ public struct SPPaging<Item> {
 
 	public init(href: String, items: [Item], limit: Int, next: String? = nil, offset: Int, previous: String? = nil, total: Int) {
 		self.href = href
-		self._items = SafeDecodeArray(items)
+		_items = SafeDecodeArray(items)
 		self.limit = limit
 		self.next = next
 		self.offset = offset
@@ -31,3 +32,16 @@ public struct SPPaging<Item> {
 
 extension SPPaging: Decodable where Item: Decodable {}
 extension SPPaging: Encodable where Item: Encodable {}
+extension SPPaging: Sendable where Item: Sendable {}
+
+extension SPPaging: Mockable where Item: Mockable {
+	public static var mock: SPPaging<Item> {
+		SPPaging(
+			href: "https://api.spotify.com/v1/me/tracks?offset=0&limit=20",
+			items: [Item.mock],
+			limit: 20,
+			offset: 0,
+			total: 1
+		)
+	}
+}

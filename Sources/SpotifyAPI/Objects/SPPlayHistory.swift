@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public struct SPPlayHistory: Codable {
 	/// The track the user listened to.
@@ -13,4 +14,12 @@ public struct SPPlayHistory: Codable {
 		self.playedAt = playedAt
 		self.context = context
 	}
+}
+
+extension SPPlayHistory: Mockable {
+	public static let mock = SPPlayHistory(
+		track: SPTrackSimplified.mock,
+		playedAt: Date(),
+		context: SPContext.mock
+	)
 }

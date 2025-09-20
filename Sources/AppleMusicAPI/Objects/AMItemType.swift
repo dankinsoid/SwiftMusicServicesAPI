@@ -1,8 +1,10 @@
 import Foundation
+import SwiftAPIClient
 
 public extension AppleMusic.Objects {
+
 	enum ItemType: Codable {
-		case songs(Song), musicVideos(MusicVideo), librarySongs(Song), libraryMusicVideos(MusicVideo), libraryPlaylists(Playlist), playlists(Playlist), storefront(Attributes.Storefront)
+		case songs(Song), musicVideos(MusicVideo), librarySongs(Song), libraryMusicVideos(MusicVideo), libraryPlaylists(Playlist), playlists(Playlist), storefront(Attributes.Storefront), libraryAlbums(Album), albums(Album), libraryArtists(Artist), artists(Artist)
 
 		public var kind: AppleMusic.TrackType {
 			switch self {
@@ -13,6 +15,10 @@ public extension AppleMusic.Objects {
 			case .libraryPlaylists: return .libraryPlaylists
 			case .playlists: return .playlists
 			case .storefront: return .storefronts
+			case .libraryAlbums: return .libraryAlbums
+			case .albums: return .albums
+			case .libraryArtists: return .libraryArtists
+			case .artists: return .artists
 			}
 		}
 
@@ -45,6 +51,18 @@ public extension AppleMusic.Objects {
 			case .storefronts:
 				let storefront = try container.decode(Attributes.Storefront.self, forKey: .attributes)
 				self = .storefront(storefront)
+			case .libraryAlbums:
+				let album = try container.decode(Album.self, forKey: .attributes)
+				self = .libraryAlbums(album)
+			case .albums:
+				let album = try container.decode(Album.self, forKey: .attributes)
+				self = .albums(album)
+			case .libraryArtists:
+				let artist = try container.decode(Artist.self, forKey: .attributes)
+				self = .libraryArtists(artist)
+			case .artists:
+				let artist = try container.decode(Artist.self, forKey: .attributes)
+				self = .artists(artist)
 			case .unknown:
 				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "unknown track type"))
 			}
@@ -68,6 +86,14 @@ public extension AppleMusic.Objects {
 				try container.encode(playlists, forKey: .attributes)
 			case let .storefront(storefront):
 				try container.encode(storefront, forKey: .attributes)
+			case let .libraryAlbums(libraryAlbums):
+				try container.encode(libraryAlbums, forKey: .attributes)
+			case let .albums(albums):
+				try container.encode(albums, forKey: .attributes)
+			case let .libraryArtists(libraryArtists):
+				try container.encode(libraryArtists, forKey: .attributes)
+			case let .artists(artists):
+				try container.encode(artists, forKey: .attributes)
 			}
 		}
 
@@ -97,20 +123,65 @@ public extension AppleMusic.Objects {
 	struct Playlist: Codable {
 		public init() {}
 	}
+	
+	struct Album: Codable {
+		public init() {}
+	}
+	
+	struct Artist: Codable {
+		public init() {}
+	}
 }
 
-extension AppleMusic.Objects.Attributes {
-	
-	public struct Storefront: Equatable, Codable {
-		
+extension AppleMusic.Objects.ItemType.Item: Sendable where T: Sendable {}
+
+public extension AppleMusic.Objects.Attributes {
+
+	struct Storefront: Equatable, Codable {
+
 		public var name: String?
 		public var supportedLanguageTags: [String]?
 		public var defaultLanguageTag: String?
-		
+
 		public init(name: String? = nil, supportedLanguageTags: [String]? = nil, defaultLanguageTag: String?) {
 			self.name = name
 			self.supportedLanguageTags = supportedLanguageTags
 			self.defaultLanguageTag = defaultLanguageTag
 		}
+	}
+}
+
+extension AppleMusic.Objects.ItemType: Mockable {
+	public static let mock = AppleMusic.Objects.ItemType.songs(AppleMusic.Objects.Song.mock)
+}
+
+extension AppleMusic.Objects.Song: Mockable {
+	public static let mock = AppleMusic.Objects.Song()
+}
+
+extension AppleMusic.Objects.MusicVideo: Mockable {
+	public static let mock = AppleMusic.Objects.MusicVideo()
+}
+
+extension AppleMusic.Objects.Playlist: Mockable {
+	public static let mock = AppleMusic.Objects.Playlist()
+}
+
+extension AppleMusic.Objects.Attributes.Storefront: Mockable {
+	public static let mock = AppleMusic.Objects.Attributes.Storefront(
+		name: "Mock Storefront",
+		supportedLanguageTags: ["en-US", "es-ES"],
+		defaultLanguageTag: "en-US"
+	)
+}
+
+extension AppleMusic.Objects.ItemType.Item: Mockable where T: Mockable {
+	public static var mock: AppleMusic.Objects.ItemType.Item<T> {
+		AppleMusic.Objects.ItemType.Item(
+			attributes: T.mock,
+			id: "mock_item_id",
+			type: .songs,
+			href: "https://api.music.apple.com/v1/catalog/us/songs/mock_item_id"
+		)
 	}
 }

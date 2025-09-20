@@ -12,7 +12,7 @@ public extension Tidal.API.V2.Playlists {
 
 	 **POST** /playlists/{id}/relationships/items
 	 */
-	func postByIdRelationshipsItems(id: String, body: TDO.PlaylistItemsRelationshipAddOperationPayload, countryCode: String? = nil, fileID: String = #fileID, line: UInt = #line) async throws {
+	func postByIdRelationshipsItems(id: String, body: TDO.PlaylistItemsRelationshipAddOperationPayload, countryCode: CountryCode? = nil, fileID: String = #fileID, line: UInt = #line) async throws {
 		try await client
 			.path("/playlists/\(id)/relationships/items")
 			.method(.post)

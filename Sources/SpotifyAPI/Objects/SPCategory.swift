@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPCategory: Codable {
 	/// A link to the Web API endpoint returning full details of the category.
 	public var href: String
@@ -14,4 +16,13 @@ public struct SPCategory: Codable {
 		self.id = id
 		self.name = name
 	}
+}
+
+extension SPCategory: Mockable {
+	public static let mock = SPCategory(
+		href: "https://api.spotify.com/v1/browse/categories/mock_id_123",
+		icons: [SPImage.mock],
+		id: "mock_id_123",
+		name: "Mock Category"
+	)
 }

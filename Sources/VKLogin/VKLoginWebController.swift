@@ -14,11 +14,12 @@
 		private var loadCount = 0
 
 		public init(client: VK.API, successLogin: @escaping (VKUser, _ webCookies: [String: String]) -> Void = { _, _ in }) {
-            self.client = client
+			self.client = client
 			super.init(nibName: nil, bundle: nil)
 			self.successLogin = successLogin
 		}
 
+		@available(*, unavailable)
 		public required init?(coder aDecoder: NSCoder) {
 			fatalError()
 		}

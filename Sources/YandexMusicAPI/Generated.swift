@@ -133,38 +133,6 @@ public extension Yandex.Music.API.PlaylistsCreateInput {
 	}
 }
 
-public extension Yandex.Music.API.SearchOutput {
-	static func publicInit(
-		misspellCorrected: Bool? = nil,
-		nocorrect: Bool? = nil,
-		searchRequestId: String? = nil,
-		text: String? = nil,
-		misspellResult: String? = nil,
-		misspellOriginal: String? = nil,
-		best: YMO.BestResult? = nil,
-		albums: YMO.Results<YMO.Album>? = nil,
-		artists: YMO.Results<YMO.Artist>? = nil,
-		playlists: YMO.Results<YMO.Playlist<YMO.TrackShort>>? = nil,
-		tracks: YMO.Results<YMO.Track>? = nil,
-		videos: YMO.Results<YMO.Video>? = nil
-	) -> Self {
-		.init(
-			misspellCorrected: misspellCorrected,
-			nocorrect: nocorrect,
-			searchRequestId: searchRequestId,
-			text: text,
-			misspellResult: misspellResult,
-			misspellOriginal: misspellOriginal,
-			best: best,
-			albums: albums,
-			artists: artists,
-			playlists: playlists,
-			tracks: tracks,
-			videos: videos
-		)
-	}
-}
-
 public extension Yandex.Music.API.TokenOutput {
 	static func publicInit(
 		tokenType: String? = nil,
@@ -177,40 +145,6 @@ public extension Yandex.Music.API.TokenOutput {
 			accessToken: accessToken,
 			expiresIn: expiresIn,
 			uid: uid
-		)
-	}
-}
-
-public extension Yandex.Music.Objects.Account {
-	static func publicInit(
-		displayName: String,
-		birthday: String? = nil,
-		secondName: String? = nil,
-		fullName: String? = nil,
-		region: Int? = nil,
-		registeredAt: Date? = nil,
-		serviceAvailable: Bool? = nil,
-		firstName: String? = nil,
-		now: Date? = nil,
-		passportPhones: [YMO.PassportPhone]? = nil,
-		hostedUser: Bool? = nil,
-		uid: Int,
-		login: String? = nil
-	) -> Self {
-		.init(
-			displayName: displayName,
-			birthday: birthday,
-			secondName: secondName,
-			fullName: fullName,
-			region: region,
-			registeredAt: registeredAt,
-			serviceAvailable: serviceAvailable,
-			firstName: firstName,
-			now: now,
-			passportPhones: passportPhones,
-			hostedUser: hostedUser,
-			uid: uid,
-			login: login
 		)
 	}
 }
@@ -305,21 +239,6 @@ public extension Yandex.Music.Objects.Button {
 	}
 }
 
-public extension Yandex.Music.Objects.Counts {
-	static func publicInit(
-		tracks: Int,
-		tdirectAlbums: Int,
-		talsoAlbumspublic: Int,
-		talsoTracks: Int
-	) -> Self {
-		.init(
-			tracks: tracks,
-			tdirectAlbums: tdirectAlbums,
-			talsoAlbumspublic: talsoAlbumspublic,
-			talsoTracks: talsoTracks
-		)
-	}
-}
 
 public extension Yandex.Music.Objects.Cover {
 	static func publicInit(
@@ -497,7 +416,7 @@ public extension Yandex.Music.Objects.Result {
 		invocationInfo: YMO.InvocationInfo? = nil
 	) -> Self {
 		.init(
-            result: .value(result),
+			result: .value(result),
 			invocationInfo: invocationInfo
 		)
 	}
@@ -539,28 +458,6 @@ public extension Yandex.Music.Objects.TrackPosition {
 		.init(
 			volume: volume,
 			index: index
-		)
-	}
-}
-
-public extension Yandex.Music.Objects.Video {
-	static func publicInit(
-		youtubeUrl: String? = nil,
-		thumbnailUrl: String? = nil,
-		title: String,
-		duration: Int? = nil,
-		text: String? = nil,
-		htmlAutoPlayVideoPlayer: String? = nil,
-		regions: [String]? = nil
-	) -> Self {
-		.init(
-			youtubeUrl: youtubeUrl,
-			thumbnailUrl: thumbnailUrl,
-			title: title,
-			duration: duration,
-			text: text,
-			htmlAutoPlayVideoPlayer: htmlAutoPlayVideoPlayer,
-			regions: regions
 		)
 	}
 }

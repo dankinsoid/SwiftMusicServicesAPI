@@ -1,6 +1,7 @@
 import Foundation
-import VDCodable
+import SwiftAPIClient
 import SwiftMusicServicesApi
+import VDCodable
 
 public extension Yandex.Music.Objects {
 
@@ -14,7 +15,7 @@ public extension Yandex.Music.Objects {
 		public let owner: Owner?
 		public let cover: Cover?
 		public let tags: [Tag]
-		public let regions: [String]
+		public let regions: Set<CountryCode>
 		public let snapshot: Int?
 		public let ogImage: String?
 		public let revision: Int?
@@ -38,7 +39,7 @@ public extension Yandex.Music.Objects {
 			owner: Yandex.Music.Objects.Owner? = nil,
 			cover: Yandex.Music.Objects.Cover? = nil,
 			tags: [Yandex.Music.Objects.Tag] = [],
-			regions: [String] = [],
+			regions: Set<CountryCode> = [],
 			snapshot: Int? = nil,
 			ogImage: String? = nil,
 			revision: Int? = nil,
@@ -76,32 +77,32 @@ public extension Yandex.Music.Objects {
 			self.isPremiere = isPremiere
 			self.tracks = tracks
 		}
-        
-        public init(from decoder: any Decoder) throws {
-            let container = try decoder.container(keyedBy: Yandex.Music.Objects.Playlist<T>.CodingKeys.self)
-            self.playlistUuid = try container.decode(String.self, forKey: .playlistUuid)
-            self.uid = try container.decode(Int.self, forKey: .uid)
-            self.kind = try container.decode(Int.self, forKey: .kind)
-            self.trackCount = try? container.decodeIfPresent(Int.self, forKey: .trackCount)
-            self.title = try? container.decodeIfPresent(String.self, forKey: .title)
-            self.owner = try? container.decodeIfPresent(Yandex.Music.Objects.Owner.self, forKey: .owner)
-            self.cover = try? container.decodeIfPresent(Yandex.Music.Objects.Cover.self, forKey: .cover)
-            self.tags = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Tag>.self, forKey: .tags)?.array ?? []
-            self.regions = try container.decodeIfPresent(SafeDecodeArray<String>.self, forKey: .regions)?.array ?? []
-            self.snapshot = try? container.decodeIfPresent(Int.self, forKey: .snapshot)
-            self.ogImage = try? container.decodeIfPresent(String.self, forKey: .ogImage)
-            self.revision = try? container.decodeIfPresent(Int.self, forKey: .revision)
-            self.durationMs = try? container.decodeIfPresent(Int.self, forKey: .durationMs)
-            self.collective = try? container.decodeIfPresent(Bool.self, forKey: .collective)
-            self.available = try? container.decodeIfPresent(Bool.self, forKey: .available)
-            self.modified = try? container.decodeIfPresent(Date.self, forKey: .modified)
-            self.created = try? container.decodeIfPresent(Date.self, forKey: .created)
-            self.visibility = try? container.decodeIfPresent(RawEnum<Yandex.Music.Objects.Visibility>.self, forKey: .visibility)
-            self.isBanner = try? container.decodeIfPresent(Bool.self, forKey: .isBanner)
-            self.prerolls = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Preroll>.self, forKey: .prerolls)?.array ?? []
-            self.isPremiere = try? container.decodeIfPresent(Bool.self, forKey: .isPremiere)
-            self.tracks = try container.decodeIfPresent(SafeDecodeArray<T>.self, forKey: .tracks)?.array ?? []
-        }
+
+		public init(from decoder: any Decoder) throws {
+			let container = try decoder.container(keyedBy: Yandex.Music.Objects.Playlist<T>.CodingKeys.self)
+			playlistUuid = try container.decode(String.self, forKey: .playlistUuid)
+			uid = try container.decode(Int.self, forKey: .uid)
+			kind = try container.decode(Int.self, forKey: .kind)
+			trackCount = try? container.decodeIfPresent(Int.self, forKey: .trackCount)
+			title = try? container.decodeIfPresent(String.self, forKey: .title)
+			owner = try? container.decodeIfPresent(Yandex.Music.Objects.Owner.self, forKey: .owner)
+			cover = try? container.decodeIfPresent(Yandex.Music.Objects.Cover.self, forKey: .cover)
+			tags = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Tag>.self, forKey: .tags)?.array ?? []
+			regions = try container.decodeIfPresent(SafeDecodeArray<CountryCode>.self, forKey: .regions).map { Set($0.array) } ?? []
+			snapshot = try? container.decodeIfPresent(Int.self, forKey: .snapshot)
+			ogImage = try? container.decodeIfPresent(String.self, forKey: .ogImage)
+			revision = try? container.decodeIfPresent(Int.self, forKey: .revision)
+			durationMs = try? container.decodeIfPresent(Int.self, forKey: .durationMs)
+			collective = try? container.decodeIfPresent(Bool.self, forKey: .collective)
+			available = try? container.decodeIfPresent(Bool.self, forKey: .available)
+			modified = try? container.decodeIfPresent(Date.self, forKey: .modified)
+			created = try? container.decodeIfPresent(Date.self, forKey: .created)
+			visibility = try? container.decodeIfPresent(RawEnum<Yandex.Music.Objects.Visibility>.self, forKey: .visibility)
+			isBanner = try? container.decodeIfPresent(Bool.self, forKey: .isBanner)
+			prerolls = try container.decodeIfPresent(SafeDecodeArray<Yandex.Music.Objects.Preroll>.self, forKey: .prerolls)?.array ?? []
+			isPremiere = try? container.decodeIfPresent(Bool.self, forKey: .isPremiere)
+			tracks = try container.decodeIfPresent(SafeDecodeArray<T>.self, forKey: .tracks)?.array ?? []
+		}
 	}
 
 	struct Preroll: Codable {
@@ -121,16 +122,16 @@ public extension Yandex.Music.Objects {
 			self.albumId = albumId
 		}
 
-        public init(from decoder: any Decoder) throws {
-            let container = try decoder.container(keyedBy: Yandex.Music.Objects.TrackShort.CodingKeys.self)
-            self.timestamp = try? container.decodeIfPresent(Date.self, forKey: .timestamp)
-            do {
-                self.id = try container.decode(String.self, forKey: .id)
-            } catch {
-                self.id = try "\(container.decode(Int.self, forKey: .id))"
-            }
-            self.albumId = try? container.decodeIfPresent(Int.self, forKey: .albumId)
-        }
+		public init(from decoder: any Decoder) throws {
+			let container = try decoder.container(keyedBy: Yandex.Music.Objects.TrackShort.CodingKeys.self)
+			timestamp = try? container.decodeIfPresent(Date.self, forKey: .timestamp)
+			do {
+				id = try container.decode(String.self, forKey: .id)
+			} catch {
+				id = try "\(container.decode(Int.self, forKey: .id))"
+			}
+			albumId = try? container.decodeIfPresent(Int.self, forKey: .albumId)
+		}
 
 		public func hash(into hasher: inout Hasher) {
 			id.hash(into: &hasher)
@@ -170,4 +171,45 @@ public extension YMO.Playlist {
 			tracks: tracks
 		)
 	}
+}
+
+extension Yandex.Music.Objects.Playlist: Mockable where T: Mockable {
+	public static var mock: Yandex.Music.Objects.Playlist<T> {
+		Yandex.Music.Objects.Playlist(
+			playlistUuid: "mock-playlist-uuid",
+			uid: 123_456_789,
+			kind: 3,
+			trackCount: 10,
+			title: "Mock Playlist",
+			owner: Yandex.Music.Objects.Owner.mock,
+			cover: Yandex.Music.Objects.Cover.mock,
+			tags: [Yandex.Music.Objects.Tag.mock],
+			regions: [.RU],
+			snapshot: 1000,
+			ogImage: "https://avatars.yandex.net/get-music-content/mock/og_image",
+			revision: 500,
+			durationMs: 1_800_000,
+			collective: false,
+			available: true,
+			modified: Date(),
+			created: Date(),
+			visibility: RawEnum<Yandex.Music.Objects.Visibility>(.public),
+			isBanner: false,
+			prerolls: [Yandex.Music.Objects.Preroll.mock],
+			isPremiere: false,
+			tracks: [T.mock]
+		)
+	}
+}
+
+extension Yandex.Music.Objects.TrackShort: Mockable {
+	public static let mock = Yandex.Music.Objects.TrackShort(
+		timestamp: Date(),
+		id: "mock_track_short_id",
+		albumId: 654_321
+	)
+}
+
+extension Yandex.Music.Objects.Preroll: Mockable {
+	public static let mock = Yandex.Music.Objects.Preroll()
 }

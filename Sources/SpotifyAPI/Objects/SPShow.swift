@@ -1,6 +1,9 @@
+import SwiftAPIClient
+import SwiftMusicServicesApi
+
 public struct SPShow: Codable {
 	/// A list of the countries in which the show can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.
-	public var availableMarkets: [String]
+	public var availableMarkets: Set<CountryCode>
 	/// The copyright statements of the show.
 	public var copyrights: [SPCopyright]?
 	/// A description of the show.
@@ -32,7 +35,7 @@ public struct SPShow: Codable {
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the show.
 	public var uri: String
 
-	public init(availableMarkets: [String], copyrights: [SPCopyright]? = nil, description: String, explicit: Bool, episodes: [SPEpisode]? = nil, externalUrls: SPExternalURL? = nil, href: String, id: String, images: [SPImage]? = nil, isExternallyHosted: Bool? = nil, languages: [String]? = nil, mediaType: String, name: String, publisher: String, type: String, uri: String) {
+	public init(availableMarkets: Set<CountryCode>, copyrights: [SPCopyright]? = nil, description: String, explicit: Bool, episodes: [SPEpisode]? = nil, externalUrls: SPExternalURL? = nil, href: String, id: String, images: [SPImage]? = nil, isExternallyHosted: Bool? = nil, languages: [String]? = nil, mediaType: String, name: String, publisher: String, type: String, uri: String) {
 		self.availableMarkets = availableMarkets
 		self.copyrights = copyrights
 		self.description = description
@@ -50,4 +53,20 @@ public struct SPShow: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPShow: Mockable {
+	
+	public static let mock = SPShow(
+		availableMarkets: [.US, .GB],
+		description: "An example show description.",
+		explicit: false,
+		href: "https://api.spotify.com/v1/shows/1",
+		id: "1",
+		mediaType: "audio",
+		name: "Example Show",
+		publisher: "Example Publisher",
+		type: "show",
+		uri: "spotify:show:1"
+	)
 }

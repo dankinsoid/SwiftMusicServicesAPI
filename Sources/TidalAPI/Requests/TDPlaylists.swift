@@ -1,42 +1,42 @@
 import Foundation
-import SwiftMusicServicesApi
 import SwiftAPIClient
+import SwiftMusicServicesApi
 
 public extension Tidal.API.V1 {
-    
-    var playlists: Playlists {
-        Playlists(client: client("playlists"))
-    }
 
-    struct Playlists {
-    
-        public let client: APIClient
+	var playlists: Playlists {
+		Playlists(client: client("playlists"))
+	}
 
-        public func callAsFunction(_ id: String) -> Tidal.API.V1.Playlist {
-            Tidal.API.V1.Playlist(client: client(id))
-        }
-    }
+	struct Playlists {
 
-    struct Playlist {
-        
-        public let client: APIClient
-    }
+		public let client: APIClient
+
+		public func callAsFunction(_ id: String) -> Tidal.API.V1.Playlist {
+			Tidal.API.V1.Playlist(client: client(id))
+		}
+	}
+
+	struct Playlist {
+
+		public let client: APIClient
+	}
 }
 
 public extension Tidal.API.V1.Playlist {
-	
+
 	func items(
 		auth: Bool = true,
 		limit: Int? = nil,
 		offset: Int = 0
-	) -> TidalPaging<Tidal.Objects.UserTrack> {
+	) -> TidalPaging<Tidal.Objects.UserItem<TDO.Track>> {
 		TidalPaging(
 			client: client("items").auth(enabled: auth),
 			limit: limit,
 			offset: offset
 		)
 	}
-	
+
 	func get() async throws -> Tidal.Objects.WithETag<Tidal.Objects.Playlist> {
 		let (playlist, response) = try await client
 			.call(
@@ -45,7 +45,7 @@ public extension Tidal.API.V1.Playlist {
 			)
 		return Tidal.Objects.WithETag(eTag: response.headerFields[.eTag], value: playlist)
 	}
-	
+
 	func add(
 		trackIDs: [Int],
 		eTag: String? = nil,
@@ -57,27 +57,27 @@ public extension Tidal.API.V1.Playlist {
 			.body([
 				"itemIds": trackIDs,
 				"onArtifactNotFound": artifactNotFoundPolicy,
-				"onDupes": duplicationPolicy
+				"onDupes": duplicationPolicy,
 			])
 			.header("If-None-Match", tag ?? "*")
 			.post()
 	}
 }
 
-extension Tidal.Objects {
+public extension Tidal.Objects {
 
-    public enum DuplicationPolicy: String, Codable, Equatable, CaseIterable {
+	enum DuplicationPolicy: String, Codable, Equatable, CaseIterable {
 
-        case fail = "FAIL"
-        case skip = "SKIP"
-        case replace = "REPLACE"
-    }
-    
-    public enum NotFoundPolicy: String, Codable, Equatable, CaseIterable {
-        
-        case fail = "FAIL"
-        case skip = "SKIP"
-    }
+		case fail = "FAIL"
+		case skip = "SKIP"
+		case replace = "REPLACE"
+	}
+
+	enum NotFoundPolicy: String, Codable, Equatable, CaseIterable {
+
+		case fail = "FAIL"
+		case skip = "SKIP"
+	}
 }
 
 private struct ETagMustBeSpecified: Error {}

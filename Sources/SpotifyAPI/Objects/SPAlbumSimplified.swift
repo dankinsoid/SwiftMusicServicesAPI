@@ -1,3 +1,6 @@
+import SwiftAPIClient
+import SwiftMusicServicesApi
+
 public struct SPAlbumSimplified: Codable {
 	/// The field is present when getting an artist's albums. Possible values are "album", "single", "compilation", "appears_on". Compare to album_type this field represents relationship between the artist and the album.
 	public var albumGroup: String?
@@ -6,7 +9,7 @@ public struct SPAlbumSimplified: Codable {
 	/// The artists of the album. Each artist object includes a link in href to more detailed information about the artist.
 	public var artists: [SPArtist]?
 	/// The markets in which the album is available: [ISO 3166-1 alpha-2 country codes](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2){:target="_blank"}. Note that an album is considered available in a market when at least 1 of its tracks is available in that market.
-	public var availableMarkets: [String]
+	public var availableMarkets: Set<CountryCode>
 	/// Known external URLs for this album.
 	public var externalUrls: SPExternalURL?
 	/// A link to the Web API endpoint providing full details of the album.
@@ -28,7 +31,7 @@ public struct SPAlbumSimplified: Codable {
 	/// The [Spotify URI](/documentation/web-api/#spotify-uris-and-ids) for the album.
 	public var uri: String
 
-	public init(albumGroup: String? = nil, albumType: String, artists: [SPArtist]? = nil, availableMarkets: [String], externalUrls: SPExternalURL? = nil, href: String, id: String, images: [SPImage]? = nil, name: String, releaseDate: String, releaseDatePrecision: String, restrictions: SPRestrictions? = nil, type: String, uri: String) {
+	public init(albumGroup: String? = nil, albumType: String, artists: [SPArtist]? = nil, availableMarkets: Set<CountryCode>, externalUrls: SPExternalURL? = nil, href: String, id: String, images: [SPImage]? = nil, name: String, releaseDate: String, releaseDatePrecision: String, restrictions: SPRestrictions? = nil, type: String, uri: String) {
 		self.albumGroup = albumGroup
 		self.albumType = albumType
 		self.artists = artists
@@ -44,4 +47,23 @@ public struct SPAlbumSimplified: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPAlbumSimplified: Mockable {
+	public static let mock = SPAlbumSimplified(
+		albumGroup: "album",
+		albumType: "album",
+		artists: [SPArtist.mock],
+		availableMarkets: [.US, .CA, .GB],
+		externalUrls: ["spotify": "https://open.spotify.com/album/mock_id_123"],
+		href: "https://api.spotify.com/v1/albums/mock_id_123",
+		id: "mock_id_123",
+		images: [SPImage.mock],
+		name: "Mock Album",
+		releaseDate: "2023-01-01",
+		releaseDatePrecision: "day",
+		restrictions: nil,
+		type: "album",
+		uri: "spotify:album:mock_id_123"
+	)
 }

@@ -12,7 +12,7 @@ public extension Tidal.API.V2.UserCollections {
 
 	 **POST** /userCollections/{id}/relationships/albums
 	 */
-	func postByIdRelationshipsAlbums(id: String, countryCode: String? = nil, body: TDO.UserCollectionAlbumsRelationshipAddOperationPayload, fileID: String = #fileID, line: UInt = #line) async throws {
+	func postByIdRelationshipsAlbums(id: String, countryCode: CountryCode? = nil, body: TDO.UserCollectionAlbumsRelationshipAddOperationPayload, fileID: String = #fileID, line: UInt = #line) async throws {
 		try await client
 			.path("/userCollections/\(id)/relationships/albums")
 			.method(.post)

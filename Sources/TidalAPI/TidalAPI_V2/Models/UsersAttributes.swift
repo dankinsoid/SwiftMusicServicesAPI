@@ -6,7 +6,7 @@ public extension TDO {
 	struct UsersAttributes: Codable, Equatable, Sendable {
 
 		/** ISO 3166-1 alpha-2 country code */
-		public var country: String
+		public var country: CountryCode
 		/** user name */
 		public var username: String
 		/** email address */
@@ -32,7 +32,7 @@ public extension TDO {
 		}
 
 		public init(
-			country: String,
+			country: CountryCode,
 			username: String,
 			email: String? = nil,
 			emailVerified: Bool? = nil,

@@ -25,3 +25,14 @@ extension TDO.DataDocument: Encodable where Data: Encodable {}
 extension TDO.DataDocument: Decodable where Data: Decodable {}
 extension TDO.DataDocument: Equatable where Data: Equatable {}
 extension TDO.DataDocument: Sendable where Data: Sendable {}
+
+extension TDO.DataDocument: Mockable {
+	
+	public static var mock: TDO.DataDocument<Data> {
+		TDO.DataDocument(
+			data: (Data.self as? Mockable.Type)?.mock as? Data,
+			included: nil,
+			links: .mock
+		)
+	}
+}

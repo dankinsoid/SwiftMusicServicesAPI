@@ -29,15 +29,15 @@
 #if canImport(WASILibc)
 // No locking on WASILibc
 #elseif canImport(Darwin)
-import Darwin
+	import Darwin
 #elseif os(Windows)
-import WinSDK
+	import WinSDK
 #elseif canImport(Glibc)
-import Glibc
+	import Glibc
 #elseif canImport(Musl)
-import Musl
+	import Musl
 #else
-#error("Unsupported runtime")
+	#error("Unsupported runtime")
 #endif
 
 /// A threading lock based on `libpthread` instead of `libdispatch`.
@@ -50,11 +50,11 @@ package final class Lock {
 	#if canImport(WASILibc)
 	// WASILibc is single threaded, provides no locks
 	#elseif os(Windows)
-	fileprivate let mutex: UnsafeMutablePointer<SRWLOCK> =
-		UnsafeMutablePointer.allocate(capacity: 1)
+		fileprivate let mutex: UnsafeMutablePointer<SRWLOCK> =
+			UnsafeMutablePointer.allocate(capacity: 1)
 	#else
-	fileprivate let mutex: UnsafeMutablePointer<pthread_mutex_t> =
-		UnsafeMutablePointer.allocate(capacity: 1)
+		fileprivate let mutex: UnsafeMutablePointer<pthread_mutex_t> =
+			UnsafeMutablePointer.allocate(capacity: 1)
 	#endif
 
 	/// Create a new lock.
@@ -62,14 +62,14 @@ package final class Lock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		InitializeSRWLock(mutex)
+			InitializeSRWLock(mutex)
 		#else
-		var attr = pthread_mutexattr_t()
-		pthread_mutexattr_init(&attr)
-		pthread_mutexattr_settype(&attr, .init(PTHREAD_MUTEX_ERRORCHECK))
+			var attr = pthread_mutexattr_t()
+			pthread_mutexattr_init(&attr)
+			pthread_mutexattr_settype(&attr, .init(PTHREAD_MUTEX_ERRORCHECK))
 
-		let err = pthread_mutex_init(mutex, &attr)
-		precondition(err == 0, "\(#function) failed in pthread_mutex with error \(err)")
+			let err = pthread_mutex_init(mutex, &attr)
+			precondition(err == 0, "\(#function) failed in pthread_mutex with error \(err)")
 		#endif
 	}
 
@@ -77,12 +77,12 @@ package final class Lock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		// SRWLOCK does not need to be free'd
-		self.mutex.deallocate()
+			// SRWLOCK does not need to be free'd
+			self.mutex.deallocate()
 		#else
-		let err = pthread_mutex_destroy(self.mutex)
-		precondition(err == 0, "\(#function) failed in pthread_mutex with error \(err)")
-		self.mutex.deallocate()
+			let err = pthread_mutex_destroy(self.mutex)
+			precondition(err == 0, "\(#function) failed in pthread_mutex with error \(err)")
+			self.mutex.deallocate()
 		#endif
 	}
 
@@ -94,10 +94,10 @@ package final class Lock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		AcquireSRWLockExclusive(mutex)
+			AcquireSRWLockExclusive(mutex)
 		#else
-		let err = pthread_mutex_lock(mutex)
-		precondition(err == 0, "\(#function) failed in pthread_mutex with error \(err)")
+			let err = pthread_mutex_lock(mutex)
+			precondition(err == 0, "\(#function) failed in pthread_mutex with error \(err)")
 		#endif
 	}
 
@@ -109,10 +109,10 @@ package final class Lock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		ReleaseSRWLockExclusive(mutex)
+			ReleaseSRWLockExclusive(mutex)
 		#else
-		let err = pthread_mutex_unlock(mutex)
-		precondition(err == 0, "\(#function) failed in pthread_mutex with error \(err)")
+			let err = pthread_mutex_unlock(mutex)
+			precondition(err == 0, "\(#function) failed in pthread_mutex with error \(err)")
 		#endif
 	}
 }
@@ -148,16 +148,16 @@ package extension Lock {
 /// of lock is safe to use with `libpthread`-based threading models, such as the
 /// one used by NIO. On Windows, the lock is based on the substantially similar
 /// `SRWLOCK` type.
-package final class ReadWriteLock {
+package final class ReadWriteLock: @unchecked Sendable {
 	#if canImport(WASILibc)
 	// WASILibc is single threaded, provides no locks
 	#elseif os(Windows)
-	fileprivate let rwlock: UnsafeMutablePointer<SRWLOCK> =
-		UnsafeMutablePointer.allocate(capacity: 1)
-	fileprivate var shared = true
+		fileprivate let rwlock: UnsafeMutablePointer<SRWLOCK> =
+			UnsafeMutablePointer.allocate(capacity: 1)
+		fileprivate var shared = true
 	#else
-	fileprivate let rwlock: UnsafeMutablePointer<pthread_rwlock_t> =
-		UnsafeMutablePointer.allocate(capacity: 1)
+		fileprivate let rwlock: UnsafeMutablePointer<pthread_rwlock_t> =
+			UnsafeMutablePointer.allocate(capacity: 1)
 	#endif
 
 	/// Create a new lock.
@@ -165,10 +165,10 @@ package final class ReadWriteLock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		InitializeSRWLock(rwlock)
+			InitializeSRWLock(rwlock)
 		#else
-		let err = pthread_rwlock_init(rwlock, nil)
-		precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
+			let err = pthread_rwlock_init(rwlock, nil)
+			precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
 		#endif
 	}
 
@@ -176,12 +176,12 @@ package final class ReadWriteLock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		// SRWLOCK does not need to be free'd
-		self.rwlock.deallocate()
+			// SRWLOCK does not need to be free'd
+			self.rwlock.deallocate()
 		#else
-		let err = pthread_rwlock_destroy(self.rwlock)
-		precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
-		self.rwlock.deallocate()
+			let err = pthread_rwlock_destroy(self.rwlock)
+			precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
+			self.rwlock.deallocate()
 		#endif
 	}
 
@@ -193,11 +193,11 @@ package final class ReadWriteLock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		AcquireSRWLockShared(rwlock)
-		shared = true
+			AcquireSRWLockShared(rwlock)
+			shared = true
 		#else
-		let err = pthread_rwlock_rdlock(rwlock)
-		precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
+			let err = pthread_rwlock_rdlock(rwlock)
+			precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
 		#endif
 	}
 
@@ -209,11 +209,11 @@ package final class ReadWriteLock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		AcquireSRWLockExclusive(rwlock)
-		shared = false
+			AcquireSRWLockExclusive(rwlock)
+			shared = false
 		#else
-		let err = pthread_rwlock_wrlock(rwlock)
-		precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
+			let err = pthread_rwlock_wrlock(rwlock)
+			precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
 		#endif
 	}
 
@@ -226,14 +226,14 @@ package final class ReadWriteLock {
 		#if canImport(WASILibc)
 		// WASILibc is single threaded, provides no locks
 		#elseif os(Windows)
-		if shared {
-			ReleaseSRWLockShared(rwlock)
-		} else {
-			ReleaseSRWLockExclusive(rwlock)
-		}
+			if shared {
+				ReleaseSRWLockShared(rwlock)
+			} else {
+				ReleaseSRWLockExclusive(rwlock)
+			}
 		#else
-		let err = pthread_rwlock_unlock(rwlock)
-		precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
+			let err = pthread_rwlock_unlock(rwlock)
+			precondition(err == 0, "\(#function) failed in pthread_rwlock with error \(err)")
 		#endif
 	}
 }

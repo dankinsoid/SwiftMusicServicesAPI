@@ -4,9 +4,9 @@ import SwiftSoup
 
 public extension VK.API {
 	func audioBlock() async throws -> AudioBlock {
-        try await client("audio")
-            .xmlHttpRequest
-            .call(.http, as: .htmlInitable)
+		try await client("audio")
+			.xmlHttpRequest
+			.call(.http, as: .htmlInitable)
 	}
 
 	struct AudioBlock {

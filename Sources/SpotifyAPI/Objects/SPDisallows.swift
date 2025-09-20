@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public enum SPDisallows: String, Codable, CaseIterable {
 	case interrupting_playback
@@ -16,4 +17,8 @@ public enum SPDisallows: String, Codable, CaseIterable {
 	public init(from decoder: Decoder) throws {
 		self = try Self(rawValue: String(from: decoder)) ?? .unknown
 	}
+}
+
+extension SPDisallows: Mockable {
+	public static let mock = SPDisallows.pausing
 }

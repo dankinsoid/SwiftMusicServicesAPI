@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public struct SPTracks: Codable {
 	public var href: String
@@ -8,4 +9,11 @@ public struct SPTracks: Codable {
 		self.href = href
 		self.total = total
 	}
+}
+
+extension SPTracks: Mockable {
+	public static let mock = SPTracks(
+		href: "https://api.spotify.com/v1/albums/mock_id_123/tracks",
+		total: 10
+	)
 }

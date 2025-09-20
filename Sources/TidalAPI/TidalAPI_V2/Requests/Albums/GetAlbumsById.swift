@@ -12,7 +12,7 @@ public extension Tidal.API.V2.Albums {
 
 	 **GET** /albums/{id}
 	 */
-	func getById(id: String, countryCode: String? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.AlbumsSingleDataDocument {
+	func getById(id: String, countryCode: CountryCode? = nil, include: [Include]? = nil, fileID: String = #fileID, line: UInt = #line) async throws -> TDO.AlbumsSingleDataDocument {
 		try await client
 			.path("/albums/\(id)")
 			.method(.get)

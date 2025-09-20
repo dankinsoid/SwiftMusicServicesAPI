@@ -1,6 +1,7 @@
 import Foundation
-import SwiftAPIClient
 import Logging
+import SwiftMusicServicesApi
+import SwiftAPIClient
 
 public extension Spotify.API {
 
@@ -35,7 +36,7 @@ public extension Spotify.API {
 		id: String,
 		limit: Int? = nil,
 		offset: Int? = 0,
-		market: String? = nil
+		market: CountryCode? = nil
 	) -> Spotify.API.Paging<SPPaging<SPPlaylistTrack>> {
 		pagingRequest(
 			of: SPPaging<SPPlaylistTrack>.self,
@@ -89,12 +90,12 @@ public extension Spotify.API {
 		public var position: Int?
 
 		public init(uris: [String]? = nil, position: Int? = nil) {
-            self.uris = uris?.filter { !$0.isEmpty }
+			self.uris = uris?.filter { !$0.isEmpty }
 			self.position = position
 		}
 	}
 
-	struct AddPlaylistOutput: Decodable {
+	struct AddPlaylistOutput: Codable {
 		public var snapshotId: String?
 	}
 
@@ -103,15 +104,15 @@ public extension Spotify.API {
 		userId: String,
 		input: CreatePlaylistInput
 	) async throws -> SPPlaylist {
-        try await client("users", userId, "playlists")
-            .body(input)
-            .errorHandler { error, _, context in
-                if let data = context.response, let string = String(data: data, encoding: .utf8) {
-                    Logger(label: "Spotify-API").error("\(string)")
-                }
-                throw error
-            }
-            .post()
+		try await client("users", userId, "playlists")
+			.body(input)
+			.errorHandler { error, _, context in
+				if let data = context.response, let string = String(data: data, encoding: .utf8) {
+					Logger(label: "Spotify-API").error("\(string)")
+				}
+				throw error
+			}
+			.post()
 	}
 
 	struct CreatePlaylistInput: Encodable {
