@@ -16,14 +16,18 @@ public extension AppleMusic.API {
         storefront: String,
         query: String,
         types: [AppleMusic.Types] = [.songs],
-        limit: Int = 5
+        limit: Int = 5,
+				language: String? = nil,
+				modifications: [String]? = nil
     ) async throws -> [AppleMusic.Objects.Item] {
 		try await search(
             storefront: storefront,
             input: SearchInput(
                 term: query.replacingOccurrences(of: " ", with: "+"),
                 limit: limit,
-                types: types
+                types: types,
+								l: language,
+								with: modifications
             )
         )
 	}
@@ -35,6 +39,26 @@ public extension AppleMusic.API {
             .call(.http, as: .decodable(SearchResults.self))
             .results.songs?.data ?? []
 	}
+	
+	func suggestions(
+				storefront: String,
+				types: [AppleMusic.Types]? = [.songs],
+				query: String,
+				language: String? = nil,
+				limit: Int = 10
+	) async throws -> [String] {
+		try await client
+				.path("v1", "catalog", storefront, "search", "suggestions")
+				.query([
+					"term": query.replacingOccurrences(of: " ", with: "+"),
+					"limit": limit,
+					"l": language,
+					"types": types,
+					"kinds": "topResults"
+				])
+				.call(.http, as: .decodable(SuggestionsResults.self))
+				.results.suggestions?.compactMap(\.searchTerm) ?? []
+	}
 
 	struct SearchInput: Encodable {
 
@@ -42,6 +66,8 @@ public extension AppleMusic.API {
 		public var limit = 5
 		public var offset = 0
 		public var types: [AppleMusic.Types]
+		public var l: String?
+		public var with: [String]?
 	}
 
 	struct SearchResults: Decodable {
@@ -53,6 +79,21 @@ public extension AppleMusic.API {
             public init(songs: AppleMusic.Objects.Response<AppleMusic.Objects.Item>? = nil) {
                 self.songs = songs
             }
+		}
+	}
+	
+	
+	struct SuggestionsResults: Decodable {
+		public var results: Results
+
+		public struct Results: Decodable {
+			public var suggestions: [Suggestion]?
+
+			public struct Suggestion: Decodable {
+				public var kind: String
+				public var searchTerm: String?
+				public var displayTerm: String?
+			}
 		}
 	}
 }

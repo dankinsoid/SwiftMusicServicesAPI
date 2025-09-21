@@ -73,19 +73,20 @@ public extension AppleMusic.API {
     ///   - isrcs: The International Standard Recording Code (ISRC) values for the songs. You can substitute filter[isrc] for ids, or use it in conjunction with ids for additional filtering. Note that one ISRC value may return more than one song.
     ///   - limit: The limit on the number of objects, or number of objects in the specified relationship, that are returned.
     func songsByISRC(storefront: String, isrcs: [String], limit: Int? = nil) -> FlatMapPages<AppleMusic.Objects.Item, [String]> {
-        FlatMapPages(client: client, limit: limit, input: isrcs) { client, isrcs in
-            if !isrcs.isEmpty {
-                let limitPerPage = 25
-                let isrcsPrefix = Array(isrcs.prefix(limitPerPage))
-                isrcs = Array(isrcs.dropFirst(limitPerPage))
-                return try await client
-                    .path("v1", "catalog", storefront, "songs")
-                    .query(SongsByISRCInput(isrcs: isrcsPrefix))
-                    .get()
-            } else {
-                return nil
-            }
-        }
+			FlatMapPages(client: client, limit: limit, input: isrcs) { client, isrcs in
+				if !isrcs.isEmpty {
+					let limitPerPage = 25
+					let isrcsPrefix = Array(isrcs.prefix(limitPerPage))
+					isrcs = Array(isrcs.dropFirst(limitPerPage))
+					let result: AppleMusic.Objects.Response<AppleMusic.Objects.Item> = try await client
+						.path("v1", "catalog", storefront, "songs")
+						.query(SongsByISRCInput(isrcs: isrcsPrefix))
+						.get()
+					return result
+				} else {
+					return nil
+				}
+			}
 	}
 
 	struct SongsByISRCInput: Encodable {
