@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 import SwiftMusicServicesApi
 
 public extension Tidal.Objects {
@@ -251,4 +252,69 @@ public extension Tidal.Objects {
 			try value.encode(to: encoder)
 		}
 	}
+}
+
+extension Tidal.Objects.Track: Mockable {
+	public static let mock = Tidal.Objects.Track(
+		id: 123_456_789,
+		title: "Mock Track",
+		duration: 240.0,
+		replayGain: -5.0,
+		peak: 0.8,
+		allowStreaming: true,
+		streamReady: true,
+		streamStartDate: Date(),
+		premiumStreamingOnly: false,
+		trackNumber: 1,
+		volumeNumber: 1,
+		version: nil,
+		popularity: 75,
+		copyright: "2023 Mock Records",
+		url: URL(string: "https://example.com/track"),
+		isrc: "US1234567890",
+		editable: false,
+		explicit: false,
+		audioQuality: "HIGH",
+		audioModes: ["STEREO"],
+		artist: Tidal.Objects.Artist.mock,
+		artists: [Tidal.Objects.Artist.mock],
+		album: Tidal.Objects.Album.mock,
+		mixes: nil,
+		dateAdded: Date(),
+		index: 0,
+		itemUuid: "mock-uuid-123"
+	)
+}
+
+extension Tidal.Objects.Artist: Mockable {
+	public static let mock = Tidal.Objects.Artist(
+		id: 123_456,
+		name: "Mock Artist",
+		type: .main
+	)
+}
+
+extension Tidal.Objects.Album: Mockable {
+	public static let mock = Tidal.Objects.Album(
+		id: 123_456,
+		title: "Mock Album",
+		cover: "mock-cover-id",
+		videoCover: nil
+	)
+}
+
+extension Tidal.Objects.UserTrack: Mockable {
+	public static let mock = Tidal.Objects.UserTrack(
+		type: .track,
+		created: Date(),
+		item: Tidal.Objects.Track.mock
+	)
+}
+
+extension Tidal.Objects.ArtistType: Mockable {
+	public static let mock = Tidal.Objects.ArtistType.main
+}
+
+extension Tidal.Objects.PlaylistItemType: Mockable {
+	public static let mock = Tidal.Objects.PlaylistItemType.track
 }

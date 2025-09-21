@@ -31,6 +31,6 @@ public extension Tidal.API.V2.UserCollections {
 	}
 
 	enum Include: String, CaseIterable, Codable, Sendable, Equatable {
-	 case albums, artists, playlists
- }
+		case albums, artists, playlists
+	}
 }

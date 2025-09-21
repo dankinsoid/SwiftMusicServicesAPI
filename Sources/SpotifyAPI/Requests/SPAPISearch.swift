@@ -12,11 +12,11 @@ public extension Spotify.API {
 		offset: Int? = nil,
 		includeExternal: SearchInput.External? = nil
 	) async throws -> SearchOutput {
-        try await client("search")
-            .query(
-                SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)
-            )
-            .get()
+		try await client("search")
+			.query(
+				SearchInput(q: q, type: type, market: market, limit: limit, offset: offset, includeExternal: includeExternal)
+			)
+			.get()
 	}
 
 	func searchQuery(
@@ -96,7 +96,7 @@ public struct SPQuery: Encodable {
 			}
 			result += filters.map { "\($0.key.rawValue):\($0.value)" }.joined(separator: " ")
 		}
-		return result//.replacingOccurrences(of: " ", with: "%20")
+		return result // .replacingOccurrences(of: " ", with: "%20")
 	}
 }
 

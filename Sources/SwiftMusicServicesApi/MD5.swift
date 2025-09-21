@@ -19,8 +19,8 @@ func str2rstr_utf8(_ input: String) -> [CUnsignedChar] {
 func rstr2tr(_ input: [CUnsignedChar]) -> String {
 	var output = ""
 
-	input.forEach {
-		output.append(String(UnicodeScalar($0)))
+	for item in input {
+		output.append(String(UnicodeScalar(item)))
 	}
 
 	return output

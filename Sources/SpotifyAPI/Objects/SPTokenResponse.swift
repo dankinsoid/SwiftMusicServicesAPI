@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public struct SPTokenResponse: Codable {
 
@@ -30,4 +31,14 @@ public struct SPTokenResponse: Codable {
 		self.tokenType = tokenType
 		self.scope = scope
 	}
+}
+
+extension SPTokenResponse: Mockable {
+	public static let mock = SPTokenResponse(
+		accessToken: "mock_access_token_123",
+		expiresIn: 3600,
+		refreshToken: "mock_refresh_token_123",
+		tokenType: "Bearer",
+		scope: "user-read-private user-read-email"
+	)
 }

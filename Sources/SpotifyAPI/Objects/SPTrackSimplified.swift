@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPTrackSimplified: Codable {
 	/// The artists who performed the track. Each artist object includes a link in href to more detailed information about the artist.
 	public var artists: [SPArtist]?
@@ -53,4 +55,26 @@ public struct SPTrackSimplified: Codable {
 		self.uri = uri
 		self.isLocal = isLocal
 	}
+}
+
+extension SPTrackSimplified: Mockable {
+	public static let mock = SPTrackSimplified(
+		artists: [SPArtist.mock],
+		availableMarkets: ["US", "CA", "GB"],
+		discNumber: 1,
+		durationMs: 240_000,
+		explicit: false,
+		externalUrls: ["spotify": "https://open.spotify.com/track/mock_id_123"],
+		href: "https://api.spotify.com/v1/tracks/mock_id_123",
+		id: "mock_id_123",
+		isPlayable: true,
+		linkedFrom: nil,
+		restrictions: nil,
+		name: "Mock Track",
+		previewUrl: "https://example.com/preview.mp3",
+		trackNumber: 1,
+		type: "track",
+		uri: "spotify:track:mock_id_123",
+		isLocal: false
+	)
 }

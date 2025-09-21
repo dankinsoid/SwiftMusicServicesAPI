@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPAlbum: Codable {
 	/// The type of the album: one of "album" , "single" , or "compilation".
 	public var albumType: String?
@@ -59,4 +61,12 @@ public struct SPAlbum: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPAlbum: Mockable {
+	public static let mock = SPAlbum(
+		id: "4aawyAB9vmqN3uQ7FjRGTy",
+		name: "Global Warming",
+		uri: "spotify:album:4aawyAB9vmqN3uQ7FjRGTy"
+	)
 }

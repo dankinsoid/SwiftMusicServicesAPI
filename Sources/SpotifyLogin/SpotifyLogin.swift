@@ -40,18 +40,18 @@
 		///   - clientSecret: App's client secret.
 		///   - redirectURL: App's redirect url.
 		public func configure(
-            client: APIClient = APIClient().log(level: .debug),
+			client: APIClient = APIClient().log(level: .debug),
 			clientID: String,
 			clientSecret: String,
 			redirectURL: URL,
-            cache: SecureCacheService = .keychain(service: "spotify")
+			cache: SecureCacheService = .keychain(service: "spotify")
 		) {
 			configure(
 				api: Spotify.API(
 					client: client,
 					clientID: clientID,
 					clientSecret: clientSecret,
-                    cache: cache
+					cache: cache
 				),
 				redirectURL: redirectURL
 			)

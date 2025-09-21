@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPAudioFeatures: Codable {
 	/// A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.
 	public var acousticness: Double
@@ -56,4 +58,27 @@ public struct SPAudioFeatures: Codable {
 		self.uri = uri
 		self.valence = valence
 	}
+}
+
+extension SPAudioFeatures: Mockable {
+	public static let mock = SPAudioFeatures(
+		acousticness: 0.5,
+		analysisUrl: "https://api.spotify.com/v1/audio-analysis/mock_id_123",
+		danceability: 0.7,
+		durationMs: 240_000,
+		energy: 0.8,
+		id: "mock_id_123",
+		instrumentalness: 0.1,
+		key: 0,
+		liveness: 0.2,
+		loudness: -5.0,
+		mode: 1,
+		speechiness: 0.3,
+		tempo: 120.0,
+		timeSignature: 4,
+		trackHref: "https://api.spotify.com/v1/tracks/mock_id_123",
+		type: "audio_features",
+		uri: "spotify:track:mock_id_123",
+		valence: 0.6
+	)
 }

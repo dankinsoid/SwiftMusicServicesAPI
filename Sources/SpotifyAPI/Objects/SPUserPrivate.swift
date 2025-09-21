@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPUserPrivate: Codable {
 	/// The country of the user, as set in the user's account profile. An [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). _This field is only available when the current user has granted access to the [user-read-private](/documentation/general/guides/authorization-guide/#list-of-scopes) scope._
 	public var country: String?
@@ -35,4 +37,20 @@ public struct SPUserPrivate: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPUserPrivate: Mockable {
+	public static let mock = SPUserPrivate(
+		country: "US",
+		displayName: "Mock User",
+		email: "mock@example.com",
+		externalUrls: ["spotify": "https://open.spotify.com/user/mock_id_123"],
+		followers: SPFollowers.mock,
+		href: "https://api.spotify.com/v1/me",
+		id: "mock_id_123",
+		images: [SPImage.mock],
+		product: "premium",
+		type: "user",
+		uri: "spotify:user:mock_id_123"
+	)
 }

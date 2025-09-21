@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public struct SPSavedTrack: Codable {
 	/// The date and time the track was saved.
@@ -10,4 +11,11 @@ public struct SPSavedTrack: Codable {
 		self.addedAt = addedAt
 		self.track = track
 	}
+}
+
+extension SPSavedTrack: Mockable {
+	public static let mock = SPSavedTrack(
+		addedAt: Date(),
+		track: SPTrack.mock
+	)
 }

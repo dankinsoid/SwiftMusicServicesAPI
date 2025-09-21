@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public struct SPTrack: Codable {
 	/// The album on which the track appears. The album object includes a link in href to full information about the album.
@@ -66,9 +67,18 @@ public struct SPTrack: Codable {
 	}
 }
 
-extension SPTrack {
+public extension SPTrack {
 
-    public var link: URL? {
-        id.flatMap { URL(string: "https://open.spotify.com/track/\($0)") }
-    }
+	var link: URL? {
+		id.flatMap { URL(string: "https://open.spotify.com/track/\($0)") }
+	}
+}
+
+extension SPTrack: Mockable {
+	public static let mock = SPTrack(
+		durationMs: 240_000,
+		id: "4iV5W9uYEdYUVa79Axb7Rh",
+		name: "Never Gonna Give You Up",
+		uri: "spotify:track:4iV5W9uYEdYUVa79Axb7Rh"
+	)
 }

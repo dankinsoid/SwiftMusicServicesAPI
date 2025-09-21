@@ -38,8 +38,8 @@ final class URLBuilder {
 		if scopeStrings.count > 0 {
 			params["scope"] = scopeStrings.joined(separator: " ")
 		}
-    
-        let loginPageURLString = "\(endpoint)authorize?\(String.query(params: params))"
+
+		let loginPageURLString = "\(endpoint)authorize?\(String.query(params: params))"
 		return URL(string: loginPageURLString)
 	}
 

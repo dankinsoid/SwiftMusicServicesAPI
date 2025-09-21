@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public struct SPSavedAlbum: Codable {
 	/// The date and time the album was saved.
@@ -10,4 +11,11 @@ public struct SPSavedAlbum: Codable {
 		self.addedAt = addedAt
 		self.album = album
 	}
+}
+
+extension SPSavedAlbum: Mockable {
+	public static let mock = SPSavedAlbum(
+		addedAt: Date(),
+		album: SPAlbum.mock
+	)
 }

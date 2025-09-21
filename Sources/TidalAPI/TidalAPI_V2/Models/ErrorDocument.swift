@@ -9,7 +9,7 @@ public extension TDO {
 		/** array of error objects */
 		public var errors: [ErrorObject]?
 		public var links: Links?
-	
+
 		public var description: String {
 			if let errors, !errors.isEmpty {
 				return "[\n\(errors.map(\.description).joined(separator: "\n"))\n]"

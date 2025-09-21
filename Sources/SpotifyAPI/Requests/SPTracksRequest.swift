@@ -6,9 +6,9 @@ public extension Spotify.API {
 
 	func tracks(ids: [String], market: String? = nil) async throws -> [SPTrack] {
 		try await client("tracks")
-            .query(TracksInput(ids: ids, market: market))
-            .call(.http, as: .decodable(TracksOutput.self))
-            .tracks
+			.query(TracksInput(ids: ids, market: market))
+			.call(.http, as: .decodable(TracksOutput.self))
+			.tracks
 	}
 
 	struct TracksInput: Encodable {
@@ -23,7 +23,7 @@ public extension Spotify.API {
 
 	struct TracksOutput: Codable {
 		@SafeDecodeArray public var tracks: [SPTrack]
-		
+
 		public init(tracks: [SPTrack]) {
 			_tracks = SafeDecodeArray(tracks)
 		}

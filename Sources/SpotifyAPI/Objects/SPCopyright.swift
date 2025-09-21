@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPCopyright: Codable {
 	/// The copyright text for this album.
 	public var text: String
@@ -8,4 +10,11 @@ public struct SPCopyright: Codable {
 		self.text = text
 		self.type = type
 	}
+}
+
+extension SPCopyright: Mockable {
+	public static let mock = SPCopyright(
+		text: "2023 Mock Records",
+		type: "C"
+	)
 }

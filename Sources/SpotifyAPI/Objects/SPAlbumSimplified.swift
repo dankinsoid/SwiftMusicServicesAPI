@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPAlbumSimplified: Codable {
 	/// The field is present when getting an artist's albums. Possible values are "album", "single", "compilation", "appears_on". Compare to album_type this field represents relationship between the artist and the album.
 	public var albumGroup: String?
@@ -44,4 +46,23 @@ public struct SPAlbumSimplified: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPAlbumSimplified: Mockable {
+	public static let mock = SPAlbumSimplified(
+		albumGroup: "album",
+		albumType: "album",
+		artists: [SPArtist.mock],
+		availableMarkets: ["US", "CA", "GB"],
+		externalUrls: ["spotify": "https://open.spotify.com/album/mock_id_123"],
+		href: "https://api.spotify.com/v1/albums/mock_id_123",
+		id: "mock_id_123",
+		images: [SPImage.mock],
+		name: "Mock Album",
+		releaseDate: "2023-01-01",
+		releaseDatePrecision: "day",
+		restrictions: nil,
+		type: "album",
+		uri: "spotify:album:mock_id_123"
+	)
 }

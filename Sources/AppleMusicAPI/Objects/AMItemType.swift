@@ -1,6 +1,8 @@
 import Foundation
+import SwiftAPIClient
 
 public extension AppleMusic.Objects {
+
 	enum ItemType: Codable {
 		case songs(Song), musicVideos(MusicVideo), librarySongs(Song), libraryMusicVideos(MusicVideo), libraryPlaylists(Playlist), playlists(Playlist), storefront(Attributes.Storefront)
 
@@ -99,18 +101,53 @@ public extension AppleMusic.Objects {
 	}
 }
 
-extension AppleMusic.Objects.Attributes {
-	
-	public struct Storefront: Equatable, Codable {
-		
+public extension AppleMusic.Objects.Attributes {
+
+	struct Storefront: Equatable, Codable {
+
 		public var name: String?
 		public var supportedLanguageTags: [String]?
 		public var defaultLanguageTag: String?
-		
+
 		public init(name: String? = nil, supportedLanguageTags: [String]? = nil, defaultLanguageTag: String?) {
 			self.name = name
 			self.supportedLanguageTags = supportedLanguageTags
 			self.defaultLanguageTag = defaultLanguageTag
 		}
+	}
+}
+
+extension AppleMusic.Objects.ItemType: Mockable {
+	public static let mock = AppleMusic.Objects.ItemType.songs(AppleMusic.Objects.Song.mock)
+}
+
+extension AppleMusic.Objects.Song: Mockable {
+	public static let mock = AppleMusic.Objects.Song()
+}
+
+extension AppleMusic.Objects.MusicVideo: Mockable {
+	public static let mock = AppleMusic.Objects.MusicVideo()
+}
+
+extension AppleMusic.Objects.Playlist: Mockable {
+	public static let mock = AppleMusic.Objects.Playlist()
+}
+
+extension AppleMusic.Objects.Attributes.Storefront: Mockable {
+	public static let mock = AppleMusic.Objects.Attributes.Storefront(
+		name: "Mock Storefront",
+		supportedLanguageTags: ["en-US", "es-ES"],
+		defaultLanguageTag: "en-US"
+	)
+}
+
+extension AppleMusic.Objects.ItemType.Item: Mockable where T: Mockable {
+	public static var mock: AppleMusic.Objects.ItemType.Item<T> {
+		AppleMusic.Objects.ItemType.Item(
+			attributes: T.mock,
+			id: "mock_item_id",
+			type: .songs,
+			href: "https://api.music.apple.com/v1/catalog/us/songs/mock_item_id"
+		)
 	}
 }

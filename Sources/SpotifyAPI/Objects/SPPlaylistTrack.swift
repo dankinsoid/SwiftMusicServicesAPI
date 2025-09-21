@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public struct SPPlaylistTrack: Codable {
 	/// The date and time the track or episode was added._Note that some very old playlists may return null in this field._
@@ -16,4 +17,13 @@ public struct SPPlaylistTrack: Codable {
 		self.isLocal = isLocal
 		self.track = track
 	}
+}
+
+extension SPPlaylistTrack: Mockable {
+	public static let mock = SPPlaylistTrack(
+		addedAt: Date(),
+		addedBy: SPUser.mock,
+		isLocal: false,
+		track: SPTrack.mock
+	)
 }

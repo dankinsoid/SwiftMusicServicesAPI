@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPResumePoint: Codable {
 	/// Whether or not the episode has been fully played by the user.
 	public var fullyPlayed: Bool
@@ -8,4 +10,11 @@ public struct SPResumePoint: Codable {
 		self.fullyPlayed = fullyPlayed
 		self.resumePositionMs = resumePositionMs
 	}
+}
+
+extension SPResumePoint: Mockable {
+	public static let mock = SPResumePoint(
+		fullyPlayed: false,
+		resumePositionMs: 120_000
+	)
 }

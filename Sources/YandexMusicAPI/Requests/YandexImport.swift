@@ -28,16 +28,16 @@ public extension Yandex.Music.API {
 
 public extension Yandex.Music.API {
 
-    func importFile(e3u: E3U) async throws -> ImportFileOutput {
-        try await client.url(Yandex.Music.API.Import.baseURL)
-            .path("handlers", "import-file.jsx")
-            .headers(.contentType(.text(.plain)))
-            .header(.connection, "keep-alive")
-            .body(E3U.Formatter().convert(e3u))
-            .auth(enabled: false)
-            .bodyDecoder(YandexDecoder(isAuthorized: false))
-            .post()
-    }
+	func importFile(e3u: E3U) async throws -> ImportFileOutput {
+		try await client.url(Yandex.Music.API.Import.baseURL)
+			.path("handlers", "import-file.jsx")
+			.headers(.contentType(.text(.plain)))
+			.header(.connection, "keep-alive")
+			.body(E3U.Formatter().convert(e3u))
+			.auth(enabled: false)
+			.bodyDecoder(YandexDecoder(isAuthorized: false))
+			.post()
+	}
 
 	struct ImportFileOutput: Codable {
 		public let importCode: String
@@ -48,10 +48,10 @@ public extension Yandex.Music.API {
 
 	func importCode(_ code: String) async throws -> ImportCodeOutput {
 		try await client("handlers", "import.jsx")
-            .query("code", code)
-            .auth(enabled: false)
-            .bodyDecoder(YandexDecoder(isAuthorized: false))
-            .post()
+			.query("code", code)
+			.auth(enabled: false)
+			.bodyDecoder(YandexDecoder(isAuthorized: false))
+			.post()
 	}
 
 	struct ImportCodeOutput: Codable {

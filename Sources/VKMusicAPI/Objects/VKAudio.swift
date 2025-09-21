@@ -1,5 +1,6 @@
 import Foundation
 import SimpleCoders
+import SwiftAPIClient
 import SwiftSoup
 import VDCodable
 
@@ -12,7 +13,7 @@ public struct VKAudio: Encodable, Hashable, Identifiable {
 	public var imageURL: URL?
 	public var ids: String?
 	public var addHash: String?
-    public var hashes: [String]
+	public var hashes: [String]
 	public var trackCode: String?
 
 	public static func == (_ lhs: VKAudio, _ rhs: VKAudio) -> Bool {
@@ -38,11 +39,11 @@ extension VKAudio: Decodable {
 				_ = try container.decode(JSON.self)
 			}
 			let str = try container.decode(String.self)
-            hashes = str.components(separatedBy: "/")
+			hashes = str.components(separatedBy: "/")
 			addHash = hashes.first
-            if hashes.count > 5 {
-                ids = "\(id2)_\(_id)_\(hashes[2])_\(hashes[5])"
-            }
+			if hashes.count > 5 {
+				ids = "\(id2)_\(_id)_\(hashes[2])_\(hashes[5])"
+			}
 			imageURL = try? URL(string: container.decode(String.self).components(separatedBy: ",").last ?? "")
 			for _ in 15 ..< 20 {
 				_ = try container.decode(JSON.self)
@@ -59,7 +60,7 @@ extension VKAudio: Decodable {
 			ids = try container.decodeIfPresent(String.self, forKey: .ids)
 			trackCode = try container.decodeIfPresent(String.self, forKey: .trackCode)
 			addHash = try container.decodeIfPresent(String.self, forKey: .addHash)
-            hashes = try container.decodeIfPresent([String].self, forKey: .hashes) ?? []
+			hashes = try container.decodeIfPresent([String].self, forKey: .hashes) ?? []
 		}
 	}
 }
@@ -75,7 +76,7 @@ extension VKAudio: XMLInitable {
 		title = try xml.getElementsByClass("ai_title").first()?.text() ?? ""
 		artist = try xml.getElementsByClass("ai_artist").first()?.text() ?? ""
 		duration = try Int(xml.getElementsByClass("ai_dur").first()?.attr("data-dur") ?? "") ?? 0
-        hashes = []
+		hashes = []
 		do {
 			let style = try xml.getElementsByClass("ai_play").first()?.attr("style")
 			imageURL = (style?.components(separatedBy: "url(").dropFirst().first?.components(separatedBy: ")").first).flatMap {
@@ -85,4 +86,19 @@ extension VKAudio: XMLInitable {
 			imageURL = nil
 		}
 	}
+}
+
+extension VKAudio: Mockable {
+	public static let mock = VKAudio(
+		id: 123_456_789,
+		ownerId: 987_654_321,
+		title: "Mock Track",
+		artist: "Mock Artist",
+		duration: 240,
+		imageURL: URL(string: "https://example.com/image.jpg"),
+		ids: "987654321_123456789_hash1_hash2",
+		addHash: "mock_hash",
+		hashes: ["mock_hash", "hash2", "hash3", "hash4", "hash5", "hash6"],
+		trackCode: "mock_track_code"
+	)
 }

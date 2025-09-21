@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPRecommendationsSeed: Codable {
 	/// The number of tracks available after min_* and max_* filters have been applied.
 	public var afterFilteringSize: Int
@@ -20,4 +22,15 @@ public struct SPRecommendationsSeed: Codable {
 		self.initialPoolSize = initialPoolSize
 		self.type = type
 	}
+}
+
+extension SPRecommendationsSeed: Mockable {
+	public static let mock = SPRecommendationsSeed(
+		afterFilteringSize: 1000,
+		afterRelinkingSize: 999,
+		href: "https://api.spotify.com/v1/artists/mock_artist_id",
+		id: "mock_artist_id",
+		initialPoolSize: 1234,
+		type: "artist"
+	)
 }

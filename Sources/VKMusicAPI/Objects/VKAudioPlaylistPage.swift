@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 import SwiftSoup
 
 public struct VKAudioPlaylistPage {
@@ -11,4 +12,10 @@ extension VKAudioPlaylistPage: HTMLStringInitable {
 		let div = try document.getElementsByClass("Row AudioBlock__content").first()?.children() ?? Elements()
 		playlists = try div.map { try VKPlaylistItemHTML(xml: $0) }
 	}
+}
+
+extension VKAudioPlaylistPage: Mockable {
+	public static let mock = VKAudioPlaylistPage(
+		playlists: [VKPlaylistItemHTML.mock]
+	)
 }

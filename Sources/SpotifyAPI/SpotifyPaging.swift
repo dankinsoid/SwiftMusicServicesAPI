@@ -19,17 +19,17 @@ extension SPPaging: SpotifyPaging {
 	}
 }
 
-extension Spotify.API {
-	
-	public struct Paging<Output: SpotifyPaging & Decodable>: AsyncSequence {
-		
+public extension Spotify.API {
+
+	struct Paging<Output: SpotifyPaging & Decodable>: AsyncSequence {
+
 		public typealias Element = [Output.Item]
-		
+
 		public let client: APIClient
 		public let parameters: Output.NextParameter
 		public let limit: Int?
 		public let request: () async throws -> Output
-		
+
 		public init(
 			client: APIClient,
 			parameters: Output.NextParameter,
@@ -41,7 +41,7 @@ extension Spotify.API {
 			self.limit = limit
 			self.request = request
 		}
-		
+
 		public func makeAsyncIterator() -> AsyncIterator {
 			AsyncIterator(
 				client: client,
@@ -50,14 +50,14 @@ extension Spotify.API {
 				request: request
 			)
 		}
-		
+
 		public struct AsyncIterator: AsyncIteratorProtocol {
-			
+
 			let client: APIClient
 			let parameters: Output.NextParameter
 			var limit: Int?
 			var request: (() async throws -> Output)?
-			
+
 			public mutating func next() async throws -> [Output.Item]? {
 				guard let request, (limit ?? 1) > 0 else { return nil }
 				let result = try await request()
@@ -72,7 +72,7 @@ extension Spotify.API {
 		}
 	}
 
-	public func pagingRequest<Output: SpotifyPaging & Decodable>(
+	func pagingRequest<Output: SpotifyPaging & Decodable>(
 		of output: Output.Type,
 		parameters: Output.NextParameter,
 		limit: Int? = nil,

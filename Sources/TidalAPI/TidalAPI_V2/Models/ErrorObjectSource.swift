@@ -12,7 +12,7 @@ public extension TDO {
 		public var parameter: String?
 		/** a JSON Pointer [RFC6901] to the value in the request document that caused the error */
 		public var pointer: String?
-		
+
 		public var description: String {
 			var result = ""
 			if let header {

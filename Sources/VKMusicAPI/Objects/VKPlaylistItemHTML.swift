@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 import SwiftSoup
 
 public struct VKPlaylistItemHTML {
@@ -28,4 +29,13 @@ extension VKPlaylistItemHTML: XMLInitable {
 			image = nil
 		}
 	}
+}
+
+extension VKPlaylistItemHTML: Mockable {
+	public static let mock = VKPlaylistItemHTML(
+		href: "/audio_playlist123456789_1?act=audio_playlist123456789_1",
+		image: "https://vk.com/images/mock_playlist_cover.jpg",
+		title: "Mock VK Playlist",
+		subtitle: "Mock Artist"
+	)
 }

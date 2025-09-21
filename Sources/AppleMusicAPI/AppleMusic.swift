@@ -3,12 +3,12 @@ import SwiftAPIClient
 @_exported import SwiftMusicServicesApi
 
 public enum AppleMusic {
-	
+
 	public final class API {
-		
+
 		public static var baseURL = URL(string: "https://api.music.apple.com")!
-		private(set) public var client = APIClient()
-		
+		public private(set) var client = APIClient()
+
 		public init(
 			client: APIClient,
 			baseURL: URL = API.baseURL,
@@ -37,7 +37,7 @@ private struct AppleMusicMiddleware: HTTPClientMiddleware {
 		var request = request
 		if !request.headers.contains(.authorization) {
 			guard let developerToken = try await storage.load(for: .developerToken) else {
-					throw TokenNotFound(name: "developerToken")
+				throw TokenNotFound(name: "developerToken")
 			}
 			request.headers.append(.authorization(bearerToken: developerToken))
 		}
@@ -58,7 +58,7 @@ public extension SecureCacheServiceKey {
 }
 
 public extension HTTPFields.Key {
-	
+
 	static let musicUserToken = HTTPFields.Key("Music-User-Token")!
 	static let referrerPolicy = HTTPFields.Key("Referrer-Policy")!
 }

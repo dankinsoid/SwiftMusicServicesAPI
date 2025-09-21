@@ -4,17 +4,17 @@ import SwiftAPIClient
 public extension Yandex.Music.API {
 
 	func passportToken(clientId: String, clientSecret: String, accessToken: String, _yasc: String, info: TokenBySessionIDQuery) async throws -> Yandex.Music.API.TokenOutput {
-        try await client
-            .url(Yandex.Music.API.mobileproxyPassportURL)
-            .path("1", "token")
-            .query(info)
-            .auth(enabled: false)
-            .bodyDecoder(YandexDecoder(isAuthorized: false))
-            .bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase, nestedEncodingStrategy: .json))
-            .body(PassportTokenInput(client_id: clientId, client_secret: clientSecret, access_token: accessToken))
-            .header(.cookie, "_yasc=\(_yasc)")
-            .header("Host", "mobileproxy.passport.yandex.net")
-            .post()
+		try await client
+			.url(Yandex.Music.API.mobileproxyPassportURL)
+			.path("1", "token")
+			.query(info)
+			.auth(enabled: false)
+			.bodyDecoder(YandexDecoder(isAuthorized: false))
+			.bodyEncoder(.formURL(keyEncodingStrategy: .convertToSnakeCase, nestedEncodingStrategy: .json))
+			.body(PassportTokenInput(client_id: clientId, client_secret: clientSecret, access_token: accessToken))
+			.header(.cookie, "_yasc=\(_yasc)")
+			.header("Host", "mobileproxy.passport.yandex.net")
+			.post()
 	}
 
 	struct PassportTokenInput: Codable {

@@ -15,7 +15,7 @@ public extension TDO {
 		public var source: ErrorObjectSource?
 		/** HTTP status code applicable to this problem */
 		public var status: String?
-		
+
 		// A human-readable description of the error object.
 		public var description: String {
 			var result = ""

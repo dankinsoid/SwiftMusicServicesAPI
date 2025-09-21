@@ -66,13 +66,12 @@
 			//		webView.isOpaque = false
 			webView.scrollView.indicatorStyle = .default
 
-            do {
-                let url = try URLQueryEncoder().encode(info, for: YM.API.passportURL)
-                var request = URLRequest(url: url)
-                request.addValue("passport.yandex.com", forHTTPHeaderField: "Host")
-                webView.load(request)
-            } catch {
-            }
+			do {
+				let url = try URLQueryEncoder().encode(info, for: YM.API.passportURL)
+				var request = URLRequest(url: url)
+				request.addValue("passport.yandex.com", forHTTPHeaderField: "Host")
+				webView.load(request)
+			} catch {}
 			webView.allowsBackForwardNavigationGestures = true
 			view.backgroundColor = .clear
 		}

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftAPIClient
 
 public extension AppleMusic {
 	enum Objects {}
@@ -19,4 +20,12 @@ public extension AppleMusic {
 			self = try Self(rawValue: String(from: decoder)) ?? .unknown
 		}
 	}
+}
+
+extension AppleMusic.TrackType: Mockable {
+	public static let mock = AppleMusic.TrackType.songs
+}
+
+extension AppleMusic.Types: Mockable {
+	public static let mock = AppleMusic.Types.songs
 }
