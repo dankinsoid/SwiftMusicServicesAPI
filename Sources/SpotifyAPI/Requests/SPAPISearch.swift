@@ -79,6 +79,14 @@ public extension Spotify.API {
 		public var tracks: SPPaging<SPTrack>?
 		public var shows: SPPaging<SPShow>?
 		public var episodes: SPPaging<SPEpisodeSimplified>?
+		
+		public init(artists: SPPaging<SPArtist>? = nil, albums: SPPaging<SPAlbumSimplified>? = nil, tracks: SPPaging<SPTrack>? = nil, shows: SPPaging<SPShow>? = nil, episodes: SPPaging<SPEpisodeSimplified>? = nil) {
+			self.artists = artists
+			self.albums = albums
+			self.tracks = tracks
+			self.shows = shows
+			self.episodes = episodes
+		}
 	}
 }
 
@@ -146,4 +154,15 @@ extension Spotify.API.SearchOutput: SpotifyPaging {
 		case .unknown: return nil
 		}
 	}
+}
+
+extension Spotify.API.SearchOutput: Mockable {
+	
+	public static let mock = Spotify.API.SearchOutput(
+		artists: .mock,
+		albums: .mock,
+		tracks: .mock,
+		shows: .mock,
+		episodes: .mock
+	)
 }

@@ -1,3 +1,5 @@
+import SwiftAPIClient
+
 public struct SPEpisodeSimplified: Codable {
 	/// A URL to a 30 second preview (MP3 format) of the episode. null if not available.
 	public var audioPreviewUrl: String?
@@ -56,4 +58,27 @@ public struct SPEpisodeSimplified: Codable {
 		self.type = type
 		self.uri = uri
 	}
+}
+
+extension SPEpisodeSimplified: Mockable {
+
+	public static let mock = SPEpisodeSimplified(
+			audioPreviewUrl: "https://p.scdn.co/mp3-preview/example",
+			description: "This is an example episode description.",
+			durationMs: 3600000,
+			explicit: false,
+			externalUrls: ["spotify": "https://open.spotify.com/episode/example"],
+			href: "https://api.spotify.com/v1/episodes/example",
+			id: "example",
+			images: [SPImage.mock],
+			isExternallyHosted: false,
+			isPlayable: true,
+			languages: ["en"],
+			name: "Example Episode",
+			releaseDate: "2025-09-27",
+			releaseDatePrecision: "day",
+			resumePoint: .mock,
+			type: "episode",
+			uri: "spotify:episode:example"
+		)
 }

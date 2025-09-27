@@ -51,5 +51,20 @@ public extension Yandex.Music.API {
 		public var playlists: YMO.Results<YMO.Playlist<YMO.TrackShort>>?
 		public var tracks: YMO.Results<YMO.Track>?
 		public var videos: YMO.Results<YMO.Video>?
+		
+		public init(misspellCorrected: Bool? = nil, nocorrect: Bool? = nil, searchRequestId: String? = nil, text: String? = nil, misspellResult: String? = nil, misspellOriginal: String? = nil, best: YMO.BestResult? = nil, albums: YMO.Results<YMO.Album>? = nil, artists: YMO.Results<YMO.Artist>? = nil, playlists: YMO.Results<YMO.Playlist<YMO.TrackShort>>? = nil, tracks: YMO.Results<YMO.Track>? = nil, videos: YMO.Results<YMO.Video>? = nil) {
+			self.misspellCorrected = misspellCorrected
+			self.nocorrect = nocorrect
+			self.searchRequestId = searchRequestId
+			self.text = text
+			self.misspellResult = misspellResult
+			self.misspellOriginal = misspellOriginal
+			self.best = best
+			self.albums = albums
+			self.artists = artists
+			self.playlists = playlists
+			self.tracks = tracks
+			self.videos = videos
+		}
 	}
 }

@@ -133,38 +133,6 @@ public extension Yandex.Music.API.PlaylistsCreateInput {
 	}
 }
 
-public extension Yandex.Music.API.SearchOutput {
-	static func publicInit(
-		misspellCorrected: Bool? = nil,
-		nocorrect: Bool? = nil,
-		searchRequestId: String? = nil,
-		text: String? = nil,
-		misspellResult: String? = nil,
-		misspellOriginal: String? = nil,
-		best: YMO.BestResult? = nil,
-		albums: YMO.Results<YMO.Album>? = nil,
-		artists: YMO.Results<YMO.Artist>? = nil,
-		playlists: YMO.Results<YMO.Playlist<YMO.TrackShort>>? = nil,
-		tracks: YMO.Results<YMO.Track>? = nil,
-		videos: YMO.Results<YMO.Video>? = nil
-	) -> Self {
-		.init(
-			misspellCorrected: misspellCorrected,
-			nocorrect: nocorrect,
-			searchRequestId: searchRequestId,
-			text: text,
-			misspellResult: misspellResult,
-			misspellOriginal: misspellOriginal,
-			best: best,
-			albums: albums,
-			artists: artists,
-			playlists: playlists,
-			tracks: tracks,
-			videos: videos
-		)
-	}
-}
-
 public extension Yandex.Music.API.TokenOutput {
 	static func publicInit(
 		tokenType: String? = nil,

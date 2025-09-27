@@ -20,6 +20,17 @@ public extension YMO {
 			case barBelow = "bar-below"
 			case defaultEmail, plus, subeditor, subscription
 		}
+		
+		public init(subeditorLevel: Int? = nil, account: Account, permissions: Permissions? = nil, barBelow: BarBelow? = nil, defaultEmail: String? = nil, plus: Plus? = nil, subeditor: Bool? = nil, subscription: Subscription? = nil) {
+			self.subeditorLevel = subeditorLevel
+			self.account = account
+			self.permissions = permissions
+			self.barBelow = barBelow
+			self.defaultEmail = defaultEmail
+			self.plus = plus
+			self.subeditor = subeditor
+			self.subscription = subscription
+		}
 	}
 
 	struct Account: Codable {
@@ -126,6 +137,14 @@ public extension YMO {
 		public var nonAutoRenewableRemainder: NonAutoRenewableRemainder?
 		public var mcdonalds: Bool?
 		public var autoRenewable: [AutoRenewable]?
+		
+		public init(canStartTrial: Bool? = nil, hadAnySubscription: Bool? = nil, nonAutoRenewableRemainder: NonAutoRenewableRemainder? = nil, mcdonalds: Bool? = nil, autoRenewable: [AutoRenewable]? = nil) {
+			self.canStartTrial = canStartTrial
+			self.hadAnySubscription = hadAnySubscription
+			self.nonAutoRenewableRemainder = nonAutoRenewableRemainder
+			self.mcdonalds = mcdonalds
+			self.autoRenewable = autoRenewable
+		}
 	}
 
 	// MARK: - AutoRenewable
@@ -139,6 +158,16 @@ public extension YMO {
 		public var vendor: String?
 		public var product: Product?
 		public var orderId: Int?
+		
+		public init(productId: String, expires: Date? = nil, finished: Bool? = nil, vendorHelpUrl: String? = nil, vendor: String? = nil, product: Product? = nil, orderId: Int? = nil) {
+			self.productId = productId
+			self.expires = expires
+			self.finished = finished
+			self.vendorHelpUrl = vendorHelpUrl
+			self.vendor = vendor
+			self.product = product
+			self.orderId = orderId
+		}
 	}
 
 	// MARK: - Product
@@ -155,6 +184,20 @@ public extension YMO {
 		public var duration: Int?
 		public var debug: Bool?
 		public var price: Price
+		
+		public init(features: [String]? = nil, trialDuration: Int? = nil, productId: String, plus: Bool? = nil, feature: String? = nil, trialPeriodDuration: String? = nil, type: String? = nil, commonPeriodDuration: String? = nil, duration: Int? = nil, debug: Bool? = nil, price: Price) {
+			self.features = features
+			self.trialDuration = trialDuration
+			self.productId = productId
+			self.plus = plus
+			self.feature = feature
+			self.trialPeriodDuration = trialPeriodDuration
+			self.type = type
+			self.commonPeriodDuration = commonPeriodDuration
+			self.duration = duration
+			self.debug = debug
+			self.price = price
+		}
 	}
 
 	// MARK: - Price
@@ -162,12 +205,21 @@ public extension YMO {
 	struct Price: Codable {
 		public var amount: Int
 		public var currency: String?
+		
+		public init(amount: Int, currency: String? = nil) {
+			self.amount = amount
+			self.currency = currency
+		}
 	}
 
 	// MARK: - NonAutoRenewableRemainder
 
 	struct NonAutoRenewableRemainder: Codable {
 		public var days: Int?
+		
+		public init(days: Int? = nil) {
+			self.days = days
+		}
 	}
 
 	struct HEXColor: Codable {

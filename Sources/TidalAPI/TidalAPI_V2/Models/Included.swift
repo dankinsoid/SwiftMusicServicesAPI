@@ -223,3 +223,8 @@ public extension TDO {
 
 	typealias Included = [IncludedItem]
 }
+
+extension TDO.IncludedItem: Mockable {
+	
+	public static let mock = TDO.IncludedItem.searchResults(.mock)
+}
