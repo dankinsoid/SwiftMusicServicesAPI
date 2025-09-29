@@ -21,7 +21,7 @@ extension SPPaging: SpotifyPaging {
 
 public extension Spotify.API {
 
-	struct Paging<Output: SpotifyPaging & Decodable>: AsyncSequence {
+	struct Paging<Output: SpotifyPaging & Codable>: AsyncSequence {
 
 		public typealias Element = [Output.Item]
 
@@ -72,7 +72,7 @@ public extension Spotify.API {
 		}
 	}
 
-	func pagingRequest<Output: SpotifyPaging & Decodable>(
+	func pagingRequest<Output: SpotifyPaging & Codable>(
 		of output: Output.Type,
 		parameters: Output.NextParameter,
 		limit: Int? = nil,

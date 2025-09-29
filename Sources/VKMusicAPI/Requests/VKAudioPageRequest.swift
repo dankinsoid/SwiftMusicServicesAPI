@@ -70,11 +70,11 @@ public extension VK.API {
 		public var _ajax = 1
 	}
 
-	struct AudioPageRequestOutput: Decodable {
+	struct AudioPageRequestOutput: Codable {
 
 		public var data: [AudioData]
 
-		public enum AudioData: Decodable {
+		public enum AudioData: Codable {
 			case unknown
 			case plist([VKAudio])
 

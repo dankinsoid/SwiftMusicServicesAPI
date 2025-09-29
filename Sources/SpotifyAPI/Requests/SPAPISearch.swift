@@ -72,7 +72,7 @@ public extension Spotify.API {
 		}
 	}
 
-	struct SearchOutput: Decodable {
+	struct SearchOutput: Codable {
 
 		public var artists: SPPaging<SPArtist>?
 		public var albums: SPPaging<SPAlbumSimplified>?

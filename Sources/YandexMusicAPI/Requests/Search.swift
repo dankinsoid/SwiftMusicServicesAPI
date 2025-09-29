@@ -36,7 +36,7 @@ public extension Yandex.Music.API {
 		}
 	}
 
-	struct SearchOutput: Decodable {
+	struct SearchOutput: Codable {
 
 		public var misspellCorrected: Bool?
 		public var nocorrect: Bool?

@@ -30,7 +30,7 @@ public extension Yandex.Music.API {
 		}
 	}
 
-	struct TokenOutput: Decodable {
+	struct TokenOutput: Codable {
 
 		public let tokenType: String? // "bearer"
 		public let accessToken: String

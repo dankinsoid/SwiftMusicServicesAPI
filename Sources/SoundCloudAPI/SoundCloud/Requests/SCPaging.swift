@@ -1,7 +1,7 @@
 import Foundation
 import SwiftAPIClient
 
-public struct SCPaging<T: Decodable>: AsyncSequence {
+public struct SCPaging<T: Codable>: AsyncSequence {
 
 	public typealias Element = SoundCloud.Objects.Page<T>
 	let client: APIClient

@@ -40,7 +40,7 @@ public extension AppleMusic.Objects {
 		}
 	}
 
-	struct ErrorResponse: Decodable, LocalizedError, CustomStringConvertible {
+	struct ErrorResponse: Codable, LocalizedError, CustomStringConvertible {
 
 		public var errors: [AppleMusic.Objects.ErrorObject]
 
@@ -54,7 +54,7 @@ public extension AppleMusic.Objects {
 		}
 	}
 
-	struct ErrorObject: Decodable, LocalizedError, Identifiable, CustomStringConvertible {
+	struct ErrorObject: Codable, LocalizedError, Identifiable, CustomStringConvertible {
 
 		/// The code for this error.
 		public var code: String
@@ -83,7 +83,7 @@ public extension AppleMusic.Objects {
 			self.title = title
 		}
 
-		public struct Source: Decodable, CustomStringConvertible {
+		public struct Source: Codable, CustomStringConvertible {
 			/// The URI query parameter that caused the error.
 			public var parameter: String?
 			/// A pointer to the associated entry in the request document.

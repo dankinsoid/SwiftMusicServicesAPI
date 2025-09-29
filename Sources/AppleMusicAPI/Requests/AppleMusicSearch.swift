@@ -70,10 +70,10 @@ public extension AppleMusic.API {
 		public var with: [String]?
 	}
 
-	struct SearchResults: Decodable {
+	struct SearchResults: Codable {
 		public var results: Songs
 
-		public struct Songs: Decodable {
+		public struct Songs: Codable {
 			public var songs: AppleMusic.Objects.Response<AppleMusic.Objects.Item>?
 
 			public init(songs: AppleMusic.Objects.Response<AppleMusic.Objects.Item>? = nil) {
@@ -82,13 +82,13 @@ public extension AppleMusic.API {
 		}
 	}
 
-	struct SuggestionsResults: Decodable {
+	struct SuggestionsResults: Codable {
 		public var results: Results
 
-		public struct Results: Decodable {
+		public struct Results: Codable {
 			public var suggestions: [Suggestion]?
 
-			public struct Suggestion: Decodable {
+			public struct Suggestion: Codable {
 				public var kind: String
 				public var searchTerm: String?
 				public var displayTerm: String?

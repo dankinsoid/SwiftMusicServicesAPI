@@ -94,7 +94,7 @@ public extension Spotify.API {
 		}
 	}
 
-	struct AddPlaylistOutput: Decodable {
+	struct AddPlaylistOutput: Codable {
 		public var snapshotId: String?
 	}
 
