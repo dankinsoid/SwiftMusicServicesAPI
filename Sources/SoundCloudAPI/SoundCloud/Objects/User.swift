@@ -75,17 +75,17 @@ public extension SoundCloud.Objects {
 				id = try container.decode(String.self, forKey: .id)
 			}
 
-			username = try container.decodeIfPresent(String.self, forKey: .username)
-			firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
-			lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
-			name = try container.decodeIfPresent(String.self, forKey: .name)
-			description = try container.decodeIfPresent(String.self, forKey: .description)
-			city = try container.decodeIfPresent(String.self, forKey: .city)
-			countryCode = try container.decodeIfPresent(CountryCode.self, forKey: .countryCode)
-			followerCount = try container.decodeIfPresent(Int.self, forKey: .followerCount)
-			followingCount = try container.decodeIfPresent(Int.self, forKey: .followingCount)
-			trackCount = try container.decodeIfPresent(Int.self, forKey: .trackCount)
-			avatarURL = try container.decodeIfPresent(URL.self, forKey: .avatarURL)
+			username = try? container.decodeIfPresent(String.self, forKey: .username)
+			firstName = try? container.decodeIfPresent(String.self, forKey: .firstName)
+			lastName = try? container.decodeIfPresent(String.self, forKey: .lastName)
+			name = try? container.decodeIfPresent(String.self, forKey: .name)
+			description = try? container.decodeIfPresent(String.self, forKey: .description)
+			city = try? container.decodeIfPresent(String.self, forKey: .city)
+			countryCode = try? container.decodeIfPresent(CountryCode.self, forKey: .countryCode)
+			followerCount = try? container.decodeIfPresent(Int.self, forKey: .followerCount)
+			followingCount = try? container.decodeIfPresent(Int.self, forKey: .followingCount)
+			trackCount = try? container.decodeIfPresent(Int.self, forKey: .trackCount)
+			avatarURL = try? container.decodeIfPresent(URL.self, forKey: .avatarURL)
 		}
 	}
 }
