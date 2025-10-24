@@ -14,14 +14,16 @@ public extension YMO {
 		public var plus: Plus?
 		public var subeditor: Bool?
 		public var subscription: Subscription?
+		public var hasMusicSubscription: Bool?
 
 		enum CodingKeys: String, CodingKey, CaseIterable {
 			case subeditorLevel, account, permissions
 			case barBelow = "bar-below"
 			case defaultEmail, plus, subeditor, subscription
+			case hasMusicSubscription
 		}
 		
-		public init(subeditorLevel: Int? = nil, account: Account, permissions: Permissions? = nil, barBelow: BarBelow? = nil, defaultEmail: String? = nil, plus: Plus? = nil, subeditor: Bool? = nil, subscription: Subscription? = nil) {
+		public init(subeditorLevel: Int? = nil, account: Account, permissions: Permissions? = nil, barBelow: BarBelow? = nil, defaultEmail: String? = nil, plus: Plus? = nil, subeditor: Bool? = nil, subscription: Subscription? = nil, hasMusicSubscription: Bool? = nil) {
 			self.subeditorLevel = subeditorLevel
 			self.account = account
 			self.permissions = permissions
@@ -30,6 +32,7 @@ public extension YMO {
 			self.plus = plus
 			self.subeditor = subeditor
 			self.subscription = subscription
+			self.hasMusicSubscription = hasMusicSubscription
 		}
 	}
 
@@ -144,6 +147,7 @@ public extension YMO {
 	struct Plus: Codable {
 		public var hasPlus: Bool
 		public var isTutorialCompleted: Bool?
+		public var hasMusicSubscription: Bool? // Deprecated
 	}
 
 	// MARK: - Subscription
@@ -152,15 +156,17 @@ public extension YMO {
 
 		public var canStartTrial: Bool?
 		public var hadAnySubscription: Bool?
+		public var hasMusicSubscription: Bool? // Deprecated
 		public var nonAutoRenewableRemainder: NonAutoRenewableRemainder?
 		public var mcdonalds: Bool?
 		public var autoRenewable: [AutoRenewable]?
 		
-		public init(canStartTrial: Bool? = nil, hadAnySubscription: Bool? = nil, nonAutoRenewableRemainder: NonAutoRenewableRemainder? = nil, mcdonalds: Bool? = nil, autoRenewable: [AutoRenewable]? = nil) {
+		public init(canStartTrial: Bool? = nil, hadAnySubscription: Bool? = nil, nonAutoRenewableRemainder: NonAutoRenewableRemainder? = nil, mcdonalds: Bool? = nil, autoRenewable: [AutoRenewable]? = nil, hasMusicSubscription: Bool? = nil) {
 			self.canStartTrial = canStartTrial
 			self.hadAnySubscription = hadAnySubscription
 			self.nonAutoRenewableRemainder = nonAutoRenewableRemainder
 			self.mcdonalds = mcdonalds
+			self.hasMusicSubscription = hasMusicSubscription
 			self.autoRenewable = autoRenewable
 		}
 	}
